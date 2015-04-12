@@ -3,31 +3,40 @@ namespace ntentan\utils;
 
 class CamelCase
 {
-    public function camelize($string, $separator = '_')
+    public static function camelize($string, $separator = '_')
     {
         if(is_array($separator))
         {
-            $separator = "(" . implode(",", $separator) . ")";
+            $separator = "(\\" . implode("|\\", $separator) . ")";
         }
-        preg_replace_callback(
+        else
+        {
+            $separator = '\\' . $separator;
+        }
+        return preg_replace_callback(
             "/{$separator}[a-zA-Z]/", 
             function ($matches) 
             {
                 return strtoupper($matches[0][1]);
             }, 
-            $string
+            strtolower($string)
         );
     }
     
-    public function unCamelize($string, $separator)
+    public static function ucamelize($string, $separator = '_')
     {
-        preg_replace_callback(
+        return ucfirst(self::camelize($string, $separator));
+    }
+    
+    public static function deCamelize($string, $separator)
+    {
+        return preg_replace_callback(
             "/[A-Z][a-z]/", 
-            function ($matches) 
+            function ($matches) use($separator) 
             {
-                return strtoupper($matches[0][1]);
+                return $separator . strtolower($matches[0]);
             }, 
-            $string
+            lcfirst($string)
         );        
     }
 }
