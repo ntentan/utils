@@ -14,7 +14,7 @@ namespace ntentan\utils;
  * @author ekow
  */
 class Input
-{
+{   
     private static function getVariable($input, $key)
     {
         if($key === null)
@@ -25,6 +25,12 @@ class Input
         {
             $return = filter_input($input, $key);
         }
+        
+        if($return === null && $key === null)
+        {
+            $return = array();
+        }
+        
         return $return;
     }
     
