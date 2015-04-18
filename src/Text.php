@@ -1,7 +1,7 @@
 <?php
 namespace ntentan\utils;
 
-class CamelCase
+class Text
 {
     public static function camelize($string, $separator = '_')
     {
