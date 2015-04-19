@@ -28,7 +28,7 @@ class Text
         return ucfirst(self::camelize($string, $separator));
     }
     
-    public static function deCamelize($string, $separator)
+    public static function deCamelize($string, $separator = '_')
     {
         return preg_replace_callback(
             "/[A-Z][a-z]/", 
