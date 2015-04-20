@@ -1,5 +1,11 @@
 ntentan/utils
 =============
+[![Build Status](https://travis-ci.org/ntentan/utils.svg)](https://travis-ci.org/ntentan/utils)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/ntentan/utils/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/ntentan/utils/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/ntentan/utils/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/ntentan/utils/?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/ntentan/utils/version.svg)](https://packagist.org/packages/ntentan/utils)
+[![Total Downloads](https://poser.pugx.org/ntentan/utils/downloads.svg)](https://packagist.org/packages/ntentan/utils)
+
 A collection of utility classes shared accross the different ntentan packages.
 `ntentan/utils` currently provides a Text class for string manipulation and an
 Input class for input filtering.

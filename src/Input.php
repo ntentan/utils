@@ -78,7 +78,7 @@ class Input
      * Retrieves post request variables.
      * 
      * @param string $key
-     * @return string | array;
+     * @return string|array;
      */
     public static function post($key)
     {
@@ -89,7 +89,7 @@ class Input
      * Retrieves server variables.
      * 
      * @param string $key
-     * @return string | array;
+     * @return string|array;
      */
     public static function server($key)
     {
@@ -99,8 +99,8 @@ class Input
     /**
      * Retrieves request variables. This includes all variables passed through
      * POST and GET as well as COOKIES.
-     * @param type $key
-     * @return type
+     * @param string $key
+     * @return string|array
      */
     public static function request($key)
     {
