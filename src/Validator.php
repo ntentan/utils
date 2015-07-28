@@ -29,28 +29,8 @@ namespace ntentan\utils;
 class Validator {
 
     private $rules = [];
-    private $instance;
-    private $validations;
     private $invalidFields = [];
-
-    private function __construct() {
-        $this->registerValidation(
-            'required',
-            function($data, $name) {
-                if($data === null || $data === '') {
-                    return "The {$name} field is required";
-                }
-                else {
-                    return true;
-                }
-            }
-        );
-    }
-
-    public function registerValidation($validation, $function)
-    {
-        $this->validations[$validation] = $function;
-    }
+    private $message;
 
     public static function getInstance() {
         return new Validator();
@@ -64,17 +44,22 @@ class Validator {
     {
         if(!is_numeric($ruleIndex)) {
             $method = $ruleIndex;
+            $options = $rule;
         }
         else {
             $method = $rule;
+            $options = null;
         }
-        $response = $this->validations[$method]($data['data'], $data['field']);
-        if($response !== true) {
-            $messages[] = $response;
-            return false;
+
+        $method = "validate$method";
+
+        $response = $this->$method($data['data'], $data['field'], $options);
+        if($response) {
+            return true;
         }
         else {
-            return true;
+            $messages[] = $this->message;
+            return false;
         }
 
     }
@@ -85,15 +70,18 @@ class Validator {
     }
 
     /**
-     * Validate the data that was sen
+     * Validate data according to validation rules that have been set into
+     * this validator.
+     * @param array $data The data to be validated
      */
     public function validate($data) {
         $passed = true;
+        $this->invalidFields = [];
         foreach($this->rules as $field => $fieldRules) {
             $fieldMessages = [];
             foreach($fieldRules as $ruleIndex => $rule) {
                 $this->callValidation(
-                    $rule, $ruleIndex, $fieldMessages,
+                    $ruleIndex, $rule, $fieldMessages,
                     ['field' => $field, 'data' => $data[$field]]
                 );
             }
@@ -104,4 +92,32 @@ class Validator {
         }
         return $passed;
     }
+
+    protected function evaluateResult($result, $message, $options) {
+        if($result) {
+            return true;
+        }
+        else {
+            $this->message = isset($options['message']) ? $options['message'] : $message;
+            return false;
+        }
+    }
+
+    protected function validateRequired($data, $name, $options) {
+        return $this->evaluateResult(
+            $data !== null && $data !== '',
+            "The {$name} field is required",
+            $options
+        );
+    }
+
+    protected function validateRegexp($data, $name, $options) {
+        if(preg_match_all($options, $data)) {
+            return true;
+        }
+        else {
+            return "The {$name} field has an invalid format";
+        }
+    }
+
 }
