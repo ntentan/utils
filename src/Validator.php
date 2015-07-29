@@ -28,7 +28,7 @@
 namespace ntentan\utils;
 
 /**
- * Base validator class for validating data found in arrays.
+ * Base validator class for validating data in associative arrays.
  */
 class Validator {
 
@@ -37,14 +37,14 @@ class Validator {
      * @var array
      */
     private $rules = [];
-    
+
     /**
      * An array which holds the validation errors found after the last
      * validation was run.
      * @var array
      */
     private $invalidFields = [];
-    
+
     /**
      * A temporal storage for validation messages
      * @var string
@@ -69,7 +69,7 @@ class Validator {
 
     /**
      * Call the method for a given validation.
-     * 
+     *
      * @param string|integer $ruleIndex
      * @param string $rule
      * @param array $messages
@@ -128,6 +128,17 @@ class Validator {
         return $passed;
     }
 
+    /**
+     * Receives a boolean from the validation function and a message to be
+     * displayed when the value is false. It also receives the options array
+     * so it could override the standard message that the validation code
+     * generates.
+     *
+     * @param boolean $result
+     * @param string $message
+     * @param array $options
+     * @return boolean
+     */
     protected function evaluateResult($result, $message, $options) {
         if ($result) {
             return true;
@@ -137,31 +148,78 @@ class Validator {
         }
     }
 
+    /**
+     * Validates data that is supposed to be required. This validation fails
+     * only when the data supplied is null or is an empty string.
+     * @param mixed $data
+     * @param string $name
+     * @param array $options
+     * @return boolean  
+     */
     protected function validateRequired($data, $name, $options) {
         return $this->evaluateResult(
-            $data !== null && $data !== '', 
+            $data !== null && $data !== '',
             "The {$name} field is required", $options
         );
     }
 
+    /**
+     * Validates data using regular expressions.
+     * @param mixed $data
+     * @param string $name
+     * @param array $options
+     * @return boolean
+     */
     protected function validateRegexp($data, $name, $options) {
         return $this->evaluateResult(
-            preg_match_all(is_string($options) ? $options : $options[0], $data), 
-            "The {$name} field is required", $options
+            preg_match_all(is_string($options) ? $options : $options[0], $data),
+            "The format of your input is invalid", $options
         );
     }
 
+    /**
+     * Validates data that is supposed to be numeric.
+     * @param string $data
+     * @param string $name
+     * @param array $options
+     * @return boolean
+     */
     protected function validateNumeric($data, $name, $options) {
         return $this->evaluateResult(
-            is_numeric($data), "The {$name} field is not numeric", $options
-        );
-    }
-    
-    protected function validateLength($data, $name, $options) {
-        return $this->evaluateResult(
-            strlen($data) > $options,
-            "The {$name} field cannot have its lenght greater than {$options}"
+            is_numeric($data), "The {$name} field must contain only numbers", $options
         );
     }
 
+    /**
+     * Validates the size of data to be stored.
+     * 
+     * @param string $data
+     * @param string $name
+     * @param array $options
+     * @return boolean
+     */
+    protected function validateLength($data, $name, $options) {
+        $length = strlen($data);
+        if(is_array($options)) {
+            $hasMin = isset($options['min']);
+            $hasMax = isset($options['max']);
+            $max = $options['max'];
+            $min = $options['min'];
+            $this->evaluateResult(
+                ($hasMax ? $length <= $max : true) && 
+                ($hasMin ? $length >= $min : true), 
+                "The length of the {$name} field must be" . 
+                    ($hasMin ? " $min characters or greater" : '') .
+                    ($hasMax && $hasMin ? " and" : '') .
+                    ($hasMax ? " $max characters or lesser" : ''),
+                $options
+            );
+        } else {
+            return $this->evaluateResult(
+                $length <= $options,
+                "The length of the {$name} field must be {$options} characters or less",
+                $options
+            );
+        }
+    }
 }
