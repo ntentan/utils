@@ -115,15 +115,15 @@ class Validator
      * this validator.
      * @param array $data The data to be validated
      */
-    public function validate($data)
-    {
+    public function validate($data) {
         $passed = true;
         $this->invalidFields = [];
-        foreach ($data as $field => $value) {
+        foreach ($this->rules as $field => $fieldRules) {
             $fieldMessages = [];
-            foreach ($this->rules[$field] as $ruleIndex => $rule) {
+            foreach ($fieldRules as $ruleIndex => $rule) {
+                $value = isset($data[$field]) ? $data[$field] : null;
                 $this->callValidation(
-                    $ruleIndex, $rule, $fieldMessages, ['field' => $field, 'data' => $value]
+                        $ruleIndex, $rule, $fieldMessages, ['field' => $field, 'data' => $value]
                 );
             }
             if (count($fieldMessages) > 0) {

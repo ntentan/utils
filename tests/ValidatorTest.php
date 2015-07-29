@@ -41,6 +41,10 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase {
         );
         $this->assertEquals(true, $response);
         $this->assertEquals([], $this->validator->getInvalidFields());
+        
+        $response = $this->validator->validate([]);
+        $this->assertEquals(false, $response);
+        $this->assertEquals(['name' => ['The name field is required']], $this->validator->getInvalidFields());
     }
 
     public function testRequiredMessage() {
