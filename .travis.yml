@@ -2,12 +2,16 @@ language: php
 php:
  - "5.4"
  - "5.5"
- - "5.6"
  - "hhvm"
+ 
+matrix:
+  include:
+    - php: 5.6
+      env: COVERAGE=yes
 
 before_script:
  - composer install
 
 script: vendor/bin/phpunit --coverage-clover coverage.clover tests
-after_success: wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --access-token="93e209791d440d1069195255daaa32ce84f96e88ced6d40490b1352dca34f96c" --format=php-clover coverage.clover
+after_script: if [ "$COVERAGE" == "yes" ]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --access-token="93e209791d440d1069195255daaa32ce84f96e88ced6d40490b1352dca34f96c" --format=php-clover coverage.clover; fi
 
