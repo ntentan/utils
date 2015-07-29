@@ -208,10 +208,7 @@ class Validator {
             $this->evaluateResult(
                 ($hasMax ? $length <= $max : true) && 
                 ($hasMin ? $length >= $min : true), 
-                "The length of the {$name} field must be" . 
-                    ($hasMin ? " $min characters or greater" : '') .
-                    ($hasMax && $hasMin ? " and" : '') .
-                    ($hasMax ? " $max characters or lesser" : ''),
+                $this->getLenghtValidationMessage($name, $hasMin, $hasMax, $min, $max),
                 $options
             );
         } else {
@@ -221,5 +218,13 @@ class Validator {
                 $options
             );
         }
+    }
+    
+    private function getLenghtValidationMessage($name, $hasMin, $hasMax, $min, $max)
+    {
+        return "The length of the {$name} field must be" . 
+            ($hasMin ? " $min characters or greater" : '') .
+            ($hasMax && $hasMin ? " and" : '') .
+            ($hasMax ? " $max characters or lesser" : '');
     }
 }
