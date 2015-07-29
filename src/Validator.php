@@ -30,7 +30,8 @@ namespace ntentan\utils;
 /**
  * Base validator class for validating data in associative arrays.
  */
-class Validator {
+class Validator
+{
 
     /**
      * An array which represnts the validation rules
@@ -55,7 +56,8 @@ class Validator {
      * Returns a new instance of the Validator
      * @return \ntentan\utils\Validator
      */
-    public static function getInstance() {
+    public static function getInstance()
+    {
         return new Validator();
     }
 
@@ -63,7 +65,8 @@ class Validator {
      * Set the validation rules
      * @param array $rules
      */
-    public function setRules($rules) {
+    public function setRules($rules)
+    {
         $this->rules = $rules;
     }
 
@@ -76,7 +79,8 @@ class Validator {
      * @param mixed $data
      * @return boolean
      */
-    private function callValidation($ruleIndex, $rule, &$messages, $data) {
+    private function callValidation($ruleIndex, $rule, &$messages, $data)
+    {
         if (!is_numeric($ruleIndex)) {
             $method = $ruleIndex;
             $options = $rule;
@@ -101,7 +105,8 @@ class Validator {
      * last validation was run.
      * @return array
      */
-    public function getInvalidFields() {
+    public function getInvalidFields()
+    {
         return $this->invalidFields;
     }
 
@@ -110,14 +115,15 @@ class Validator {
      * this validator.
      * @param array $data The data to be validated
      */
-    public function validate($data) {
+    public function validate($data)
+    {
         $passed = true;
         $this->invalidFields = [];
-        foreach ($this->rules as $field => $fieldRules) {
+        foreach ($data as $field => $value) {
             $fieldMessages = [];
-            foreach ($fieldRules as $ruleIndex => $rule) {
+            foreach ($this->rules[$field] as $ruleIndex => $rule) {
                 $this->callValidation(
-                        $ruleIndex, $rule, $fieldMessages, ['field' => $field, 'data' => $data[$field]]
+                    $ruleIndex, $rule, $fieldMessages, ['field' => $field, 'data' => $value]
                 );
             }
             if (count($fieldMessages) > 0) {
@@ -139,7 +145,8 @@ class Validator {
      * @param array $options
      * @return boolean
      */
-    protected function evaluateResult($result, $message, $options) {
+    protected function evaluateResult($result, $message, $options)
+    {
         if ($result) {
             return true;
         } else {
@@ -156,10 +163,10 @@ class Validator {
      * @param array $options
      * @return boolean  
      */
-    protected function validateRequired($data, $name, $options) {
+    protected function validateRequired($data, $name, $options)
+    {
         return $this->evaluateResult(
-            $data !== null && $data !== '',
-            "The {$name} field is required", $options
+            $data !== null && $data !== '', "The {$name} field is required", $options
         );
     }
 
@@ -170,10 +177,10 @@ class Validator {
      * @param array $options
      * @return boolean
      */
-    protected function validateRegexp($data, $name, $options) {
+    protected function validateRegexp($data, $name, $options)
+    {
         return $this->evaluateResult(
-            preg_match_all(is_string($options) ? $options : $options[0], $data),
-            "The format of your input is invalid", $options
+            preg_match_all(is_string($options) ? $options : $options[0], $data), "The format of your input is invalid", $options
         );
     }
 
@@ -184,7 +191,8 @@ class Validator {
      * @param array $options
      * @return boolean
      */
-    protected function validateNumeric($data, $name, $options) {
+    protected function validateNumeric($data, $name, $options)
+    {
         return $this->evaluateResult(
             is_numeric($data), "The {$name} field must contain only numbers", $options
         );
@@ -198,33 +206,31 @@ class Validator {
      * @param array $options
      * @return boolean
      */
-    protected function validateLength($data, $name, $options) {
+    protected function validateLength($data, $name, $options)
+    {
         $length = strlen($data);
-        if(is_array($options)) {
+        if (is_array($options)) {
             $hasMin = isset($options['min']);
             $hasMax = isset($options['max']);
             $max = $options['max'];
             $min = $options['min'];
             $this->evaluateResult(
-                ($hasMax ? $length <= $max : true) && 
-                ($hasMin ? $length >= $min : true), 
-                $this->getLenghtValidationMessage($name, $hasMin, $hasMax, $min, $max),
-                $options
+                ($hasMax ? $length <= $max : true) &&
+                ($hasMin ? $length >= $min : true), $this->getLenghtValidationMessage($name, $hasMin, $hasMax, $min, $max), $options
             );
         } else {
             return $this->evaluateResult(
-                $length <= $options,
-                "The length of the {$name} field must be {$options} characters or less",
-                $options
+                $length <= $options, "The length of the {$name} field must be {$options} characters or less", $options
             );
         }
     }
-    
+
     private function getLenghtValidationMessage($name, $hasMin, $hasMax, $min, $max)
     {
-        return "The length of the {$name} field must be" . 
+        return "The length of the {$name} field must be" .
             ($hasMin ? " $min characters or greater" : '') .
             ($hasMax && $hasMin ? " and" : '') .
             ($hasMax ? " $max characters or lesser" : '');
     }
+
 }
