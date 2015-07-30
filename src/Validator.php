@@ -194,7 +194,7 @@ class Validator
     protected function validateNumeric($data, $name, $options)
     {
         return $this->evaluateResult(
-            is_numeric($data), "The {$name} field must contain only numbers", $options
+            is_numeric($data) || $data === null, "The {$name} field must contain only numbers", $options
         );
     }
 
