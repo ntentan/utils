@@ -14,12 +14,32 @@ namespace ntentan\utils;
  * @author ekow
  */
 class Input
-{   
+{       
+    const POST = INPUT_POST;
+    const GET = INPUT_GET;
+    const REQUEST = INPUT_REQUEST;
+    const SESSION = INPUT_SESSION;
+    
+    private static $arrays = [];
+    
+    /**
+     * Does the actual work of calling either the filter_input of 
+     * filter_input_array. Calls the filter_input when a data key is provided
+     * and callse the filte_input_array when a data key is absent.
+     * 
+     * @param string $input Input type
+     * @param string $key The data key
+     * @return string|array The value.
+     */
     private static function getVariable($input, $key)
     {
         if($key === null)
         {
-            $return = filter_input_array($input);
+            if(!isset(self::$arrays[$input]))
+            {
+                self::$arrays[$input] = filter_input_array($input);
+            }
+            $return = self::$arrays[$input];
         }
         else
         {
@@ -62,5 +82,10 @@ class Input
     public static function cookie($key)
     {
         return self::getVariable(INPUT_COOKIE, $key);
+    }
+    
+    public static function exists($input, $key)
+    {
+        return isset(self::getVariable($input, null)[$key]);
     }
 }
