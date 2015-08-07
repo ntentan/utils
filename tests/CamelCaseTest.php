@@ -1,4 +1,6 @@
 <?php
+namespace ntentan\utils\tests;
+
 use ntentan\utils\Text;
 
 class CamelCaseTest extends \PHPUnit_Framework_TestCase
