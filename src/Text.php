@@ -93,4 +93,14 @@ class Text
             lcfirst($string)
         );        
     }
+    
+    public static function pluralize($text)
+    {
+        return $text . 's';
+    }
+    
+    public static function singularize($text)
+    {
+        return substr($text, 0, -1);
+    }
 }
