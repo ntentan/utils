@@ -38,7 +38,6 @@ class Input
     const POST = INPUT_POST;
     const GET = INPUT_GET;
     const REQUEST = INPUT_REQUEST;
-    const SESSION = INPUT_SESSION;
     
     private static $arrays = [];
     
@@ -116,17 +115,6 @@ class Input
     public static function request($key)
     {
         return self::getVariable(INPUT_REQUEST, $key);
-    }
-    
-    /**
-     * Retrieves session variables.
-     * 
-     * @param string $key
-     * @return string|array
-     */
-    public static function session($key)
-    {
-        return self::getVariable(INPUT_SESSION, $key);
     }
     
     /**
