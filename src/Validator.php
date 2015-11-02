@@ -123,7 +123,7 @@ class Validator
             foreach ($fieldRules as $ruleIndex => $rule) {
                 $value = isset($data[$field]) ? $data[$field] : null;
                 $this->callValidation(
-                        $ruleIndex, $rule, $fieldMessages, ['field' => $field, 'data' => $value]
+                    $ruleIndex, $rule, $fieldMessages, ['field' => $field, 'data' => $value]
                 );
             }
             if (count($fieldMessages) > 0) {
