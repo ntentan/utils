@@ -64,13 +64,25 @@ class Validator
         return new Validator();
     }
     
-    public static function getValidation($name)
+    private static function getValidation($name)
     {
         if(!isset(self::$validations[$name])) {
-            $class = self::$validationRegister[$name];
+            if(isset(self::$validationRegister[$name]))
+            {
+                $class = self::$validationRegister[$name];
+            }
+            else
+            {
+                throw new exceptions\ValidatorException("Validator [$name] not found");
+            }
             self::$validations[$name] = new $class();
         }
         return self::$validations[$name];
+    }
+    
+    public static function registerValidation($name, $class)
+    {
+        self::$validationRegister[$name] = $class;
     }
 
     /**
