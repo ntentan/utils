@@ -15,7 +15,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase {
     public function testRequired() {
         $this->validator->setRules(
             array(
-                'name' => ['required']
+                'required' => ['name']
             )
         );
         $response = $this->validator->validate(
@@ -49,7 +49,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase {
 
     public function testRequiredMessage() {
         $this->validator->setRules(
-            ['name' => ['required' => ['message' => 'Please provide a name']]]
+            ['required' => ['name' => ['message' => 'Please provide a name']]]
         );
         $response = $this->validator->validate(
             array(
@@ -62,7 +62,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase {
     
     public function testRegexpValidation() {
         $this->validator->setRules(
-            ['name' => ['regexp' => '/[A-Z]+/']]
+            ['regexp' => ['name' => '/[A-Z]+/']]
         );
         
         $response = $this->validator->validate(
@@ -82,7 +82,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase {
     
     public function testNumericValidation() {
         $this->validator->setRules(
-            ['age' => ['numeric']]
+            ['numeric' => ['age']]
         );
         $response = $this->validator->validate(
             ['age' => '21a']
@@ -99,7 +99,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase {
     
     public function testLengthValidation() {
         $this->validator->setRules(
-            ['user_name' => ['length' => 8]]
+            ['length' => ['user_name' => 8]]
         );
         $response = $this->validator->validate(
             ['user_name' => 'james.ainooson']
@@ -118,7 +118,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase {
      
     public function testLenghtMinMaxValidation() {
         $this->validator->setRules(
-            ['user_name' => ['length' => ['min' => 6, 'max' => 8]]]
+            ['length' => ['user_name' => ['min' => 6, 'max' => 8]]]
         );
         $response = $this->validator->validate(
             ['user_name' => 'james.ainooson']
