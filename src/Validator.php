@@ -47,12 +47,6 @@ class Validator
     private $invalidFields = [];
 
     /**
-     * A temporal storage for validation messages
-     * @var string
-     */
-    private $message;
-
-    /**
      * Returns a new instance of the Validator
      * @return \ntentan\utils\Validator
      */
@@ -144,8 +138,19 @@ class Validator
         if ($result) {
             return true;
         } else {
-            $this->invalidFields[$field['name']][] = 
-                isset($field['options']['message']) ? $field['options']['message'] : $message;
+            if(is_array($field['name']))
+            {
+                foreach($field['name'] as $name) {
+                    $this->invalidFields[$name][] = 
+                        isset($field['options']['message']) ? 
+                        $field['options']['message'] : $message;
+                }
+            }
+            else
+            {
+                $this->invalidFields[$field['name']][] = 
+                    isset($field['options']['message']) ? $field['options']['message'] : $message;
+            }
             return false;
         }
     }
