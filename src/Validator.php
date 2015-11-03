@@ -45,15 +45,15 @@ class Validator
      * @var array
      */
     private $invalidFields = [];
-    
-    private static $validations = [];
-    
-    private static $validationRegister = [
+    private $validations = [];
+    private $validationRegister = [
         'required' => '\ntentan\utils\validator\validations\RequiredValidation',
         'length' => '\ntentan\utils\validator\validations\LengthValidation',
         'numeric' => '\ntentan\utils\validator\validations\NumericValidation',
         'regexp' => '\ntentan\utils\validator\validations\RegexpValidation',
     ];
+    
+    private $validationData = [];
 
     /**
      * Returns a new instance of the Validator
@@ -63,26 +63,26 @@ class Validator
     {
         return new Validator();
     }
-    
-    private static function getValidation($name)
+
+    private function getValidation($name)
     {
-        if(!isset(self::$validations[$name])) {
-            if(isset(self::$validationRegister[$name]))
-            {
-                $class = self::$validationRegister[$name];
-            }
-            else
-            {
+        if (!isset($this->validations[$name])) {
+            if (isset($this->validationRegister[$name])) {
+                $class = $this->validationRegister[$name];
+            } else {
                 throw new exceptions\ValidatorException("Validator [$name] not found");
             }
-            self::$validations[$name] = new $class();
+            $this->validations[$name] = new $class(
+                isset($this->validationData[$name]) ? $this->validationData[$name] : null
+            );
         }
-        return self::$validations[$name];
+        return $this->validations[$name];
     }
-    
-    public static function registerValidation($name, $class)
+
+    protected function registerValidation($name, $class, $data = null)
     {
-        self::$validationRegister[$name] = $class;
+        $this->validationRegister[$name] = $class;
+        $this->validationData[$name] = $data;
     }
 
     /**
@@ -103,12 +103,12 @@ class Validator
     {
         return $this->invalidFields;
     }
-    
+
     private function getFieldInfo($key, $value)
     {
         $name = null;
         $options = [];
-        if(is_numeric($key) && is_string($value)){
+        if (is_numeric($key) && is_string($value)) {
             $name = $value;
         } else if (is_numeric($key) && is_array($value)) {
             $name = array_shift($value);
@@ -125,16 +125,17 @@ class Validator
      * this validator.
      * @param array $data The data to be validated
      */
-    public function validate($data) {
+    public function validate($data)
+    {
         $passed = true;
         $this->invalidFields = [];
         foreach ($this->rules as $validation => $fields) {
-            foreach($fields as $key => $value) {
+            foreach ($fields as $key => $value) {
                 $field = $this->getFieldInfo($key, $value);
-                $validation = self::getValidation($validation);
-                $passed &= $validation->run($field, $data);
+                $validationInstance = $this->getValidation($validation);
+                $passed &= $validationInstance->run($field, $data);
                 $this->invalidFields = array_merge_recursive(
-                    $this->invalidFields, $validation->getMessages()
+                    $this->invalidFields, $validationInstance->getMessages()
                 );
             }
         }
