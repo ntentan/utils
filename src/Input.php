@@ -90,7 +90,7 @@ class Input
      * @param string $key
      * @return string|array
      */
-    public static function post($key)
+    public static function post($key = null)
     {
         return self::getVariable(INPUT_POST, $key);
     }
@@ -101,7 +101,7 @@ class Input
      * @param string $key
      * @return string|array
      */
-    public static function server($key)
+    public static function server($key = null)
     {
         return self::getVariable(INPUT_SERVER, $key);
     }
@@ -112,7 +112,7 @@ class Input
      * @param string $key
      * @return string|array
      */
-    public static function request($key)
+    public static function request($key = null)
     {
         return self::getVariable(INPUT_REQUEST, $key);
     }
@@ -123,7 +123,7 @@ class Input
      * @param string $key
      * @return string|array
      */
-    public static function cookie($key)
+    public static function cookie($key = null)
     {
         return self::getVariable(INPUT_COOKIE, $key);
     }
