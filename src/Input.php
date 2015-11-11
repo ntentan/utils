@@ -136,6 +136,9 @@ class Input
     public static function files($key = null)
     {
         $files = [];
+        if(!isset($_FILES[$key])) {
+            return null;
+        }
         if(is_array($_FILES[$key]['name'])) {
             for($i = 0; $i < count($_FILES[$key]['name']); $i++) {
                 $files[] = new filesystem\UploadedFile([

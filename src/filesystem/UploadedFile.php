@@ -7,7 +7,7 @@ use ntentan\utils\Filesystem;
 
 class UploadedFile extends File
 {
-    private $client;
+    private $clientName;
     private $type;
     private $error;
     private $size;
@@ -15,7 +15,7 @@ class UploadedFile extends File
     public function __construct($file)
     {
         parent::__construct($file['tmp_name']);
-        $this->client = $file['name'];
+        $this->clientName = $file['name'];
         $this->type = $file['type'];
         $this->error = $file['error'];
         $this->size = $file['size'];
@@ -31,9 +31,24 @@ class UploadedFile extends File
     
     public function moveTo($destination)
     {
-        Filesystem::checkWritable($destination);
+        Filesystem::checkWritable(dirname($destination));
         if(!move_uploaded_file($this->path, $destination)) {
             throw new FilesystemException("Failed to move file {$this->path} to {$destination}");
         }
+    }
+    
+    public function getError()
+    {
+        return $this->error;
+    }
+    
+    public function getClientName()
+    {
+        return $this->clientName;
+    }
+    
+    public function getType()
+    {
+        return $this->type;
     }
 }

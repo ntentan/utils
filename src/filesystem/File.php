@@ -11,7 +11,7 @@ use ntentan\utils\Filesystem;
  */
 class File
 {
-    private $path;
+    protected $path;
     
     public function __construct($path)
     {
