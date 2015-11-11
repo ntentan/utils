@@ -132,4 +132,23 @@ class Input
     {
         return isset(self::getVariable($input, null)[$key]);
     }
+    
+    public static function files($key = null)
+    {
+        $files = [];
+        if(is_array($_FILES[$key]['name'])) {
+            for($i = 0; $i < count($_FILES[$key]['name']); $i++) {
+                $files[] = new filesystem\UploadedFile([
+                    'name' => $_FILES[$key]['name'][$i],
+                    'type' => $_FILES[$key]['type'][$i],
+                    'tmp_name' => $_FILES[$key]['tmp_name'][$i],
+                    'error' => $_FILES[$key]['error'][$i],
+                    'size' => $_FILES[$key]['size'][$i],
+                ]);
+            }
+            return $files;
+        } else {
+            return new filesystem\UploadedFile($_FILES);
+        }
+    }
 }
