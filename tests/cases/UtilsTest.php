@@ -1,5 +1,5 @@
 <?php
-namespace ntentan\utils\tests;
+namespace ntentan\utils\tests\cases;
 
 class UtilsTest extends \PHPUnit_Framework_TestCase
 {

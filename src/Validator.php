@@ -104,6 +104,13 @@ class Validator
         return $this->invalidFields;
     }
 
+    /**
+     * Build a uniform field info array for various types of validations
+     * 
+     * @param mixed $key
+     * @param mixed $value
+     * @return array
+     */
     private function getFieldInfo($key, $value)
     {
         $name = null;

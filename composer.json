@@ -10,10 +10,11 @@
     ],
     "autoload" : {
         "psr-4": {
-            "ntentan\\utils\\": "src/"
+            "ntentan\\utils\\": "src/",
+            "ntentan\\utils\\tests\\" : "tests/"
         }
     },
     "require-dev": {
-        "phpunit/phpunit" : "4.*"
+        "phpunit/phpunit" : "~4.0"
     }
 }

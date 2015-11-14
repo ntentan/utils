@@ -1,11 +1,12 @@
 <?php
-namespace ntentan\utils\tests;
+namespace ntentan\utils\tests\cases;
 
 use ntentan\utils\Validator;
 
 class ValidatorTest extends \PHPUnit_Framework_TestCase {
 
     private $validator;
+    private $prophet;
 
     public function setUp()
     {
@@ -127,7 +128,41 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals(
             ['user_name' => ['The length of the user_name field must be 6 characters or greater and 8 characters or lesser']],
             $this->validator->getInvalidFields()
+        );    
+    }
+    
+    /**
+     * @expectedException \ntentan\utils\exceptions\ValidatorException
+     */
+    public function testValidatorException() {
+        $this->validator->setRules(
+            ['fake_validator' => ['name']]
         );
         
+        $this->validator->validate(
+            ['name' => 'not important']
+        );
+    }
+    
+    public function testCustomValidation() {
+        $customValidation = new \ntentan\utils\tests\lib\FakeValidator();
+        $customValidation->setRules(
+            ['fake' => [[['username', 'name']]]]
+        );
+        $response = $customValidation->validate(
+            ['name' => 'JAMIE', 'username' => 'jamie']
+        );
+        $this->assertEquals(true, $response);
+        $response = $customValidation->validate(
+            ['name' => 'jamie', 'username' => 'JAMIE']
+        );
+        $this->assertEquals(false, $response);
+        $this->assertEquals(
+            [
+                'name' => ['Username must be lowercase form of name'], 
+                'username' => ['Username must be lowercase form of name']
+            ],
+            $customValidation->getInvalidFields()
+        );
     }
 }
