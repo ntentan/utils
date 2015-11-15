@@ -6,11 +6,13 @@ ntentan/utils
 [![Latest Stable Version](https://poser.pugx.org/ntentan/utils/version.svg)](https://packagist.org/packages/ntentan/utils)
 [![Total Downloads](https://poser.pugx.org/ntentan/utils/downloads.svg)](https://packagist.org/packages/ntentan/utils)
 
-A collection of utility classes shared accross the different ntentan packages.
+A collection of utility classes shared across the different ntentan packages.
 `ntentan/utils` currently provides:
  - A Text class for string manipulation
  - An Input class for input filtering.
  - A Validator class for validating input.
+ - A Dependency Injector
+ - A collection of file system utilities
 
 License
 =======
