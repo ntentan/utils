@@ -23,7 +23,7 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(false, Filesystem::exists(vfsStream::url('fs/notexists')));
     }
     
-    public function testWriteable()
+    public function testWritable()
     {
         $this->assertEquals(true, Filesystem::isWritable(vfsStream::url('fs/file')));        
         $this->file->chmod(0000);
@@ -35,6 +35,7 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
      */
     public function testExistsException()
     {
+        $this->assertEquals(true, Filesystem::checkExists(vfsStream::url('fs/file')));
         Filesystem::checkExists(vfsStream::url('fs/nofile'));
     }
     
@@ -43,7 +44,9 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
      */
     public function testWriteableException()
     {
-        Filesystem::checkExists(vfsStream::url('fs/nofile'));
+        $this->assertEquals(true, Filesystem::checkWritable(vfsStream::url('fs/file')));
+        $this->file->chmod(0000);
+        Filesystem::checkWritable(vfsStream::url('fs/file'));
     }
     
 }

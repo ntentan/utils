@@ -72,9 +72,7 @@ class Validator
             } else {
                 throw new exceptions\ValidatorException("Validator [$name] not found");
             }
-            $this->validations[$name] = new $class(
-                isset($this->validationData[$name]) ? $this->validationData[$name] : null
-            );
+            $this->validations[$name] = new $class(isset($this->validationData[$name]) ? $this->validationData[$name] : null);
         }
         return $this->validations[$name];
     }

@@ -18,6 +18,7 @@ class Filesystem
         if(!self::isWritable($path)) {
             throw new exceptions\FilesystemException("File $path is not writeable");
         }
+        return true;
     }
     
     public static function checkExists($path)
@@ -25,5 +26,6 @@ class Filesystem
         if(!self::exists($path)) {
             throw new exceptions\FilesystemException("File $path does not exist");
         }
+        return true;
     }
 }
