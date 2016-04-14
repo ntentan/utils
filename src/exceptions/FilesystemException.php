@@ -6,4 +6,3 @@ class FilesystemException extends \Exception
 {
     
 }
-
