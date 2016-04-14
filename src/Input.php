@@ -107,17 +107,6 @@ class Input
     }
     
     /**
-     * Retrieves request variables. This includes all variables passed through
-     * POST and GET as well as COOKIES.
-     * @param string $key
-     * @return string|array
-     */
-    public static function request($key = null)
-    {
-        return self::getVariable(INPUT_REQUEST, $key);
-    }
-    
-    /**
      * Retrieves cookie variables.
      * 
      * @param string $key
