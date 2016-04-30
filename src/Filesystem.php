@@ -9,7 +9,7 @@ class Filesystem
     public static function checkWritable($path)
     {
         if(!is_writable($path)) {
-            throw new exceptions\FileNotWritableException("File $path is not writeable");
+            throw new exceptions\FileNotWriteableException("File $path is not writeable");
         }
         return true;
     }

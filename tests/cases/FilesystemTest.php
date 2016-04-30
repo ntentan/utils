@@ -17,17 +17,23 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
         vfsStreamWrapper::getRoot()->addChild($this->file);
     }
     
+    /**
+     * @expectedException \ntentan\utils\exceptions\FileNotFoundException
+     */
     public function testExists()
     {
-        $this->assertEquals(true, Filesystem::exists(vfsStream::url('fs/file')));
-        $this->assertEquals(false, Filesystem::exists(vfsStream::url('fs/notexists')));
+        $this->assertEquals(true, Filesystem::checkExists(vfsStream::url('fs/file')));
+        $this->assertEquals(false, Filesystem::checkExists(vfsStream::url('fs/notexists')));
     }
     
+    /**
+     * @expectedException \ntentan\utils\exceptions\FileNotWriteableException
+     */    
     public function testWritable()
     {
-        $this->assertEquals(true, Filesystem::isWritable(vfsStream::url('fs/file')));        
+        $this->assertEquals(true, Filesystem::checkWritable(vfsStream::url('fs/file')));        
         $this->file->chmod(0000);
-        $this->assertEquals(false, Filesystem::isWritable(vfsStream::url('fs/file')));
+        $this->assertEquals(false, Filesystem::checkWritable(vfsStream::url('fs/file')));
     }
     
     /**
