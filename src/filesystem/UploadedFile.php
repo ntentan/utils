@@ -20,7 +20,9 @@ class UploadedFile extends File
         $this->error = $file['error'];
         $this->size = $file['size'];
         if(!is_uploaded_file($file['tmp_name'])) {
-            throw new FilesystemException("File {$file['tmp_name']} is not an uploaded file");
+            throw new FilesystemException(
+                "File {$file['tmp_name']} is not an uploaded file"
+            );
         }
     }
     
@@ -33,7 +35,9 @@ class UploadedFile extends File
     {
         Filesystem::checkWritable(dirname($destination));
         if(!move_uploaded_file($this->path, $destination)) {
-            throw new FilesystemException("Failed to move file {$this->path} to {$destination}");
+            throw new FilesystemException(
+                "Failed to move file {$this->path} to {$destination}"
+            );
         }
     }
     

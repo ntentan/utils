@@ -59,12 +59,12 @@ class File implements FileInterface
 
     public function delete()
     {
-        
+        unlink($this->path);
     }
 
     public function getPath()
     {
-        
+        return $this->path;
     }
 
 }
