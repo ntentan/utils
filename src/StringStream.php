@@ -17,8 +17,7 @@ namespace ntentan\utils;
  * @author Doug Wright
  * @package StringStream
  */
-class StringStream
-{
+class StringStream {
 
     /**
      * Content of stream
@@ -60,8 +59,7 @@ class StringStream
      * @param string $aOpenedPath
      * @return boolean
      */
-    function stream_open($aPath, $aMode, $aOptions, &$aOpenedPath)
-    {
+    function stream_open($aPath, $aMode, $aOptions, &$aOpenedPath) {
         $this->path = substr($aPath, 9);
         if (!isset(self::$string[$this->path])) {
             self::$string[$this->path] = '';
@@ -131,8 +129,7 @@ class StringStream
      * @param int $aBytes number of bytes to return
      * @return string
      */
-    function stream_read($aBytes)
-    {
+    function stream_read($aBytes) {
         if ($this->read) {
             $read = substr(self::$string[$this->path], $this->position, $aBytes);
             $this->position += strlen($read);
@@ -147,8 +144,7 @@ class StringStream
      * @param string $aData data to write
      * @return int
      */
-    function stream_write($aData)
-    {
+    function stream_write($aData) {
         if ($this->write) {
             $left = substr(self::$string[$this->path], 0, $this->position);
             $right = substr(self::$string[$this->path], $this->position + strlen($aData));
@@ -164,8 +160,7 @@ class StringStream
      * Return current position
      * @return int
      */
-    function stream_tell()
-    {
+    function stream_tell() {
         return $this->position;
     }
 
@@ -173,8 +168,7 @@ class StringStream
      * Return if EOF
      * @return boolean
      */
-    function stream_eof()
-    {
+    function stream_eof() {
         return $this->position >= strlen(self::$string[$this->path]);
     }
 
@@ -184,8 +178,7 @@ class StringStream
      * @param int $aWhence
      * @return boolean
      */
-    function stream_seek($aOffset, $aWhence)
-    {
+    function stream_seek($aOffset, $aWhence) {
         switch ($aWhence) {
             case SEEK_SET:
                 $this->position = $aOffset;
@@ -218,8 +211,7 @@ class StringStream
      * Truncate to given size
      * @param int $aSize
      */
-    public function stream_truncate($aSize)
-    {
+    public function stream_truncate($aSize) {
         if (strlen(self::$string[$this->path]) > $aSize) {
             self::$string[$this->path] = substr(self::$string[$this->path], 0, $aSize);
         } else if (strlen(self::$string[$this->path]) < $aSize) {
@@ -232,8 +224,7 @@ class StringStream
      * Return info about stream
      * @return array
      */
-    public function stream_stat()
-    {
+    public function stream_stat() {
         return array('dev' => 0,
             'ino' => 0,
             'mode' => 0,
@@ -255,30 +246,25 @@ class StringStream
      * @param array $aOptions
      * @return array
      */
-    public function url_stat($aPath, $aOptions)
-    {
+    public function url_stat($aPath, $aOptions) {
         $resource = fopen($aPath, 'r');
         return fstat($resource);
     }
-    
-    public static function register()
-    {
-        if(!self::$registered)
-        {
+
+    public static function register() {
+        if (!self::$registered) {
             if (in_array("string", stream_get_wrappers())) {
                 stream_wrapper_unregister("string");
-            }            
+            }
             stream_wrapper_register("string", __CLASS__);
             self::$registered = true;
         }
-        
     }
-    
-    public static function unregister()
-    {
-        if(self::$registered)
-        {
+
+    public static function unregister() {
+        if (self::$registered) {
             stream_wrapper_unregister('string');
         }
     }
+
 }

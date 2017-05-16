@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Ntentan Framework
  * Copyright (c) 2008-2015 James Ekow Abaka Ainooson
@@ -33,13 +34,35 @@ namespace ntentan\utils;
  *
  * @author James Ainooson
  */
-class Input
-{       
+class Input {
+
     const POST = INPUT_POST;
     const GET = INPUT_GET;
     const REQUEST = INPUT_REQUEST;
-    
+
     private static $arrays = [];
+    
+    /**
+     * http://stackoverflow.com/a/14432765
+     * 
+     * @param type $input
+     * @param type $query
+     * @return type
+     */
+    private static function decode($input, $key) {
+        if(!isset(self::$arrays[$input])) {
+            $query = $input == self::GET 
+                ? filter_input(INPUT_SERVER, 'QUERY_STRING') 
+                : file_get_contents('php://input');
+            $data = preg_replace_callback('/(?:^|(?<=&))[^=[]+/', 
+                function($match) {
+                    return bin2hex(urldecode($match[0]));
+                }, $query);
+            parse_str($data, $values);
+            self::$arrays[$input] = array_combine(array_map('hex2bin', array_keys($values)), $values);        
+        }
+        return $key ? self::$arrays[$input][$key] : self::$arrays[$input];
+    }
     
     /**
      * Does the actual work of calling either the filter_input of 
@@ -50,26 +73,20 @@ class Input
      * @param string $key The data key
      * @return string|array The value.
      */
-    private static function getVariable($input, $key)
-    {
-        if($key === null)
-        {
-            if(!isset(self::$arrays[$input]))
-            {
+    private static function getVariable($input, $key) {
+        if ($key === null) {
+            if (!isset(self::$arrays[$input])) {
                 self::$arrays[$input] = filter_input_array($input);
             }
             $return = self::$arrays[$input];
-        }
-        else
-        {
+        } else {
             $return = filter_input($input, $key);
         }
-        
-        if($return === null && $key === null)
-        {
+
+        if ($return === null && $key === null) {
             $return = array();
         }
-        
+
         return $return;
     }
     
@@ -79,57 +96,51 @@ class Input
      * @param string $key
      * @return string|array
      */
-    public static function get($key = null)
-    {
-        return self::getVariable(INPUT_GET, $key);
+    public static function get($key = null) {
+        return self::decode(self::GET, $key);
     }
-    
+
     /**
      * Retrieves post request variables.
      * 
      * @param string $key
      * @return string|array
      */
-    public static function post($key = null)
-    {
-        return self::getVariable(INPUT_POST, $key);
+    public static function post($key = null) {
+        return self::decode(self::POST, $key);
     }
-    
+
     /**
      * Retrieves server variables.
      * 
      * @param string $key
      * @return string|array
      */
-    public static function server($key = null)
-    {
+    public static function server($key = null) {
         return self::getVariable(INPUT_SERVER, $key);
     }
-    
+
     /**
      * Retrieves cookie variables.
      * 
      * @param string $key
      * @return string|array
      */
-    public static function cookie($key = null)
-    {
+    public static function cookie($key = null) {
         return self::getVariable(INPUT_COOKIE, $key);
     }
-    
-    public static function exists($input, $key)
-    {
+
+    public static function exists($input, $key) {
         return isset(self::getVariable($input, null)[$key]);
     }
-    
-    public static function files($key = null)
-    {
+
+    public static function files($key = null) {
         $files = [];
-        if(!isset($_FILES[$key])) {
+        if (!isset($_FILES[$key])) {
             return null;
         }
-        if(is_array($_FILES[$key]['name'])) {
-            for($i = 0; $i < count($_FILES[$key]['name']); $i++) {
+        if (is_array($_FILES[$key]['name'])) {
+            for ($i = 0; $i < count($_FILES[$key]['name']); $i++) {
                 $files[] = new filesystem\UploadedFile([
                     'name' => $_FILES[$key]['name'][$i],
                     'type' => $_FILES[$key]['type'][$i],
@@ -143,4 +154,5 @@ class Input
             return new filesystem\UploadedFile($_FILES);
         }
     }
+
 }

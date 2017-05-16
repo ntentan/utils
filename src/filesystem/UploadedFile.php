@@ -5,50 +5,45 @@ namespace ntentan\utils\filesystem;
 use ntentan\utils\exceptions\FilesystemException;
 use ntentan\utils\Filesystem;
 
-class UploadedFile extends File
-{
+class UploadedFile extends File {
+
     private $clientName;
     private $type;
     private $error;
     private $size;
-    
-    public function __construct($file)
-    {
+
+    public function __construct($file) {
         parent::__construct($file['tmp_name']);
         $this->clientName = $file['name'];
         $this->type = $file['type'];
         $this->error = $file['error'];
         $this->size = $file['size'];
-        if(!is_uploaded_file($file['tmp_name'])) {
+        if (!is_uploaded_file($file['tmp_name'])) {
             throw new FilesystemException("File {$file['tmp_name']} is not an uploaded file");
         }
     }
-    
-    public function getSize()
-    {
+
+    public function getSize() {
         return $this->size;
     }
-    
-    public function moveTo($destination)
-    {
+
+    public function moveTo($destination) {
         Filesystem::checkWritable(dirname($destination));
-        if(!move_uploaded_file($this->path, $destination)) {
+        if (!move_uploaded_file($this->path, $destination)) {
             throw new FilesystemException("Failed to move file {$this->path} to {$destination}");
         }
     }
-    
-    public function getError()
-    {
+
+    public function getError() {
         return $this->error;
     }
-    
-    public function getClientName()
-    {
+
+    public function getClientName() {
         return $this->clientName;
     }
-    
-    public function getType()
-    {
+
+    public function getType() {
         return $this->type;
     }
+
 }

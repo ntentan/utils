@@ -9,47 +9,40 @@ use ntentan\utils\Filesystem;
  *
  * @author ekow
  */
-class File implements FileInterface
-{
+class File implements FileInterface {
+
     protected $path;
     private $isDirectory;
-    
-    public function __construct($path)
-    {
+
+    public function __construct($path) {
         $this->path = $path;
-        if(is_dir($path))
-        {
+        if (is_dir($path)) {
             $this->isDirectory = true;
         }
     }
-    
-    public function moveTo($destination)
-    {
+
+    public function moveTo($destination) {
         self::copyTo($destination);
         unlink($this->path);
         $this->path = $destination;
     }
-    
-    public function getSize()
-    {
+
+    public function getSize() {
         return filesize($this->path);
     }
 
-    public function copyTo($destination)
-    {
+    public function copyTo($destination) {
         Filesystem::checkSafety($destination);
         copy($this->path, $destination);
     }
-    
-    public function getContents()
-    {
+
+    public function getContents() {
         Filesystem::checkExists($this->path);
         return file_get_contents($this->path);
     }
-    
-    public function putContents($contents)
-    {
-        if(file_exists($this->path)) {
+
+    public function putContents($contents) {
+        if (file_exists($this->path)) {
             Filesystem::checkWritable($this->path);
         } else {
             Filesystem::checkWritable(dirname($this->path));
@@ -57,13 +50,11 @@ class File implements FileInterface
         file_put_contents($this->path, $contents);
     }
 
-    public function delete()
-    {
+    public function delete() {
         
     }
 
-    public function getPath()
-    {
+    public function getPath() {
         
     }
 
