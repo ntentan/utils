@@ -61,7 +61,7 @@ class Input {
             parse_str($data, $values);
             self::$arrays[$input] = array_combine(array_map('hex2bin', array_keys($values)), $values);        
         }
-        return $key ? self::$arrays[$input][$key] : self::$arrays[$input];
+        return $key ? (self::$arrays[$input][$key] ?? null) : (self::$arrays[$input] ?? null);
     }
     
     /**
