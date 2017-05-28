@@ -49,19 +49,19 @@ class Input {
      * @param type $query
      * @return type
      */
-    private static function decode($input, $key) {
-        if(!isset(self::$arrays[$input])) {
-            $query = $input == self::GET 
+    private static function decode($method, $key) {
+        if(!isset(self::$arrays[$method])) {
+            $query = $method == self::GET 
                 ? filter_input(INPUT_SERVER, 'QUERY_STRING') 
                 : file_get_contents('php://input');
-            $data = preg_replace_callback('/(?:^|(?<=&))[^=[]+/', 
+            $query = preg_replace_callback('/(?:^|(?<=&))[^=[]+/', 
                 function($match) {
-                    return bin2hex(urldecode($match[0]));
-                }, $query);
-            parse_str($data, $values);
-            self::$arrays[$input] = array_combine(array_map('hex2bin', array_keys($values)), $values);        
+                    return bin2hex($match[0]);
+                }, urldecode($query));
+            parse_str($query, $data);
+            self::$arrays[$method] = array_combine(array_map('hex2bin', array_keys($data)), $data);        
         }
-        return $key ? (self::$arrays[$input][$key] ?? null) : (self::$arrays[$input] ?? null);
+        return $key ? (self::$arrays[$method][$key] ?? null) : (self::$arrays[$method] ?? null);
     }
     
     /**
