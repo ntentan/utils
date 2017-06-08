@@ -52,20 +52,17 @@ class Validator
         'numeric' => '\ntentan\utils\validator\validations\NumericValidation',
         'regexp' => '\ntentan\utils\validator\validations\RegexpValidation',
     ];
-    
     private $validationData = [];
 
     /**
      * Returns a new instance of the Validator
      * @return \ntentan\utils\Validator
      */
-    public static function getInstance()
-    {
+    public static function getInstance() {
         return new Validator();
     }
 
-    private function getValidation($name)
-    {
+    private function getValidation($name) {
         if (!isset($this->validations[$name])) {
             if (isset($this->validationRegister[$name])) {
                 $class = $this->validationRegister[$name];
@@ -77,8 +74,7 @@ class Validator
         return $this->validations[$name];
     }
 
-    protected function registerValidation($name, $class, $data = null)
-    {
+    protected function registerValidation($name, $class, $data = null) {
         $this->validationRegister[$name] = $class;
         $this->validationData[$name] = $data;
     }
@@ -87,8 +83,7 @@ class Validator
      * Set the validation rules
      * @param array $rules
      */
-    public function setRules($rules)
-    {
+    public function setRules($rules) {
         $this->rules = $rules;
     }
 
@@ -97,8 +92,7 @@ class Validator
      * last validation was run.
      * @return array
      */
-    public function getInvalidFields()
-    {
+    public function getInvalidFields() {
         return $this->invalidFields;
     }
 
@@ -109,8 +103,7 @@ class Validator
      * @param mixed $value
      * @return array
      */
-    private function getFieldInfo($key, $value)
-    {
+    private function getFieldInfo($key, $value) {
         $name = null;
         $options = [];
         if (is_numeric($key) && is_string($value)) {
@@ -130,8 +123,7 @@ class Validator
      * this validator.
      * @param array $data The data to be validated
      */
-    public function validate($data)
-    {
+    public function validate($data) {
         $passed = true;
         $this->invalidFields = [];
         foreach ($this->rules as $validation => $fields) {
@@ -140,7 +132,7 @@ class Validator
                 $validationInstance = $this->getValidation($validation);
                 $passed &= $validationInstance->run($field, $data);
                 $this->invalidFields = array_merge_recursive(
-                    $this->invalidFields, $validationInstance->getMessages()
+                        $this->invalidFields, $validationInstance->getMessages()
                 );
             }
         }
