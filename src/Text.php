@@ -96,11 +96,13 @@ class Text
     
     public static function pluralize($text)
     {
-        if(substr($text, -1) == 'y') {
+        $lastLetter = substr($text, -1);
+        if($lastLetter == 'y') {
             return substr($text, 0, -1) . 'ies';
-        } else {
+        } elseif ( $lastLetter != 's' ) {
             return $text . 's';
         }
+        return $text;
     }
     
     public static function singularize($text)
