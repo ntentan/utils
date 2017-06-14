@@ -32,7 +32,7 @@ class File implements FileInterface {
     }
 
     public function copyTo($destination) {
-        Filesystem::checkSafety($destination);
+        Filesystem::checkWriteSafety(dirname($destination));
         copy($this->path, $destination);
     }
 
