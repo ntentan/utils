@@ -22,7 +22,7 @@ class Filesystem {
 
     public static function checkExists($path) {
         if (!file_exists($path)) {
-            throw new exceptions\FileNotFoundException("File $path does not exist");
+            throw new exceptions\FileNotFoundException($path);
         }
         return true;
     }
