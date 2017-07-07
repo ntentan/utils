@@ -12,21 +12,22 @@ class Directory implements FileInterface {
 
     private $path;
 
-    private function __construct($path = null) {
+    public function __construct($path = null) {
         $this->path = $path;
     }
 
     public function copyTo($destination) {
-        Filesystem::isWritable(dir($destination));
-        if (!is_dir($destination) && !file_exists($destination)) {
+        Filesystem::checkWritable($destination);
+        if (!file_exists($destination)) {
             self::create($destination);
         }
-
-        foreach (glob($source) as $file) {
-            $newFile = (is_dir($destination) ? "$destination/" : '') . basename("$file");
+        
+        $files = glob("$this->path/*");
+        foreach ($files as $file) {
+            $newFile = "$destination/" . basename("$file");
             if (is_dir($file)) {
                 self::create($newFile);
-                self::copyDir("$file/*", $newFile);
+                (new Directory($file))->copyTo($newFile);
             } else {
                 copy($file, $newFile);
             }
@@ -41,13 +42,12 @@ class Directory implements FileInterface {
         
     }
 
-    public static function create($path) {
-        Filesystem::checkWriteSafety(dirname($path));
+    public static function create($path, $permissions = 0755) {
         if (file_exists($path) && !is_dir($path)) {
             throw new FilesystemException("A file already exists in the location of [$path]");
         }
         if (!file_exists($path)) {
-            mkdir($path);
+            mkdir($path, $permissions, true);
         }
         return new Directory($path);
     }
