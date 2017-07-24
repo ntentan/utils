@@ -13,11 +13,13 @@
 namespace ntentan\utils;
 
 /**
- * Stream wrapper for strings
+ * Stream wrapper for strings which allows you to read strings as though they
+ * were I/O streams.
  * @author Doug Wright
  * @package StringStream
  */
-class StringStream {
+class StringStream 
+{
 
     /**
      * Content of stream
@@ -51,6 +53,13 @@ class StringStream {
     private $path;
     private static $registered = false;
 
+    private function setFlags($read, $write, $position)
+    {
+        $this->read = $read;
+        $this->write = $write;
+        $this->position = $position;
+    }
+
     /**
      * Open stream
      * @param string $aPath
@@ -59,67 +68,52 @@ class StringStream {
      * @param string $aOpenedPath
      * @return boolean
      */
-    function stream_open($aPath, $aMode, $aOptions, &$aOpenedPath) {
+    public function stream_open($aPath, $aMode, $aOptions, &$aOpenedPath) 
+    {
         $this->path = substr($aPath, 9);
         if (!isset(self::$string[$this->path])) {
             self::$string[$this->path] = '';
         }
         $this->options = $aOptions;
+        $aOpenedPath = $this->path;
 
         switch ($aMode) {
 
             case 'r':
             case 'rb':
-                $this->read = true;
-                $this->write = false;
-                $this->position = 0;
+                $this->setFlags(true, false, 0);
                 break;
-
 
             case 'r+':
             case 'c+':
-                $this->read = true;
-                $this->write = true;
-                $this->position = 0;
+                $this->setFlags(true, true, 0);
                 break;
 
             case 'w':
             case 'wb':
-                $this->read = false;
-                $this->write = true;
-                $this->position = 0;
-                $this->stream_truncate(0);
+                $this->setFlags(false, true, 0);
                 break;
 
             case 'w+':
-                $this->read = true;
-                $this->write = true;
-                $this->position = 0;
+                $this->setFlags(true, true, 0);
                 $this->stream_truncate(0);
                 break;
 
             case 'a':
-                $this->read = false;
-                $this->write = true;
-                $this->position = strlen(self::$string[$this->path]);
+                $this->setFlags(false, true, strlen(self::$string[$this->path]));
                 break;
 
             case 'a+':
-                $this->read = true;
-                $this->write = true;
-                $this->position = strlen(self::$string[$this->path]);
+                $this->setFlags(true, true, strlen(self::$string[$this->path]));
                 break;
 
             case 'c':
-                $this->read = false;
-                $this->write = true;
-                $this->position = 0;
+                $this->setFlags(false, true, 0);
                 break;
 
             default:
                 trigger_error($aMode . 'Invalid mode specified (mode specified makes no sense for this stream implementation)', E_USER_ERROR);
         }
-
 
         return true;
     }
