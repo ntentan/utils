@@ -2,7 +2,7 @@
 
 /*
  * Ntentan Framework
- * Copyright (c) 2008-2015 James Ekow Abaka Ainooson
+ * Copyright (c) 2008-2017 James Ekow Abaka Ainooson
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -29,12 +29,17 @@ namespace ntentan\utils;
 
 /**
  * Base validator class for validating data in associative arrays.
+ * Validator class allows general validation rules to be defined that could be used to validate data in arbitrary
+ * associative arrays. Rules are defined in an array where different validation types point the the fields in a given
+ * associative array that will be validated. ntentan\utils ships with a set of default validations for lenght (or size),
+ * regular expressions, numbers and presence (fields that are required).
  */
 class Validator
 {
 
     /**
-     * An array which represnts the validation rules
+     * An array which represnts the validation rules.
+     * 
      * @var array
      */
     private $rules = [];
@@ -42,10 +47,23 @@ class Validator
     /**
      * An array which holds the validation errors found after the last
      * validation was run.
+     * 
      * @var array
      */
     private $invalidFields = [];
+
+    /**
+     * An array of loaded validations for this validator.
+     * 
+     * @var array 
+     */
     private $validations = [];
+
+    /**
+     * A register of validations that could be used by this validator.
+     * 
+     * @var array
+     */
     private $validationRegister = [
         'required' => '\ntentan\utils\validator\validations\RequiredValidation',
         'length' => '\ntentan\utils\validator\validations\LengthValidation',
@@ -55,14 +73,24 @@ class Validator
     private $validationData = [];
 
     /**
-     * Returns a new instance of the Validator
+     * Returns a new instance of the Validator.
+     * 
      * @return \ntentan\utils\Validator
      */
-    public static function getInstance() {
-        return new Validator();
+    public static function getInstance(): self
+    {
+        return new self();
     }
 
-    private function getValidation($name) {
+    /**
+     * Get an instance of a validation class.
+     * 
+     * @param string $name
+     * @return validator\Validation
+     * @throws exceptions\ValidatorException
+     */
+    private function getValidation(string $name): validator\Validation
+    {
         if (!isset($this->validations[$name])) {
             if (isset($this->validationRegister[$name])) {
                 $class = $this->validationRegister[$name];
@@ -74,36 +102,48 @@ class Validator
         return $this->validations[$name];
     }
 
-    protected function registerValidation($name, $class, $data = null) {
+    /**
+     * Register a validation type.
+     * 
+     * @param string $name The name of the validation to be used in validation descriptions.
+     * @param string $class The name of the validation class to load.
+     * @param mixed $data Any extra validation data that would be necessary for the validation.
+     */
+    protected function registerValidation(string $name, string $class, $data = null) : void
+    {
         $this->validationRegister[$name] = $class;
         $this->validationData[$name] = $data;
     }
 
     /**
-     * Set the validation rules
+     * Set the validation rules.
+     * 
      * @param array $rules
      */
-    public function setRules($rules) {
+    public function setRules(array $rules) : void
+    {
         $this->rules = $rules;
     }
 
     /**
-     * Returns an associative array of all the errors that occured after the
-     * last validation was run.
+     * Returns an associative array of all the errors that occurred the last time the validator was run.
+     * 
      * @return array
      */
-    public function getInvalidFields() {
+    public function getInvalidFields(): array
+    {
         return $this->invalidFields;
     }
 
     /**
-     * Build a uniform field info array for various types of validations
+     * Build a uniform field info array for various types of validations.
      * 
      * @param mixed $key
      * @param mixed $value
      * @return array
      */
-    private function getFieldInfo($key, $value) {
+    private function getFieldInfo($key, $value): array
+    {
         $name = null;
         $options = [];
         if (is_numeric($key) && is_string($value)) {
@@ -123,7 +163,8 @@ class Validator
      * this validator.
      * @param array $data The data to be validated
      */
-    public function validate($data) {
+    public function validate(array $data)
+    {
         $passed = true;
         $this->invalidFields = [];
         foreach ($this->rules as $validation => $fields) {

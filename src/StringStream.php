@@ -18,7 +18,7 @@ namespace ntentan\utils;
  * @author Doug Wright
  * @package StringStream
  */
-class StringStream 
+class StringStream
 {
 
     /**
@@ -68,7 +68,7 @@ class StringStream
      * @param string $aOpenedPath
      * @return boolean
      */
-    public function stream_open($aPath, $aMode, $aOptions, &$aOpenedPath) 
+    public function stream_open($aPath, $aMode, $aOptions, &$aOpenedPath)
     {
         $this->path = substr($aPath, 9);
         if (!isset(self::$string[$this->path])) {
@@ -89,15 +89,15 @@ class StringStream
             'a+' => [true, true, $lenght],
             'c' => [false, true, 0]
         ];
-        
-        if(isset($flags[$aMode])) {
+
+        if (isset($flags[$aMode])) {
             $flag = $flagss[$aMode];
             $this->setFlags($flag[0], $flag[1], $flag[2]);
         } else {
-            // Throw an exception here
+            throw new exceptions\StringStreamException("Unknown stream mode '{$aMode}'");
         }
 
-        if($aMode === 'w+') {
+        if ($aMode === 'w+') {
             $this->stream_truncate(0);
         }
 
@@ -109,7 +109,8 @@ class StringStream
      * @param int $aBytes number of bytes to return
      * @return string
      */
-    function stream_read($aBytes) {
+    public function stream_read($aBytes)
+    {
         if ($this->read) {
             $read = substr(self::$string[$this->path], $this->position, $aBytes);
             $this->position += strlen($read);
@@ -124,7 +125,8 @@ class StringStream
      * @param string $aData data to write
      * @return int
      */
-    function stream_write($aData) {
+    public function stream_write($aData)
+    {
         if ($this->write) {
             $left = substr(self::$string[$this->path], 0, $this->position);
             $right = substr(self::$string[$this->path], $this->position + strlen($aData));
@@ -140,7 +142,8 @@ class StringStream
      * Return current position
      * @return int
      */
-    function stream_tell() {
+    public function stream_tell()
+    {
         return $this->position;
     }
 
@@ -148,7 +151,8 @@ class StringStream
      * Return if EOF
      * @return boolean
      */
-    function stream_eof() {
+    public function stream_eof()
+    {
         return $this->position >= strlen(self::$string[$this->path]);
     }
 
@@ -158,7 +162,8 @@ class StringStream
      * @param int $aWhence
      * @return boolean
      */
-    function stream_seek($aOffset, $aWhence) {
+    public function stream_seek($aOffset, $aWhence)
+    {
         switch ($aWhence) {
             case SEEK_SET:
                 $this->position = $aOffset;
@@ -191,7 +196,8 @@ class StringStream
      * Truncate to given size
      * @param int $aSize
      */
-    public function stream_truncate($aSize) {
+    public function stream_truncate($aSize)
+    {
         if (strlen(self::$string[$this->path]) > $aSize) {
             self::$string[$this->path] = substr(self::$string[$this->path], 0, $aSize);
         } else if (strlen(self::$string[$this->path]) < $aSize) {
@@ -204,7 +210,8 @@ class StringStream
      * Return info about stream
      * @return array
      */
-    public function stream_stat() {
+    public function stream_stat()
+    {
         return array('dev' => 0,
             'ino' => 0,
             'mode' => 0,
@@ -226,12 +233,14 @@ class StringStream
      * @param array $aOptions
      * @return array
      */
-    public function url_stat($aPath, $aOptions) {
+    public function url_stat($aPath, $aOptions)
+    {
         $resource = fopen($aPath, 'r');
         return fstat($resource);
     }
 
-    public static function register() {
+    public static function register()
+    {
         if (!self::$registered) {
             if (in_array("string", stream_get_wrappers())) {
                 stream_wrapper_unregister("string");
@@ -241,7 +250,8 @@ class StringStream
         }
     }
 
-    public static function unregister() {
+    public static function unregister()
+    {
         if (self::$registered) {
             stream_wrapper_unregister('string');
         }
