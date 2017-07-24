@@ -76,43 +76,29 @@ class StringStream
         }
         $this->options = $aOptions;
         $aOpenedPath = $this->path;
+        $lenght = strlen(self::$string[$this->path]);
+        $flags = [
+            'r' => [true, false, 0],
+            'rb' => [true, false, 0],
+            'r+' => [true, true, 0],
+            'c+' => [true, true, 0],
+            'w' => [false, true, 0],
+            'wb' => [false, true, 0],
+            'w+' => [true, true, 0],
+            'a' => [false, true, $lenght],
+            'a+' => [true, true, $lenght],
+            'c' => [false, true, 0]
+        ];
+        
+        if(isset($flags[$aMode])) {
+            $flag = $flagss[$aMode];
+            $this->setFlags($flag[0], $flag[1], $flag[2]);
+        } else {
+            // Throw an exception here
+        }
 
-        switch ($aMode) {
-
-            case 'r':
-            case 'rb':
-                $this->setFlags(true, false, 0);
-                break;
-
-            case 'r+':
-            case 'c+':
-                $this->setFlags(true, true, 0);
-                break;
-
-            case 'w':
-            case 'wb':
-                $this->setFlags(false, true, 0);
-                break;
-
-            case 'w+':
-                $this->setFlags(true, true, 0);
-                $this->stream_truncate(0);
-                break;
-
-            case 'a':
-                $this->setFlags(false, true, strlen(self::$string[$this->path]));
-                break;
-
-            case 'a+':
-                $this->setFlags(true, true, strlen(self::$string[$this->path]));
-                break;
-
-            case 'c':
-                $this->setFlags(false, true, 0);
-                break;
-
-            default:
-                trigger_error($aMode . 'Invalid mode specified (mode specified makes no sense for this stream implementation)', E_USER_ERROR);
+        if($aMode === 'w+') {
+            $this->stream_truncate(0);
         }
 
         return true;

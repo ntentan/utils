@@ -2,11 +2,11 @@
 namespace ntentan\utils\tests\cases;
 
 use ntentan\utils\Validator;
+use PHPUnit\Framework\TestCase;
 
-class ValidatorTest extends \PHPUnit_Framework_TestCase {
-
+class ValidatorTest extends TestCase 
+{
     private $validator;
-    private $prophet;
 
     public function setUp()
     {

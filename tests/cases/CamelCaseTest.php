@@ -3,10 +3,13 @@
 namespace ntentan\utils\tests\cases;
 
 use ntentan\utils\Text;
+use PHPUnit\Framework\TestCase;
 
-class CamelCaseTest extends \PHPUnit_Framework_TestCase {
+class CamelCaseTest extends TestCase 
+{
 
-    public function testCamelCase() {
+    public function testCamelCase() 
+    {
         $this->assertEquals('camelCase', Text::camelize("camel_case"));
         $this->assertEquals('CamelCase', Text::ucamelize("camel_case"));
         $this->assertEquals('camelCaseJoe', Text::camelize("camel_case_joe"));
@@ -21,7 +24,8 @@ class CamelCaseTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('CamelCaseJoe', Text::ucamelize("camel_case.joe", array(".", "_")));
     }
 
-    public function testUnCamelCase() {
+    public function testUnCamelCase() 
+    {
         $this->assertEquals('camel_case', Text::deCamelize("camelCase", '_'));
         $this->assertEquals('camel.case.joe', Text::deCamelize("CamelCaseJoe", '.'));
     }

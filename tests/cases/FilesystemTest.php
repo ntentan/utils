@@ -5,8 +5,9 @@ namespace ntentan\utils\tests\cases;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamWrapper;
 use ntentan\utils\Filesystem;
+use PHPUnit\Framework\TestCase;
 
-class FilesystemTest extends \PHPUnit_Framework_TestCase
+class FilesystemTest extends TestCase
 {
     private $file;
     
