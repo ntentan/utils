@@ -4,18 +4,12 @@
  * Adapted for use in ntentan\utils from dvdoug\stringstream package.
  */
 
-/**
- * Stream wrapper for strings.
- * 
- * @author Doug Wright
- */
-
 namespace ntentan\utils;
 
 /**
  * Stream wrapper for strings which allows you to read strings as though they
  * were I/O streams.
- * @author Doug Wright
+ * @author Doug Wright, James Ainooson
  * @package StringStream
  */
 class StringStream
@@ -91,7 +85,7 @@ class StringStream
         ];
 
         if (isset($flags[$aMode])) {
-            $flag = $flagss[$aMode];
+            $flag = $flags[$aMode];
             $this->setFlags($flag[0], $flag[1], $flag[2]);
         } else {
             throw new exceptions\StringStreamException("Unknown stream mode '{$aMode}'");
@@ -173,7 +167,6 @@ class StringStream
                 return true;
                 break;
 
-            //XXX Code coverage testing shows PHP truncates automatically for SEEK_CUR
             case SEEK_CUR:
                 $this->position += $aOffset;
                 return true;
@@ -239,11 +232,11 @@ class StringStream
         return fstat($resource);
     }
 
-    public static function register()
+    public static function register($protocol = 'string')
     {
         if (!self::$registered) {
-            if (in_array("string", stream_get_wrappers())) {
-                stream_wrapper_unregister("string");
+            if (in_array($protocol, stream_get_wrappers())) {
+                throw new exceptions\StringStreamException("An existing wrapper already exists for '$protocol'");
             }
             stream_wrapper_register("string", __CLASS__);
             self::$registered = true;
@@ -254,6 +247,8 @@ class StringStream
     {
         if (self::$registered) {
             stream_wrapper_unregister('string');
+            self::$registered = false;
+            self::$string = [];
         }
     }
 
