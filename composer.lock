@@ -4,8 +4,49 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "1c03a12ab29f6209887e4544341c1743",
-    "packages": [],
+    "content-hash": "a4a234ecd1841e8e3863ed49afb85beb",
+    "packages": [
+        {
+            "name": "ntentan/panie",
+            "version": "v0.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ntentan/panie.git",
+                "reference": "a3c8f44ca7cd454edfc67855ea863a411442fa51"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ntentan/panie/zipball/a3c8f44ca7cd454edfc67855ea863a411442fa51",
+                "reference": "a3c8f44ca7cd454edfc67855ea863a411442fa51",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "@stable"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ntentan\\panie\\": "src/",
+                    "ntentan\\panie\\tests\\": "tests/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "James Ekow Abaka Ainooson",
+                    "email": "jainooson@gmail.com"
+                }
+            ],
+            "description": "A thin DI container for NtentanFX",
+            "time": "2017-07-25T01:53:22+00:00"
+        }
+    ],
     "packages-dev": [
         {
             "name": "doctrine/instantiator",
@@ -1506,7 +1547,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "phpunit/phpunit": 0
+        "phpunit/phpunit": 0,
+        "mikey179/vfsstream": 0
     },
     "prefer-stable": false,
     "prefer-lowest": false,

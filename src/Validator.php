@@ -27,6 +27,8 @@
 
 namespace ntentan\utils;
 
+use ntentan\panie\Container;
+
 /**
  * Base validator class for validating data in associative arrays.
  * Validator class allows general validation rules to be defined that could be used to validate data in arbitrary
@@ -73,13 +75,31 @@ class Validator
     private $validationData = [];
 
     /**
+     * A DI container for initializing the validations.
+     *
+     * @var Container
+     */
+    private $container;
+
+
+    /**
+     * Constructor for Validator
+     *
+     * @param Container $container
+     */
+    public function __construct(Container $container = null)
+    {
+        $this->container = $container;
+    }
+
+    /**
      * Returns a new instance of the Validator.
      * 
      * @return \ntentan\utils\Validator
      */
-    public static function getInstance(): self
+    public static function getInstance(Container $container = null): self
     {
-        return new self();
+        return new self($container);
     }
 
     /**
@@ -97,7 +117,13 @@ class Validator
             } else {
                 throw new exceptions\ValidatorException("Validator [$name] not found");
             }
-            $this->validations[$name] = new $class(isset($this->validationData[$name]) ? $this->validationData[$name] : null);
+
+            $params = isset($this->validationData[$name]) ? $this->validationData[$name] : null;
+            if($this->container) {
+                $this->validations[$name] = $this->container->resolve($class, ['params' => $params]);
+            } else {
+                $this->validations[$name] = new $class($params);
+            }
         }
         return $this->validations[$name];
     }
@@ -161,9 +187,11 @@ class Validator
     /**
      * Validate data according to validation rules that have been set into
      * this validator.
+     * 
      * @param array $data The data to be validated
+     * @return bool
      */
-    public function validate(array $data)
+    public function validate(array $data) : bool
     {
         $passed = true;
         $this->invalidFields = [];
@@ -171,7 +199,7 @@ class Validator
             foreach ($fields as $key => $value) {
                 $field = $this->getFieldInfo($key, $value);
                 $validationInstance = $this->getValidation($validation);
-                $passed &= $validationInstance->run($field, $data);
+                $passed = $passed && $validationInstance->run($field, $data);
                 $this->invalidFields = array_merge_recursive(
                         $this->invalidFields, $validationInstance->getMessages()
                 );

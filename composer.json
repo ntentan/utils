@@ -14,8 +14,11 @@
             "ntentan\\utils\\tests\\" : "tests/"
         }
     },
+    "require": {
+	"ntentan/panie": "0.*"
+    },
     "require-dev": {
         "phpunit/phpunit" : "@stable",
-        "mikey179/vfsStream": "~1.0"
+        "mikey179/vfsStream": "@stable"
     }
 }
