@@ -199,7 +199,8 @@ class Validator
             foreach ($fields as $key => $value) {
                 $field = $this->getFieldInfo($key, $value);
                 $validationInstance = $this->getValidation($validation);
-                $passed = $passed && $validationInstance->run($field, $data);
+                $validationStatus = $validationInstance->run($field, $data);
+                $passed = $passed && $validationStatus;
                 $this->invalidFields = array_merge_recursive(
                         $this->invalidFields, $validationInstance->getMessages()
                 );
