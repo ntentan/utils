@@ -32,16 +32,15 @@ namespace ntentan\utils;
 class Text
 {
     /**
-     * Converts text separated by a specified separator to camel case. This 
-     * function converts the entire text into lower case before performing the
-     * camel case conversion. Due to this the first character would be
-     * lower cased.
+     * Converts text separated by a specified separator to camel case. 
+     * This function converts the entire text into lower case before performing the
+     * camel case conversion. Due to this the first character would be lowercased.
      * 
      * @param string $string The text to be converted.
      * @param string $separator The separator to consider for camel casing
      * @return string
      */
-    public static function camelize($string, $separator = '_')
+    public static function camelize($string, $separator = '_') : string
     {
         if(is_array($separator))
         {
@@ -62,27 +61,29 @@ class Text
     }
     
     /**
-     * Converts text separated by a specified separator to camel case. This 
-     * method works just as the Text::camelize method except that it converts
+     * Converts text separated by a specified separator to camel case. 
+     * This method works just as the Text::camelize method except that it converts
      * the first character to uppercase.
      * 
      * @param string $string The text to be converted.
      * @param string $separator The separator to consider for camel casing
      * @return string
      */
-    public static function ucamelize($string, $separator = '_')
+    public static function ucamelize($string, $separator = '_') : string
     {
         return ucfirst(self::camelize($string, $separator));
     }
     
     /**
-     * Converts camel case text into text separated with an arbitrary separator.
+     * Converts camel case text into regular text separated with an arbitrary separator.
+     * By default the seperator is an underscore. A space can also be used as the 
+     * seperator in cases where the conversion is to an English sentence.
      * 
      * @param string $string The text to be converted.
      * @param string $separator The separator to be used.
      * @return string
      */    
-    public static function deCamelize($string, $separator = '_')
+    public static function deCamelize($string, $separator = '_') : string
     {
         return preg_replace_callback(
             "/[A-Z][a-z]/", 
@@ -94,7 +95,13 @@ class Text
         );        
     }
     
-    public static function pluralize($text)
+    /**
+     * Generates the english plural of a given word.
+     *
+     * @param string $text
+     * @return string
+     */
+    public static function pluralize($text) : string
     {
         $lastLetter = substr($text, -1);
         if($lastLetter == 'y') {
@@ -105,7 +112,13 @@ class Text
         return $text;
     }
     
-    public static function singularize($text)
+    /**
+     * Generates the english singular of a given word.
+     *
+     * @param string $text
+     * @return string
+     */
+    public static function singularize($text) : string
     {
         if(substr($text, -1) == 's') {
             return substr($text, 0, -1);

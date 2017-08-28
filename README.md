@@ -14,6 +14,10 @@ A collection of utility classes shared across the different ntentan packages.
  - A Dependency Injector
  - A collection of file system utilities
 
+Text Manipulation
+-----------------
+Text manipulation routines in 
+
 License
 =======
 Copyright (c) 2008-2015 James Ekow Abaka Ainooson

@@ -34,7 +34,8 @@ namespace ntentan\utils;
  *
  * @author James Ainooson
  */
-class Input {
+class Input 
+{
 
     const POST = INPUT_POST;
     const GET = INPUT_GET;
@@ -49,7 +50,8 @@ class Input {
      * @param type $query
      * @return type
      */
-    private static function decode($method, $key) {
+    private static function decode($method, $key) 
+    {
         if(!isset(self::$arrays[$method])) {
             $query = $method == self::GET 
                 ? filter_input(INPUT_SERVER, 'QUERY_STRING') 
@@ -73,7 +75,8 @@ class Input {
      * @param string $key The data key
      * @return string|array The value.
      */
-    private static function getVariable($input, $key) {
+    private static function getVariable($input, $key) 
+    {
         if ($key === null) {
             if (!isset(self::$arrays[$input])) {
                 self::$arrays[$input] = filter_input_array($input);
@@ -96,7 +99,8 @@ class Input {
      * @param string $key
      * @return string|array
      */
-    public static function get($key = null) {
+    public static function get($key = null) 
+    {
         return self::decode(self::GET, $key);
     }
 
@@ -106,7 +110,8 @@ class Input {
      * @param string $key
      * @return string|array
      */
-    public static function post($key = null) {
+    public static function post($key = null) 
+    {
         return self::decode(self::POST, $key);
     }
 
@@ -116,7 +121,8 @@ class Input {
      * @param string $key
      * @return string|array
      */
-    public static function server($key = null) {
+    public static function server($key = null) 
+    {
         return self::getVariable(INPUT_SERVER, $key);
     }
 
@@ -126,15 +132,18 @@ class Input {
      * @param string $key
      * @return string|array
      */
-    public static function cookie($key = null) {
+    public static function cookie($key = null) 
+    {
         return self::getVariable(INPUT_COOKIE, $key);
     }
 
-    public static function exists($input, $key) {
+    public static function exists($input, $key) 
+    {
         return isset(self::getVariable($input, null)[$key]);
     }
 
-    public static function files($key = null) {
+    public static function files($key = null) 
+    {
         $files = [];
         if (!isset($_FILES[$key])) {
             return null;
