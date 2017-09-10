@@ -26,9 +26,6 @@
  */
 
 namespace ntentan\utils;
-
-use ntentan\panie\Container;
-
 /**
  * Base validator class for validating data in associative arrays.
  * Validator class allows general validation rules to be defined that could be used to validate data in arbitrary
@@ -81,25 +78,14 @@ class Validator
      */
     private $container;
 
-
-    /**
-     * Constructor for Validator
-     *
-     * @param Container $container
-     */
-    public function __construct(Container $container = null)
-    {
-        $this->container = $container;
-    }
-
     /**
      * Returns a new instance of the Validator.
      * 
      * @return \ntentan\utils\Validator
      */
-    public static function getInstance(Container $container = null): self
+    public static function getInstance(): self
     {
-        return new self($container);
+        return new self();
     }
 
     /**
@@ -183,6 +169,11 @@ class Validator
         }
         return ['name' => $name, 'options' => $options];
     }
+    
+    public function getRules() : array
+    {
+        return $this->rules;
+    }
 
     /**
      * Validate data according to validation rules that have been set into
@@ -195,7 +186,8 @@ class Validator
     {
         $passed = true;
         $this->invalidFields = [];
-        foreach ($this->rules as $validation => $fields) {
+        $rules = $this->getRules();
+        foreach ($rules as $validation => $fields) {
             foreach ($fields as $key => $value) {
                 $field = $this->getFieldInfo($key, $value);
                 $validationInstance = $this->getValidation($validation);
