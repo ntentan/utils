@@ -11,7 +11,6 @@ A collection of utility classes shared across the different ntentan packages.
  - A Text class for string manipulation
  - An Input class for input filtering.
  - A Validator class for validating input.
- - A Dependency Injector
  - A collection of file system utilities
 
 Installation
@@ -36,7 +35,7 @@ print Text::singularize('names'); // Should output name
 print Text::pluralize('pot'); // Should output pots
 ````
 
-## Camel case manipulation
+### Camel case manipulation
 The following snipet shows how the camel case manipulation routines in the `Text`
 class work.
 
