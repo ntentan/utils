@@ -36,19 +36,37 @@ namespace ntentan\utils;
  */
 class Input 
 {
-
+    /**
+     * Constant for POST request.
+     */
     const POST = INPUT_POST;
+
+    /**
+     * Constant for GET request.
+     */
     const GET = INPUT_GET;
+
+    /**
+     * Constant for INPUT request.
+     */
     const REQUEST = INPUT_REQUEST;
 
+    /**
+     * Cache or arrays which hold decoded query strings.
+     *
+     * @var array
+     */
     private static $arrays = [];
     
     /**
+     * Decodes and returns the value of a given item in an HTTP query.
+     * Although PHP decodes query strings automatically, it converts periods to underscores. This method makes it 
+     * possible to decode query strings that contain underscores.
      * http://stackoverflow.com/a/14432765
      * 
-     * @param type $input
-     * @param type $query
-     * @return type
+     * @param string $method The HTTP method of the query (GET, POST ...)
+     * @param string $key The key of the item in the query to retrieve.
+     * @return mixed
      */
     private static function decode($method, $key) 
     {
@@ -137,7 +155,14 @@ class Input
         return self::getVariable(INPUT_COOKIE, $key);
     }
 
-    public static function exists($input, $key) 
+    /**
+     * Checks if a particular key exists in a given request query.
+     *
+     * @param string $input
+     * @param string $key
+     * @return bool
+     */
+    public static function exists($input, $key) : bool
     {
         return isset(self::getVariable($input, null)[$key]);
     }

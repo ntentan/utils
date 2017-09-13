@@ -14,9 +14,28 @@ A collection of utility classes shared across the different ntentan packages.
  - A Dependency Injector
  - A collection of file system utilities
 
+Installation
+------------
+You can install this package through `ntentan\utils` on composer.
+
 Text Manipulation
 -----------------
-Text manipulation routines in 
+Text manipulation routines in the utils package provides inflector (for 
+pluralizing or singularizing text) and camel case conversion routines. These 
+routines are mainly consumed by components that generate magic strings for 
+class and method names. All routines are implemented as static functions in the 
+in the `ntentan\utils\Text`.
+
+### Inflector routines
+The following snipet shows how the inflector routines in the `Text` class work.
+
+````php
+use ntentan\utils\Text;
+
+print Text::singularize('names') // Should output name
+print Text::pluralize('pot') // Should output pots
+````
+
 
 License
 =======
