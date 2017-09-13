@@ -32,10 +32,32 @@ The following snipet shows how the inflector routines in the `Text` class work.
 ````php
 use ntentan\utils\Text;
 
-print Text::singularize('names') // Should output name
-print Text::pluralize('pot') // Should output pots
+print Text::singularize('names'); // Should output name
+print Text::pluralize('pot'); // Should output pots
 ````
 
+## Camel case manipulation
+The following snipet shows how the camel case manipulation routines in the `Text`
+class work.
+
+````php
+use ntentan\utils\Text;
+
+print Text::camelize('home_alone'); // should output homeAlone
+print Text::ucamelize('home_alone_again'); // should output HomeAloneAgain
+print Text::deCamelize('HomeAloneStill'); // should output home_alone_still
+````
+
+It is worth noting that the camel case manipuation routines allow you to 
+specify your own seperator as a second argument. For example:
+
+````php
+use ntentan\utils\Text;
+
+print Text::camelize('home-alone', '-'); // should output HomeAlone
+print Text::deCamelize('HomeAloneAgain', '-'); // should output home-alone-again
+
+````
 
 License
 =======
