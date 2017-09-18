@@ -72,23 +72,6 @@ class Validator
     private $validationData = [];
 
     /**
-     * A DI container for initializing the validations.
-     *
-     * @var Container
-     */
-    private $container;
-
-    /**
-     * Returns a new instance of the Validator.
-     * 
-     * @return \ntentan\utils\Validator
-     */
-    public static function getInstance(): self
-    {
-        return new self();
-    }
-
-    /**
      * Get an instance of a validation class.
      * 
      * @param string $name
@@ -105,11 +88,7 @@ class Validator
             }
 
             $params = isset($this->validationData[$name]) ? $this->validationData[$name] : null;
-            if($this->container) {
-                $this->validations[$name] = $this->container->resolve($class, ['params' => $params]);
-            } else {
-                $this->validations[$name] = new $class($params);
-            }
+            $this->validations[$name] = new $class($params);
         }
         return $this->validations[$name];
     }
@@ -121,7 +100,7 @@ class Validator
      * @param string $class The name of the validation class to load.
      * @param mixed $data Any extra validation data that would be necessary for the validation.
      */
-    protected function registerValidation(string $name, string $class, $data = null) : void
+    protected function registerValidation(string $name, string $class, $data = null)
     {
         $this->validationRegister[$name] = $class;
         $this->validationData[$name] = $data;
@@ -132,7 +111,7 @@ class Validator
      * 
      * @param array $rules
      */
-    public function setRules(array $rules) : void
+    public function setRules(array $rules)
     {
         $this->rules = $rules;
     }

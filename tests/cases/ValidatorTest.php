@@ -12,7 +12,7 @@ class ValidatorTest extends TestCase
 
     public function setUp()
     {
-        $this->validator = Validator::getInstance();
+        $this->validator = new Validator();
     }
 
     public function testRequired()

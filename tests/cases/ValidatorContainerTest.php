@@ -3,7 +3,6 @@
 namespace ntentan\utils\tests\cases;
 
 use ntentan\utils\Validator;
-use ntentan\panie\Container;
 use PHPUnit\Framework\TestCase;
 
 class ValidatorContainerTest extends TestCase
@@ -13,8 +12,7 @@ class ValidatorContainerTest extends TestCase
 
     public function setUp()
     {
-        $container = new Container();
-        $this->validator = Validator::getInstance($container);
+        $this->validator = new Validator();
     }
 
     public function testRequired()
