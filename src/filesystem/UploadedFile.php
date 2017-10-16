@@ -5,10 +5,24 @@ namespace ntentan\utils\filesystem;
 use ntentan\utils\exceptions\FilesystemException;
 use ntentan\utils\Filesystem;
 
+/**
+ * Class UploadedFile
+ * @package ntentan\utils\filesystem
+ */
 class UploadedFile extends File
 {
-
+    /**
+     * Filename of the file from the client.
+     *
+     * @var string
+     */
     private $clientName;
+
+    /**
+     * File type.
+     *
+     * @var string
+     */
     private $type;
     private $error;
     private $size;
