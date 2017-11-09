@@ -120,10 +120,10 @@ class Text
      */
     public static function singularize($text) : string
     {
-        if(substr($text, -1) == 's') {
-            return substr($text, 0, -1);
-        } elseif (substr($text, -3) == 'ies') {
+        if (substr($text, -3) == 'ies') {
             return substr($text, 0, -3) . 'y';
+        } elseif(substr($text, -1) == 's') {
+            return substr($text, 0, -1);
         }
         return $text;
     }
