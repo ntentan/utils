@@ -6,22 +6,44 @@ use ntentan\utils\Filesystem;
 use ntentan\utils\exceptions\FilesystemException;
 
 /**
- * 
+ * A directory on the filesystem.
+ *
+ * @package ntentan\utils\filesystem
  */
-class Directory implements FileInterface {
+class Directory implements FileInterface
+{
 
+    /**
+     * Full path to the directory.
+     *
+     * @var string
+     */
     private $path;
 
-    public function __construct($path = null) {
+    /**
+     * Create a new instance with a path.
+     *
+     * @param string $path Optional path pointed to by new instance. Path does not have to exist.
+     */
+    public function __construct(string $path = null)
+    {
         $this->path = $path;
     }
 
-    public function copyTo($destination) {
+    /**
+     * Recursively copies directory and its contents to destination.
+     *
+     * @param string $destination
+     * @throws FilesystemException
+     * @throws \ntentan\utils\exceptions\FileNotWriteableException
+     */
+    public function copyTo(string $destination): void
+    {
         Filesystem::checkWritable($destination);
         if (!file_exists($destination)) {
             self::create($destination);
         }
-        
+
         $files = glob("$this->path/*");
         foreach ($files as $file) {
             $newFile = "$destination/" . basename("$file");
@@ -34,15 +56,23 @@ class Directory implements FileInterface {
         }
     }
 
-    public function getSize() {
-        
+    /**
+     * Get the size of all contents in the directory.
+     *
+     * @return integer
+     */
+    public function getSize() : integer
+    {
+
     }
 
-    public function moveTo($destination) {
-        
+    public function moveTo(string $destination) : void
+    {
+
     }
 
-    public static function create($path, $permissions = 0755) {
+    public static function create($path, $permissions = 0755)
+    {
         if (file_exists($path) && !is_dir($path)) {
             throw new FilesystemException("A file already exists in the location of [$path]");
         }
@@ -52,16 +82,38 @@ class Directory implements FileInterface {
         return new Directory($path);
     }
 
-    public function delete() {
-        
+    public function delete() : void
+    {
+
     }
 
-    public function getPath() {
+    public function getPath() : string
+    {
         return $this->path;
     }
 
-    public function __toString() {
-        return $this->path;
+    /**
+     * @throws FilesystemException
+     * @throws \ntentan\utils\exceptions\FileNotFoundException
+     * @throws \ntentan\utils\exceptions\FileNotReadableException
+     */
+    public function getContents()
+    {
+        Filesystem::checkExists($this->path);
+        Filesystem::checkReadable($this->path);
+        $contents = [];
+
+        $files = scandir($this->path);
+        foreach ($files as $file) {
+            if($file != '.' && $file != '..') {
+                $contents[] = Filesystem::get("$this->path/$file");
+            }
+        }
+        return $contents;
     }
 
+    public function __toString()
+    {
+        return $this->path;
+    }
 }

@@ -27,6 +27,7 @@
 namespace ntentan\utils;
 
 use ntentan\utils\filesystem\Directory;
+use ntentan\utils\filesystem\File;
 
 /**
  * A collection of filesystem utilities.
@@ -39,7 +40,7 @@ class Filesystem
      * In cases where the file cannot be written to an exception is thrown.
      *
      * @param string $path The path to the file to be checked.
-     * @throws exceptions\FileNotWriteabkeException
+     * @throws exceptions\FileNotWriteableException
      * @return bool
      */
     public static function checkWritable($path) : bool
@@ -78,6 +79,12 @@ class Filesystem
     {
         Filesystem::checkExists($path);
         Filesystem::checkWritable($path);
+    }
+
+    public static function checkReadSafety($path)
+    {
+        Filesystem::checkExists($path);
+        Filesystem::checkReadable($path);
     }
 
     public static function createDirectoryStructure($structure, $basePath)

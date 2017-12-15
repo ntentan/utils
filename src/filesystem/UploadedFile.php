@@ -41,12 +41,12 @@ class UploadedFile extends File
         }
     }
 
-    public function getSize()
+    public function getSize():integer
     {
         return $this->size;
     }
 
-    public function moveTo($destination)
+    public function moveTo(string $destination) : void
     {
         Filesystem::checkWritable(dirname($destination));
         if (!move_uploaded_file($this->path, $destination)) {
