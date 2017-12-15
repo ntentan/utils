@@ -28,9 +28,9 @@
 namespace ntentan\utils;
 /**
  * Base validator class for validating data in associative arrays.
- * Validator class allows general validation rules to be defined that could be used to validate data in arbitrary
- * associative arrays. Rules are defined in an array where different validation types point the the fields in a given
- * associative array that will be validated. ntentan\utils ships with a set of default validations for lenght (or size),
+ * Validator class allows general validation rules to be defined and used in validating data stored in arbitrary
+ * associative arrays. Rules are defined in an array where different validation types point to the fields in a given
+ * associative array that will be validated. ntentan\utils ships with a set of default validations for length (or size),
  * regular expressions, numbers and presence (fields that are required).
  */
 class Validator
@@ -69,7 +69,13 @@ class Validator
         'numeric' => '\ntentan\utils\validator\validations\NumericValidation',
         'regexp' => '\ntentan\utils\validator\validations\RegexpValidation',
     ];
-    private $validationData = [];
+
+    /**
+     * Custom validation data to be passed on to a validation when instantiated.
+     *
+     * @var mixed
+     */
+    private $validationData;
 
     /**
      * Get an instance of a validation class.
@@ -148,7 +154,12 @@ class Validator
         }
         return ['name' => $name, 'options' => $options];
     }
-    
+
+    /**
+     * Return the validation rules in this validator.
+     *
+     * @return array
+     */
     public function getRules() : array
     {
         return $this->rules;
@@ -157,9 +168,10 @@ class Validator
     /**
      * Validate data according to validation rules that have been set into
      * this validator.
-     * 
+     *
      * @param array $data The data to be validated
      * @return bool
+     * @throws exceptions\ValidatorException
      */
     public function validate(array $data) : bool
     {
