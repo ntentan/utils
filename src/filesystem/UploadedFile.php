@@ -41,7 +41,7 @@ class UploadedFile extends File
         }
     }
 
-    public function getSize():integer
+    public function getSize():int
     {
         return $this->size;
     }

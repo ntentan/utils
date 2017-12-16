@@ -26,7 +26,6 @@
 
 namespace ntentan\utils;
 
-use ntentan\utils\filesystem\Directory;
 use ntentan\utils\filesystem\File;
 
 /**
@@ -41,14 +40,12 @@ class Filesystem
      *
      * @param string $path The path to the file to be checked.
      * @throws exceptions\FileNotWriteableException
-     * @return bool
      */
-    public static function checkWritable($path) : bool
+    public static function checkWritable(string $path) : void
     {
         if (!is_writable($path)) {
             throw new exceptions\FileNotWriteableException("File $path is not writeable");
         }
-        return true;
     }
 
     /**
@@ -57,46 +54,56 @@ class Filesystem
      *
      * @param string $path The path to the file to be checked.
      * @throws exceptions\FileNotReadableException
-     * @return bool
      */
-    public static function checkReadable($path) : bool
+    public static function checkReadable(string $path) : void
     {
         if (!is_readable($path)) {
             throw new exceptions\FileNotReadableException("File $path is not readable");
         }
-        return true;
     }
 
-    public static function checkExists($path)
+    /**
+     * @param $path
+     * @throws exceptions\FileNotFoundException
+     */
+    public static function checkExists(string $path) : void
     {
         if (!file_exists($path)) {
             throw new exceptions\FileNotFoundException($path);
         }
-        return true;
     }
 
+    /**
+     * @param string $path
+     * @throws exceptions\FileAlreadyExistsException
+     */
+    public static function checkNotExists(string $path) : void
+    {
+        if(file_exists($path)) {
+            throw new exceptions\FileAlreadyExistsException($path);
+        }
+    }
+
+    /**
+     * @param $path
+     * @throws exceptions\FileNotFoundException
+     * @throws exceptions\FileNotWriteableException
+     */
     public static function checkWriteSafety($path)
     {
         Filesystem::checkExists($path);
         Filesystem::checkWritable($path);
     }
 
+    /**
+     * @param $path
+     * @throws exceptions\FileNotFoundException
+     * @throws exceptions\FileNotReadableException
+     */
     public static function checkReadSafety($path)
     {
         Filesystem::checkExists($path);
         Filesystem::checkReadable($path);
-    }
-
-    public static function createDirectoryStructure($structure, $basePath)
-    {
-        foreach ($structure as $key => $value) {
-            if (is_numeric($key)) {
-                Directory::create("$basePath/$value");
-            } else {
-                Directory::create("$basePath/$key");
-                self::createDirectoryStructure($value, "$basePath/$key");
-            }
-        }
     }
 
     public static function get($path)

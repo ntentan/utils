@@ -23,8 +23,8 @@ class FilesystemTest extends TestCase
      */
     public function testExists()
     {
-        $this->assertEquals(true, Filesystem::checkExists(vfsStream::url('fs/file')));
-        $this->assertEquals(false, Filesystem::checkExists(vfsStream::url('fs/notexists')));
+        Filesystem::checkExists(vfsStream::url('fs/file'));
+        Filesystem::checkExists(vfsStream::url('fs/notexists'));
     }
     
     /**
@@ -32,9 +32,9 @@ class FilesystemTest extends TestCase
      */    
     public function testWritable()
     {
-        $this->assertEquals(true, Filesystem::checkWritable(vfsStream::url('fs/file')));        
+        Filesystem::checkWritable(vfsStream::url('fs/file'));
         $this->file->chmod(0000);
-        $this->assertEquals(false, Filesystem::checkWritable(vfsStream::url('fs/file')));
+        Filesystem::checkWritable(vfsStream::url('fs/file'));
     }
     
     /**
@@ -42,7 +42,7 @@ class FilesystemTest extends TestCase
      */
     public function testExistsException()
     {
-        $this->assertEquals(true, Filesystem::checkExists(vfsStream::url('fs/file')));
+        Filesystem::checkExists(vfsStream::url('fs/file'));
         Filesystem::checkExists(vfsStream::url('fs/nofile'));
     }
     
@@ -51,7 +51,7 @@ class FilesystemTest extends TestCase
      */
     public function testWriteableException()
     {
-        $this->assertEquals(true, Filesystem::checkWritable(vfsStream::url('fs/file')));
+        Filesystem::checkWritable(vfsStream::url('fs/file'));
         $this->file->chmod(0000);
         Filesystem::checkWritable(vfsStream::url('fs/file'));
     }

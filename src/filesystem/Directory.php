@@ -2,6 +2,7 @@
 
 namespace ntentan\utils\filesystem;
 
+use ntentan\utils\exceptions\FileNotFoundException;
 use ntentan\utils\Filesystem;
 use ntentan\utils\exceptions\FilesystemException;
 
@@ -31,73 +32,131 @@ class Directory implements FileInterface
     }
 
     /**
-     * Recursively copies directory and its contents to destination.
+     * Used to perform copies and moves.
      *
+     * @param string $operation
      * @param string $destination
+     * @throws FileNotFoundException
      * @throws FilesystemException
+     * @throws \ntentan\utils\exceptions\FileAlreadyExistsException
+     * @throws \ntentan\utils\exceptions\FileNotReadableException
      * @throws \ntentan\utils\exceptions\FileNotWriteableException
      */
-    public function copyTo(string $destination): void
+    private function directoryOperation(string $operation, string $destination):void
     {
-        Filesystem::checkWritable($destination);
-        if (!file_exists($destination)) {
-            self::create($destination);
+        try {
+            Filesystem::checkExists($destination);
+        } catch (FileNotFoundException $e) {
+            $destinationDir = new self($destination);
+            $destinationDir->create();
         }
 
-        $files = glob("$this->path/*");
+        $files = $this->getFiles();
         foreach ($files as $file) {
-            $newFile = "$destination/" . basename("$file");
-            if (is_dir($file)) {
-                self::create($newFile);
-                (new Directory($file))->copyTo($newFile);
-            } else {
-                copy($file, $newFile);
-            }
+            $destinationPath = "$destination/" . basename($file);
+            $file->$operation($destinationPath);
         }
     }
 
     /**
-     * Get the size of all contents in the directory.
+     * Recursively copies directory and its contents to destination.
+     *
+     * @param string $destination
+     * @throws FileNotFoundException
+     * @throws FilesystemException
+     * @throws \ntentan\utils\exceptions\FileAlreadyExistsException
+     * @throws \ntentan\utils\exceptions\FileNotReadableException
+     * @throws \ntentan\utils\exceptions\FileNotWriteableException
+     */
+    public function copyTo(string $destination): void
+    {
+        $this->directoryOperation('copyTo', $destination);
+    }
+
+    /**
+     * Recursively get the size of all contents in the directory.
      *
      * @return integer
+     * @throws FileNotFoundException
+     * @throws FilesystemException
+     * @throws \ntentan\utils\exceptions\FileNotReadableException
      */
-    public function getSize() : integer
+    public function getSize() : int
     {
-
+        $files = $this->getFiles();
+        $size = 0;
+        foreach($files as $file) {
+            $size += $file->getSize();
+        }
+        return $size;
     }
 
+    /**
+     * Recursively move a directory and its contents to another location.
+     *
+     * @param string $destination
+     * @throws FileNotFoundException
+     * @throws FilesystemException
+     * @throws \ntentan\utils\exceptions\FileAlreadyExistsException
+     * @throws \ntentan\utils\exceptions\FileNotReadableException
+     * @throws \ntentan\utils\exceptions\FileNotWriteableException
+     */
     public function moveTo(string $destination) : void
     {
-
+        $this->directoryOperation('moveTo', $destination);
+        $this->delete();
+        $this->path = $destination;
     }
 
-    public static function create($path, $permissions = 0755)
+    /**
+     * Create the directory pointed to by path.
+     *
+     * @param int $permissions
+     * @throws \ntentan\utils\exceptions\FileAlreadyExistsException
+     * @throws \ntentan\utils\exceptions\FileNotWriteableException
+     */
+    public function create($permissions = 0755)
     {
-        if (file_exists($path) && !is_dir($path)) {
-            throw new FilesystemException("A file already exists in the location of [$path]");
-        }
-        if (!file_exists($path)) {
-            mkdir($path, $permissions, true);
-        }
-        return new Directory($path);
+        Filesystem::checkNotExists($this->path);
+        Filesystem::checkWritable(dirname($this->path));
+        mkdir($this->path, $permissions, true);
     }
 
+    /**
+     * Recursively delete the directory and all its contents.
+     *
+     * @throws FileNotFoundException
+     * @throws FilesystemException
+     * @throws \ntentan\utils\exceptions\FileNotReadableException
+     */
     public function delete() : void
     {
-
+        $files = $this->getFiles();
+        foreach($files as $file) {
+            $file->delete();
+        }
+        rmdir($this->path);
     }
 
+    /**
+     * Get the path of the directory.
+     *
+     * @return string
+     */
     public function getPath() : string
     {
         return $this->path;
     }
 
     /**
+     * Get the files in the directory.
+     *
      * @throws FilesystemException
      * @throws \ntentan\utils\exceptions\FileNotFoundException
      * @throws \ntentan\utils\exceptions\FileNotReadableException
+     * @return array<FileInterface>
      */
-    public function getContents()
+    public function getFiles() : array
     {
         Filesystem::checkExists($this->path);
         Filesystem::checkReadable($this->path);

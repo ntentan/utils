@@ -21,7 +21,7 @@ interface FileInterface
      *
      * @return integer
      */
-    public function getSize(): integer;
+    public function getSize(): int;
 
     /**
      * Make a copy of the file resource.

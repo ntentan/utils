@@ -26,30 +26,53 @@ class File implements FileInterface
         }
     }
 
+    /**
+     * @param string $destination
+     * @throws \ntentan\utils\exceptions\FileNotFoundException
+     * @throws \ntentan\utils\exceptions\FileNotWriteableException
+     */
     public function moveTo(string $destination) : void
     {
-        self::copyTo($destination);
-        unlink($this->path);
+        $this->copyTo($destination);
+        $this->delete();
         $this->path = $destination;
     }
 
-    public function getSize() : integer
+    /**
+     * @return int
+     * @throws \ntentan\utils\exceptions\FileNotReadableException
+     */
+    public function getSize() : int
     {
+        Filesystem::checkReadable($this->path);
         return filesize($this->path);
     }
 
+    /**
+     * @param string $destination
+     * @throws \ntentan\utils\exceptions\FileNotFoundException
+     * @throws \ntentan\utils\exceptions\FileNotWriteableException
+     */
     public function copyTo(string $destination) : void
     {
         Filesystem::checkWriteSafety(dirname($destination));
         copy($this->path, $destination);
     }
 
+    /**
+     * @return string
+     * @throws \ntentan\utils\exceptions\FileNotReadableException
+     */
     public function getContents()
     {
-        Filesystem::checkExists($this->path);
+        Filesystem::checkReadable($this->path);
         return file_get_contents($this->path);
     }
 
+    /**
+     * @param $contents
+     * @throws \ntentan\utils\exceptions\FileNotWriteableException
+     */
     public function putContents($contents)
     {
         if (file_exists($this->path)) {
