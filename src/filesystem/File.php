@@ -5,7 +5,7 @@ namespace ntentan\utils\filesystem;
 use ntentan\utils\Filesystem;
 
 /**
- * Description of File
+ * A file on the filesystem
  *
  * @author ekow
  */

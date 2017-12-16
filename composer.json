@@ -15,7 +15,8 @@
         }
     },
     "require-dev": {
-        "phpunit/phpunit" : "@stable",
-        "mikey179/vfsStream": "@stable"
+        "phpunit/phpunit" : "^6 <6.5",
+        "mikey179/vfsStream": "@stable",
+        "php-mock/php-mock-phpunit": "^2"
     }
 }
