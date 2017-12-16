@@ -16,14 +16,10 @@ class File implements FileInterface
      * @var string
      */
     protected $path;
-    private $isDirectory;
 
     public function __construct($path)
     {
         $this->path = $path;
-        if (is_dir($path)) {
-            $this->isDirectory = true;
-        }
     }
 
     /**
@@ -55,6 +51,7 @@ class File implements FileInterface
      */
     public function copyTo(string $destination) : void
     {
+        $destination = is_dir($destination) ? ("$destination/" . basename($this->path)) : $destination;
         Filesystem::checkWriteSafety(dirname($destination));
         copy($this->path, $destination);
     }
