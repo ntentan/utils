@@ -25,8 +25,7 @@
  */
 
 namespace ntentan\utils;
-
-use ntentan\utils\filesystem\File;
+use ntentan\utils\filesystem\FileInterface;
 
 /**
  * A collection of filesystem utilities.
@@ -63,28 +62,34 @@ class Filesystem
     }
 
     /**
+     * Checks if a file exists and throws an exception if not.
+     *
      * @param $path
      * @throws exceptions\FileNotFoundException
      */
     public static function checkExists(string $path) : void
     {
         if (!file_exists($path)) {
-            throw new exceptions\FileNotFoundException($path);
+            throw new exceptions\FileNotFoundException("File '$path' does not exist");
         }
     }
 
     /**
+     * Checks if a file exists and throws an exception if it does.
+     *
      * @param string $path
      * @throws exceptions\FileAlreadyExistsException
      */
     public static function checkNotExists(string $path) : void
     {
         if(file_exists($path)) {
-            throw new exceptions\FileAlreadyExistsException($path);
+            throw new exceptions\FileAlreadyExistsException("File '$path' already exists");
         }
     }
 
     /**
+     * Checks if a file exists and is writeable and throws a relevant exception if either condition is not met.
+     *
      * @param $path
      * @throws exceptions\FileNotFoundException
      * @throws exceptions\FileNotWriteableException
@@ -96,6 +101,8 @@ class Filesystem
     }
 
     /**
+     * Checks if a file exists and is readable and throws a relevant excetion if either condition is not met.
+     *
      * @param $path
      * @throws exceptions\FileNotFoundException
      * @throws exceptions\FileNotReadableException
@@ -106,6 +113,12 @@ class Filesystem
         Filesystem::checkReadable($path);
     }
 
+    /**
+     * Return an instance of the relevant FileInterface (File or Directory) for a file in a given path.
+     *
+     * @param string $path
+     * @return FileInterface
+     */
     public static function get($path)
     {
         if (is_dir($path)) {
