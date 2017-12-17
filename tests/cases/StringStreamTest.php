@@ -31,6 +31,8 @@ use ntentan\utils\StringStream;
 
 class StringStreamTest extends TestCase
 {
+    const TEST_CONTENT = "This would be modified at some point";
+
     public function setup()
     {
         StringStream::register();
@@ -44,21 +46,54 @@ class StringStreamTest extends TestCase
     private function writeTest()
     {
         $first = fopen("string://test", "w");
-        fputs($first, "This would be modified at some point");
+        fputs($first, self::TEST_CONTENT);
         fclose($first);        
     }
     
     public function testOpenReadWrite()
     {
         $string = fopen("string://test", 'w');
-        fputs($string, "Hello World");
+        $size = fputs($string, "Hello World");
         fclose($string);
         
         $read = fopen("string://test", "r");
         $output = fgets($read);
         fclose($read);
-        
+
+        $this->assertEquals(11, $size);
         $this->assertEquals("Hello World", $output);
+    }
+
+    /**
+     * @expectedException \ntentan\utils\exceptions\StringStreamException
+     */
+    public function testOpenException()
+    {
+        fopen('string://test', 'z');
+    }
+
+    public function testFalseWrite()
+    {
+        $this->writeTest();
+        $file = fopen('string://test', 'r');
+        $this->assertEquals(false, fputs($file, 'Hello'));
+    }
+
+    public function testFalseRead()
+    {
+        $this->writeTest();
+        $file = fopen('string://test', 'a');
+        $this->assertEquals(false, fgets($file));
+    }
+
+    public function testWPlusTruncate()
+    {
+        $this->writeTest();
+        $this->assertEquals(strlen(self::TEST_CONTENT), filesize('string://test'));
+        clearstatcache();
+        $file = fopen('string://test', 'w+');
+        fclose($file);
+        $this->assertEquals(0, filesize('string://test'));
     }
     
     public function testAppendAndSeek()
@@ -96,6 +131,14 @@ class StringStreamTest extends TestCase
         $output = fgets($readfile);
         $this->assertEquals("This would be modified at some point\0\0\0\0Padded", $output);
         fclose($readfile);
+    }
+
+    /**
+     * @expectedException  \ntentan\utils\exceptions\StringStreamException
+     */
+    public function testReRegister()
+    {
+        StringStream::register();
     }
 }
 

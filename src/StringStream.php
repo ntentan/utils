@@ -55,12 +55,14 @@ class StringStream
     }
 
     /**
-     * Open stream
+     * Open a stream
+     *
      * @param string $aPath
      * @param string $aMode
      * @param int $aOptions
      * @param string $aOpenedPath
      * @return boolean
+     * @throws exceptions\StringStreamException
      */
     public function stream_open($aPath, $aMode, $aOptions, &$aOpenedPath)
     {
@@ -128,7 +130,7 @@ class StringStream
             $this->position += strlen($aData);
             return strlen($aData);
         } else {
-            return 0;
+            return false;
         }
     }
 
@@ -188,6 +190,7 @@ class StringStream
     /**
      * Truncate to given size
      * @param int $aSize
+     * @return bool
      */
     public function stream_truncate($aSize)
     {
@@ -232,6 +235,10 @@ class StringStream
         return fstat($resource);
     }
 
+    /**
+     * @param string $protocol
+     * @throws exceptions\StringStreamException
+     */
     public static function register($protocol = 'string')
     {
         if (!self::$registered) {

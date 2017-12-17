@@ -62,13 +62,13 @@ class Input
      * Decodes and returns the value of a given item in an HTTP query.
      * Although PHP decodes query strings automatically, it converts periods to underscores. This method makes it 
      * possible to decode query strings that contain underscores.
-     * http://stackoverflow.com/a/14432765
+     * Based on code from http://stackoverflow.com/a/14432765
      * 
      * @param string $method The HTTP method of the query (GET, POST ...)
      * @param string $key The key of the item in the query to retrieve.
      * @return mixed
      */
-    private static function decode($method, $key) 
+    private static function decode(string $method, string $key)
     {
         if(!isset(self::$arrays[$method])) {
             $query = $method == self::GET 
@@ -93,7 +93,7 @@ class Input
      * @param string $key The data key
      * @return string|array The value.
      */
-    private static function getVariable($input, $key) 
+    private static function getVariable(string $input, string $key)
     {
         if ($key === null) {
             if (!isset(self::$arrays[$input])) {
@@ -117,7 +117,7 @@ class Input
      * @param string $key
      * @return string|array
      */
-    public static function get($key = null) 
+    public static function get(string $key = null)
     {
         return self::decode(self::GET, $key);
     }
@@ -128,7 +128,7 @@ class Input
      * @param string $key
      * @return string|array
      */
-    public static function post($key = null) 
+    public static function post(string $key = null)
     {
         return self::decode(self::POST, $key);
     }
@@ -139,7 +139,7 @@ class Input
      * @param string $key
      * @return string|array
      */
-    public static function server($key = null) 
+    public static function server(string $key = null)
     {
         return self::getVariable(INPUT_SERVER, $key);
     }
@@ -150,7 +150,7 @@ class Input
      * @param string $key
      * @return string|array
      */
-    public static function cookie($key = null) 
+    public static function cookie(string $key = null)
     {
         return self::getVariable(INPUT_COOKIE, $key);
     }
@@ -162,19 +162,26 @@ class Input
      * @param string $key
      * @return bool
      */
-    public static function exists($input, $key) : bool
+    public static function exists(string $input, string $key) : bool
     {
         return isset(self::getVariable($input, null)[$key]);
     }
 
-    public static function files($key = null) 
+    /**
+     * Retrieves uploaded files as instances of UploadedFile or an array of UploadedFile if multiples exist.
+     *
+     * @param string $key
+     * @return array|filesystem\UploadedFile|null
+     */
+    public static function files(string $key = null)
     {
         $files = [];
         if (!isset($_FILES[$key])) {
             return null;
         }
         if (is_array($_FILES[$key]['name'])) {
-            for ($i = 0; $i < count($_FILES[$key]['name']); $i++) {
+            $numFiles = count($_FILES[$key]['name']);
+            for ($i = 0; $i < $numFiles; $i++) {
                 $files[] = new filesystem\UploadedFile([
                     'name' => $_FILES[$key]['name'][$i],
                     'type' => $_FILES[$key]['type'][$i],
