@@ -175,25 +175,30 @@ class Input
      */
     public static function files(string $key = null)
     {
-        $files = [];
         if (!isset($_FILES[$key])) {
             return null;
         }
         if (is_array($_FILES[$key]['name'])) {
-            $numFiles = count($_FILES[$key]['name']);
-            for ($i = 0; $i < $numFiles; $i++) {
-                $files[] = new filesystem\UploadedFile([
-                    'name' => $_FILES[$key]['name'][$i],
-                    'type' => $_FILES[$key]['type'][$i],
-                    'tmp_name' => $_FILES[$key]['tmp_name'][$i],
-                    'error' => $_FILES[$key]['error'][$i],
-                    'size' => $_FILES[$key]['size'][$i],
-                ]);
-            }
-            return $files;
+            return self::getFileObjects($key);
         } else {
             return new filesystem\UploadedFile($_FILES);
         }
+    }
+
+    private static function getFileObjects($key)
+    {
+        $files = [];
+        $numFiles = count($_FILES[$key]['name']);
+        for ($i = 0; $i < $numFiles; $i++) {
+            $files[] = new filesystem\UploadedFile([
+                'name' => $_FILES[$key]['name'][$i],
+                'type' => $_FILES[$key]['type'][$i],
+                'tmp_name' => $_FILES[$key]['tmp_name'][$i],
+                'error' => $_FILES[$key]['error'][$i],
+                'size' => $_FILES[$key]['size'][$i],
+            ]);
+        }
+        return $files;
     }
 
 }

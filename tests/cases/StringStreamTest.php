@@ -133,12 +133,5 @@ class StringStreamTest extends TestCase
         fclose($readfile);
     }
 
-    /**
-     * @expectedException  \ntentan\utils\exceptions\StringStreamException
-     */
-    public function testReRegister()
-    {
-        StringStream::register();
-    }
 }
 

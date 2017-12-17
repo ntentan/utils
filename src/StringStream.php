@@ -103,7 +103,7 @@ class StringStream
     /**
      * Read from stream
      * @param int $aBytes number of bytes to return
-     * @return string
+     * @return string|bool
      */
     public function stream_read($aBytes)
     {
@@ -119,7 +119,7 @@ class StringStream
     /**
      * Write to stream
      * @param string $aData data to write
-     * @return int
+     * @return int|bool
      */
     public function stream_write($aData)
     {
