@@ -17,7 +17,7 @@ class StringStream
 
     /**
      * Content of stream
-     * @var string
+     * @var array
      */
     private static $string = [];
 
@@ -167,12 +167,10 @@ class StringStream
                     $this->stream_truncate($aOffset);
                 }
                 return true;
-                break;
 
             case SEEK_CUR:
                 $this->position += $aOffset;
                 return true;
-                break;
 
             case SEEK_END:
                 $this->position = strlen(self::$string[$this->path]) + $aOffset;
@@ -180,7 +178,6 @@ class StringStream
                     $this->stream_truncate(strlen(self::$string[$this->path]) + $aOffset);
                 }
                 return true;
-                break;
 
             default:
                 return false;
@@ -226,10 +223,9 @@ class StringStream
     /**
      * Return info about stream
      * @param string $aPath
-     * @param array $aOptions
      * @return array
      */
-    public function url_stat($aPath, $aOptions)
+    public function url_stat($aPath)
     {
         $resource = fopen($aPath, 'r');
         return fstat($resource);
