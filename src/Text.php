@@ -164,6 +164,25 @@ class Text
             lcfirst($string)
         );        
     }
+
+    /**
+     * Run through the rules and generate a text transformation.
+     *
+     * @param string $text
+     * @param array $rules
+     * @return string
+     */
+    private static function runInflection($text, $rules)
+    {
+        if(in_array($text, self::$noPlurals)) {
+            return $text;
+        }
+        foreach($rules as $rule) {
+            if(preg_match($rule[0], $text, $matches)) {
+                return substr($text, 0, strlen($text) - strlen($matches['remove'] ?? '')) . $rule[1];
+            }
+        }
+    }
     
     /**
      * Generates the english plural of a given word.
@@ -173,14 +192,7 @@ class Text
      */
     public static function pluralize($text) : string
     {
-        if(in_array($text, self::$noPlurals)) {
-            return $text;
-        }
-        foreach(self::$pluralRules as $rule) {
-            if(preg_match($rule[0], $text, $matches)) {
-                return substr($text, 0, strlen($text) - strlen($matches['remove'] ?? '')) . $rule[1];
-            }
-        }
+        return self::runInflection($text, self::$pluralRules);
     }
     
     /**
@@ -191,14 +203,6 @@ class Text
      */
     public static function singularize($text) : string
     {
-        if(in_array($text, self::$noPlurals)) {
-            return $text;
-        }
-        foreach(self::$singularRules as $rule) {
-            if(preg_match($rule[0], $text, $matches)) {
-                return substr($text, 0, strlen($text) - strlen($matches['remove'] ?? '')) . $rule[1];
-            }
-        }
-        return $text;
+        return self::runInflection($text, self::$singularRules) ?? $text;
     }
 }

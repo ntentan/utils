@@ -19,7 +19,7 @@ abstract class Validation
      * so it could override the standard message that the validation code
      * generates.
      *
-     * @param string $field
+     * @param array $field
      * @param boolean $result
      * @param string $message
      * @return boolean
