@@ -5,18 +5,23 @@ namespace ntentan\utils\validator;
 abstract class Validation
 {
     private $messages = [];
-    
+
+    /**
+     * @param $field
+     * @param $data
+     * @return mixed
+     */
     abstract public function run($field, $data);
-    
+
     /**
      * Receives a boolean from the validation function and a message to be
      * displayed when the value is false. It also receives the options array
      * so it could override the standard message that the validation code
      * generates.
      *
+     * @param string $field
      * @param boolean $result
      * @param string $message
-     * @param array $options
      * @return boolean
      */
     protected function evaluateResult($field, $result, $message)

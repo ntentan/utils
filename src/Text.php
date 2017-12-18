@@ -60,8 +60,45 @@ class Text
         ['/.*/', 's']
     ];
 
+    private static $singularRules = [
+        ['/^axe(?<remove>s)$/', ''],
+        ['/(.*)(?<remove>a)$/', 'um'],
+        ['/(.*)(dev|v|pr)(?<remove>ices)$/', 'ice'],
+        ['/(.*)(?<remove>ices)$/', 'ix'],
+        ['/(.*)(?<remove>movies)$/', 'movie'],
+        ['/(.*)(?<remove>ies)$/', 'y'],
+        ['/(.*)(?<remove>shoes)$/', 'shoe'],
+        ['/(.*)(?<remove>oes)$/', 'o'],
+        ['/(.*)(?<remove>bases)$/', 'base'],
+        ['/(.*)(?<remove>cheeses)$/', 'cheese'],
+        ['/(.*)(?<remove>children)$/', 'child'],
+        ['/(.*)(?<remove>men)$/', 'man'],
+        ['/(.*)(?<remove>feet)$/', 'foot'],
+        ['/(.*)(?<remove>geese)$/', 'goose'],
+        ['/(.*)(?<remove>atlases)$/', 'atlas'],
+        ['/(.*)(?<remove>people)$/', 'person'],
+        ['/(.*)(?<remove>teeth)$/', 'tooth'],
+        ['/(.*)(iri)(?<remove>ses)$/', 's'],
+        ['/(.*)(h|l|p)(ou)(?<remove>ses)$/', 'se'],
+        ['/(.*)(ro|po|ca)(?<remove>ses)$/', 'se'],
+        ['/(.*)(?<remove>quizzes)$/', 'quiz'],
+        ['/(.*)(?<remove>zes)$/', 'z'],
+        ['/(.*)(y|i|a|o|e)(?<remove>ses)$/', 'sis'],
+        ['/(.*)(?<remove>ses)$/', 's'],
+        ['/(.*)(?<remove>ice)$/', 'ouse'],
+        ['/(.*)(?<remove>xes)$/', 'x'],
+        ['/(.*)(?<remove>eaux)$/', 'eau'],
+        ['/(formul|alumn|nebul)(?<remove>ae)$/', 'a'],
+        ['/(foc|alumn|fung|nucle|octop|radi|syllab)(?<remove>i)$/', 'us'],
+        ['/(.*)(?<remove>hes)$/', 'h'],
+        ['/(.*)(ca|mo|lo)(?<remove>ves)$/', 've'],
+        ['/(.*)(l|r|o|a|e)(?<remove>ves)$/', 'f'],
+        ['/(.*)(li|ni|wi)(?<remove>ves)$/', 'fe'],
+        ['/(.*)(?<remove>s)$/', ''],
+    ];
+
     private static $noPlurals = [
-        'cod', 'deer', 'feedback', 'fish', 'moose', 'news', 'species', 'series', 'sheep'
+        'cod', 'deer', 'feedback', 'fish', 'moose', 'news', 'species', 'series', 'sheep', 'rice'
     ];
 
     /**
@@ -154,10 +191,13 @@ class Text
      */
     public static function singularize($text) : string
     {
-        if (substr($text, -3) == 'ies') {
-            return substr($text, 0, -3) . 'y';
-        } elseif(substr($text, -1) == 's') {
-            return substr($text, 0, -1);
+        if(in_array($text, self::$noPlurals)) {
+            return $text;
+        }
+        foreach(self::$singularRules as $rule) {
+            if(preg_match($rule[0], $text, $matches)) {
+                return substr($text, 0, strlen($text) - strlen($matches['remove'] ?? '')) . $rule[1];
+            }
         }
         return $text;
     }
