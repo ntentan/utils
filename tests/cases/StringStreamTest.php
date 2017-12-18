@@ -118,6 +118,20 @@ class StringStreamTest extends TestCase
         $output = fgets($readfile);
         $this->assertEquals("would be modified at some point", $output);
     }
+
+    public function testSeekEnd()
+    {
+        $this->writeTest();
+        $writefile = fopen('string://test', 'a');
+        fseek($writefile, 0, SEEK_END);
+        fputs($writefile, ' ... was it?');
+        fclose($writefile);
+
+        $readfile = fopen('string://test', 'r');
+        $output = fgets($readfile);
+        $this->assertEquals('This would be modified at some point ... was it?', $output);
+        fclose($readfile);
+    }
     
     public function testSeekSetPadding()
     {
@@ -133,5 +147,18 @@ class StringStreamTest extends TestCase
         fclose($readfile);
     }
 
+    public function testSeekEndPadding()
+    {
+        $this->writeTest();
+        $writefile = fopen("string://test", "a");
+        fseek($writefile, 4, SEEK_END);
+        fputs($writefile, "Padded");
+        fclose($writefile);
+
+        $readfile = fopen("string://test", "r");
+        $output = fgets($readfile);
+        $this->assertEquals("This would be modified at some point\0\0\0\0Padded", $output);
+        fclose($readfile);
+    }
 }
 

@@ -31,6 +31,39 @@ namespace ntentan\utils;
  */
 class Text
 {
+    private static $pluralRules = [
+        ['/child/', 'ren'],
+        ['/^ox$/', 'en'],
+        ['/(.*)(a|e|i|o|u)(?<remove>y)$/', 'ys'],
+        ['/(.*)(?<remove>y)$/', 'ies'],
+        ['/(foc|alumn|fung|nucle|octop|radi|syllab)(?<remove>us)$/', 'i'],
+        ['/(.*)(d|r)(?<remove>ex|ix)$/', 'ices'],
+        ['/(.*)(s|x)(?<remove>is)$/', 'es'],
+        ['/(.*)(?<remove>sh)$/', 'shes'],
+        ['/(.*)(?<remove>eau)$/', 'eaux'],
+        ['/(.*)(?<remove>um)$/', 'a'],
+        ['/(.*)(?<remove>tooth)$/', 'teeth'],
+        ['/(.*)(?<remove>h)$/', 'hes'],
+        ['/(formul|alumn|nebul)(?<remove>a)$/', 'ae'],
+        ['/(.*)(?<remove>x)$/', 'xes'],
+        ['/(.+)(?<remove>ion)$/', 'ia'],
+        ['/(.*)(?<remove>roof)$/', 'roofs'],
+        ['/(.*)[^f](?<remove>f|fe)$/', 'ves'],
+        ['/(.*)(m|l)(?<remove>ouse)$/', 'ice'],
+        ['/(.*)(?<remove>man)$/', 'men'],
+        ['/(.*)(?<remove>foot)$/', 'feet'],
+        ['/(.*)(disc|phot|pian)(?<remove>o)$/', 'os'],
+        ['/(.*)(?<remove>goose)$/', 'geese'],
+        ['/(.*)(?<remove>person)$/', 'people'],
+        ['/(.*)(?<remove>quiz)$/', 'quizzes'],
+        ['/.*(s|o|z)$/', 'es'],
+        ['/.*/', 's']
+    ];
+
+    private static $noPlurals = [
+        'cod', 'deer', 'feedback', 'fish', 'moose', 'news', 'species', 'series', 'sheep'
+    ];
+
     /**
      * Converts text separated by a specified separator to camel case. 
      * This function converts the entire text into lower case before performing the
@@ -103,13 +136,14 @@ class Text
      */
     public static function pluralize($text) : string
     {
-        $lastLetter = substr($text, -1);
-        if($lastLetter == 'y') {
-            return substr($text, 0, -1) . 'ies';
-        } elseif ( $lastLetter != 's' ) {
-            return $text . 's';
+        if(in_array($text, self::$noPlurals)) {
+            return $text;
         }
-        return $text;
+        foreach(self::$pluralRules as $rule) {
+            if(preg_match($rule[0], $text, $matches)) {
+                return substr($text, 0, strlen($text) - strlen($matches['remove'] ?? '')) . $rule[1];
+            }
+        }
     }
     
     /**
