@@ -32,6 +32,84 @@ namespace ntentan\utils;
 class Text
 {
     /**
+     * Regexes for plurals
+     * @var array
+     */
+    private static $pluralRules = [
+        ['/child/', 'ren'],
+        ['/^ox$/', 'en'],
+        ['/(.*)(a|e|i|o|u)(?<remove>y)$/', 'ys'],
+        ['/(.*)(?<remove>y)$/', 'ies'],
+        ['/(foc|alumn|fung|nucle|octop|radi|syllab)(?<remove>us)$/', 'i'],
+        ['/(.*)(d|r)(?<remove>ex|ix)$/', 'ices'],
+        ['/(.*)(s|x)(?<remove>is)$/', 'es'],
+        ['/(.*)(?<remove>sh)$/', 'shes'],
+        ['/(.*)(?<remove>eau)$/', 'eaux'],
+        ['/(.*)(?<remove>um)$/', 'a'],
+        ['/(.*)(?<remove>tooth)$/', 'teeth'],
+        ['/(.*)(?<remove>h)$/', 'hes'],
+        ['/(formul|alumn|nebul)(?<remove>a)$/', 'ae'],
+        ['/(.*)(?<remove>x)$/', 'xes'],
+        ['/(.+)(?<remove>ion)$/', 'ia'],
+        ['/(.*)(?<remove>roof)$/', 'roofs'],
+        ['/(.*)[^f](?<remove>f|fe)$/', 'ves'],
+        ['/(.*)(m|l)(?<remove>ouse)$/', 'ice'],
+        ['/(.*)(?<remove>man)$/', 'men'],
+        ['/(.*)(?<remove>foot)$/', 'feet'],
+        ['/(.*)(disc|phot|pian)(?<remove>o)$/', 'os'],
+        ['/(.*)(?<remove>goose)$/', 'geese'],
+        ['/(.*)(?<remove>person)$/', 'people'],
+        ['/(.*)(?<remove>quiz)$/', 'quizzes'],
+        ['/.*(s|o|z)$/', 'es'],
+        ['/.*/', 's']
+    ];
+
+    /**
+     * Regexes for singulars
+     * @var array
+     */
+    private static $singularRules = [
+        ['/^axe(?<remove>s)$/', ''],
+        ['/(.*)(?<remove>a)$/', 'um'],
+        ['/(.*)(dev|v|pr)(?<remove>ices)$/', 'ice'],
+        ['/(.*)(?<remove>ices)$/', 'ix'],
+        ['/(.*)(?<remove>movies)$/', 'movie'],
+        ['/(.*)(?<remove>ies)$/', 'y'],
+        ['/(.*)(?<remove>shoes)$/', 'shoe'],
+        ['/(.*)(?<remove>oes)$/', 'o'],
+        ['/(.*)(?<remove>bases)$/', 'base'],
+        ['/(.*)(?<remove>cheeses)$/', 'cheese'],
+        ['/(.*)(?<remove>children)$/', 'child'],
+        ['/(.*)(?<remove>men)$/', 'man'],
+        ['/(.*)(?<remove>feet)$/', 'foot'],
+        ['/(.*)(?<remove>geese)$/', 'goose'],
+        ['/(.*)(?<remove>atlases)$/', 'atlas'],
+        ['/(.*)(?<remove>people)$/', 'person'],
+        ['/(.*)(?<remove>teeth)$/', 'tooth'],
+        ['/(.*)(iri)(?<remove>ses)$/', 's'],
+        ['/(.*)(h|l|p)(ou)(?<remove>ses)$/', 'se'],
+        ['/(.*)(ro|po|ca)(?<remove>ses)$/', 'se'],
+        ['/(.*)(?<remove>quizzes)$/', 'quiz'],
+        ['/(.*)(?<remove>zes)$/', 'z'],
+        ['/(.*)(y|i|a|o|e)(?<remove>ses)$/', 'sis'],
+        ['/(.*)(?<remove>ses)$/', 's'],
+        ['/(.*)(?<remove>ice)$/', 'ouse'],
+        ['/(.*)(?<remove>xes)$/', 'x'],
+        ['/(.*)(?<remove>eaux)$/', 'eau'],
+        ['/(formul|alumn|nebul)(?<remove>ae)$/', 'a'],
+        ['/(foc|alumn|fung|nucle|octop|radi|syllab)(?<remove>i)$/', 'us'],
+        ['/(.*)(?<remove>hes)$/', 'h'],
+        ['/(.*)(ca|mo|lo)(?<remove>ves)$/', 've'],
+        ['/(.*)(l|r|o|a|e)(?<remove>ves)$/', 'f'],
+        ['/(.*)(li|ni|wi)(?<remove>ves)$/', 'fe'],
+        ['/(.*)(?<remove>s)$/', ''],
+    ];
+
+    private static $noPlurals = [
+        'cod', 'deer', 'feedback', 'fish', 'moose', 'news', 'species', 'series', 'sheep', 'rice'
+    ];
+
+    /**
      * Converts text separated by a specified separator to camel case. 
      * This function converts the entire text into lower case before performing the
      * camel case conversion. Due to this the first character would be lowercased.
@@ -94,6 +172,25 @@ class Text
             lcfirst($string)
         );        
     }
+
+    /**
+     * Run through the rules and generate a text transformation.
+     *
+     * @param string $text
+     * @param array $rules
+     * @return string|null
+     */
+    private static function runInflection($text, $rules)
+    {
+        if(in_array($text, self::$noPlurals)) {
+            return $text;
+        }
+        foreach($rules as $rule) {
+            if(preg_match($rule[0], $text, $matches)) {
+                return substr($text, 0, strlen($text) - strlen($matches['remove'] ?? '')) . $rule[1];
+            }
+        }
+    }
     
     /**
      * Generates the english plural of a given word.
@@ -103,13 +200,7 @@ class Text
      */
     public static function pluralize($text) : string
     {
-        $lastLetter = substr($text, -1);
-        if($lastLetter == 'y') {
-            return substr($text, 0, -1) . 'ies';
-        } elseif ( $lastLetter != 's' ) {
-            return $text . 's';
-        }
-        return $text;
+        return self::runInflection($text, self::$pluralRules);
     }
     
     /**
@@ -120,11 +211,6 @@ class Text
      */
     public static function singularize($text) : string
     {
-        if (substr($text, -3) == 'ies') {
-            return substr($text, 0, -3) . 'y';
-        } elseif(substr($text, -1) == 's') {
-            return substr($text, 0, -1);
-        }
-        return $text;
+        return self::runInflection($text, self::$singularRules) ?? $text;
     }
 }

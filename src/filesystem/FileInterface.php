@@ -1,11 +1,47 @@
 <?php
 namespace ntentan\utils\filesystem;
 
+/**
+ * An interface for objects that represent access to a file resource.
+ *
+ * @package ntentan\utils\filesystem
+ */
 interface FileInterface
 {
-    public function moveTo($destination);
-    public function getSize();
-    public function copyTo($destination);
-    public function delete();
-    public function getPath();
+    /**
+     * Move the file to a new location.
+     *
+     * @param string $destination New destination of file.
+     * @return void
+     */
+    public function moveTo(string $destination) : void;
+
+    /**
+     * Return the size of the file at location in bytes.
+     *
+     * @return integer
+     */
+    public function getSize(): int;
+
+    /**
+     * Make a copy of the file resource.
+     *
+     * @param string $destination Location of the copy to be made.
+     * @return void
+     */
+    public function copyTo(string $destination) : void;
+
+    /**
+     * Delete the file resource.
+     *
+     * @return void
+     */
+    public function delete(): void;
+
+    /**
+     * Get the location of th
+     *
+     * @return string
+     */
+    public function getPath(): string;
 }

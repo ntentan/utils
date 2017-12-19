@@ -25,8 +25,7 @@
  */
 
 namespace ntentan\utils;
-
-use ntentan\utils\filesystem\Directory;
+use ntentan\utils\filesystem\FileInterface;
 
 /**
  * A collection of filesystem utilities.
@@ -39,15 +38,13 @@ class Filesystem
      * In cases where the file cannot be written to an exception is thrown.
      *
      * @param string $path The path to the file to be checked.
-     * @throws exceptions\FileNotWriteabkeException
-     * @return bool
+     * @throws exceptions\FileNotWriteableException
      */
-    public static function checkWritable($path) : bool
+    public static function checkWritable(string $path) : void
     {
         if (!is_writable($path)) {
             throw new exceptions\FileNotWriteableException("File $path is not writeable");
         }
-        return true;
     }
 
     /**
@@ -56,42 +53,72 @@ class Filesystem
      *
      * @param string $path The path to the file to be checked.
      * @throws exceptions\FileNotReadableException
-     * @return bool
      */
-    public static function checkReadable($path) : bool
+    public static function checkReadable(string $path) : void
     {
         if (!is_readable($path)) {
             throw new exceptions\FileNotReadableException("File $path is not readable");
         }
-        return true;
     }
 
-    public static function checkExists($path)
+    /**
+     * Checks if a file exists and throws an exception if not.
+     *
+     * @param $path
+     * @throws exceptions\FileNotFoundException
+     */
+    public static function checkExists(string $path) : void
     {
         if (!file_exists($path)) {
-            throw new exceptions\FileNotFoundException($path);
+            throw new exceptions\FileNotFoundException("File '$path' does not exist");
         }
-        return true;
     }
 
+    /**
+     * Checks if a file exists and throws an exception if it does.
+     *
+     * @param string $path
+     * @throws exceptions\FileAlreadyExistsException
+     */
+    public static function checkNotExists(string $path) : void
+    {
+        if(file_exists($path)) {
+            throw new exceptions\FileAlreadyExistsException("File '$path' already exists");
+        }
+    }
+
+    /**
+     * Checks if a file exists and is writeable and throws a relevant exception if either condition is not met.
+     *
+     * @param $path
+     * @throws exceptions\FileNotFoundException
+     * @throws exceptions\FileNotWriteableException
+     */
     public static function checkWriteSafety($path)
     {
         Filesystem::checkExists($path);
         Filesystem::checkWritable($path);
     }
 
-    public static function createDirectoryStructure($structure, $basePath)
+    /**
+     * Checks if a file exists and is readable and throws a relevant excetion if either condition is not met.
+     *
+     * @param $path
+     * @throws exceptions\FileNotFoundException
+     * @throws exceptions\FileNotReadableException
+     */
+    public static function checkReadSafety($path)
     {
-        foreach ($structure as $key => $value) {
-            if (is_numeric($key)) {
-                Directory::create("$basePath/$value");
-            } else {
-                Directory::create("$basePath/$key");
-                self::createDirectoryStructure($value, "$basePath/$key");
-            }
-        }
+        Filesystem::checkExists($path);
+        Filesystem::checkReadable($path);
     }
 
+    /**
+     * Return an instance of the relevant FileInterface (File or Directory) for a file in a given path.
+     *
+     * @param string $path
+     * @return FileInterface
+     */
     public static function get($path)
     {
         if (is_dir($path)) {

@@ -17,7 +17,7 @@ class StringStream
 
     /**
      * Content of stream
-     * @var string
+     * @var array
      */
     private static $string = [];
 
@@ -55,12 +55,14 @@ class StringStream
     }
 
     /**
-     * Open stream
+     * Open a stream
+     *
      * @param string $aPath
      * @param string $aMode
      * @param int $aOptions
      * @param string $aOpenedPath
      * @return boolean
+     * @throws exceptions\StringStreamException
      */
     public function stream_open($aPath, $aMode, $aOptions, &$aOpenedPath)
     {
@@ -101,7 +103,7 @@ class StringStream
     /**
      * Read from stream
      * @param int $aBytes number of bytes to return
-     * @return string
+     * @return string|bool
      */
     public function stream_read($aBytes)
     {
@@ -117,7 +119,7 @@ class StringStream
     /**
      * Write to stream
      * @param string $aData data to write
-     * @return int
+     * @return int|bool
      */
     public function stream_write($aData)
     {
@@ -128,7 +130,7 @@ class StringStream
             $this->position += strlen($aData);
             return strlen($aData);
         } else {
-            return 0;
+            return false;
         }
     }
 
@@ -165,12 +167,10 @@ class StringStream
                     $this->stream_truncate($aOffset);
                 }
                 return true;
-                break;
 
             case SEEK_CUR:
                 $this->position += $aOffset;
                 return true;
-                break;
 
             case SEEK_END:
                 $this->position = strlen(self::$string[$this->path]) + $aOffset;
@@ -178,7 +178,6 @@ class StringStream
                     $this->stream_truncate(strlen(self::$string[$this->path]) + $aOffset);
                 }
                 return true;
-                break;
 
             default:
                 return false;
@@ -188,6 +187,7 @@ class StringStream
     /**
      * Truncate to given size
      * @param int $aSize
+     * @return bool
      */
     public function stream_truncate($aSize)
     {
@@ -223,15 +223,18 @@ class StringStream
     /**
      * Return info about stream
      * @param string $aPath
-     * @param array $aOptions
      * @return array
      */
-    public function url_stat($aPath, $aOptions)
+    public function url_stat($aPath)
     {
         $resource = fopen($aPath, 'r');
         return fstat($resource);
     }
 
+    /**
+     * @param string $protocol
+     * @throws exceptions\StringStreamException
+     */
     public static function register($protocol = 'string')
     {
         if (!self::$registered) {

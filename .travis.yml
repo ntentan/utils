@@ -1,6 +1,6 @@
 language: php
 sudo: false
-dist: precise
+dist: trusty
 php:
  - "7.1"
 env: COVERAGE=yes     

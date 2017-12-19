@@ -3,6 +3,11 @@
 namespace ntentan\utils\validator\validations;
 use ntentan\utils\validator\Validation;
 
+/**
+ * Ensures a field contains a value.
+ *
+ * @package ntentan\utils\validator\validations
+ */
 class RequiredValidation extends Validation
 {
     public function run($field, $data)
