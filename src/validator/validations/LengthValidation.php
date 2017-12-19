@@ -3,6 +3,11 @@
 namespace ntentan\utils\validator\validations;
 use ntentan\utils\validator\Validation;
 
+/**
+ * Validates the length of a field.
+ *
+ * @package ntentan\utils\validator\validations
+ */
 class LengthValidation extends Validation
 {
     public function run($field, $data)

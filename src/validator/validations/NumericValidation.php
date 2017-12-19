@@ -3,6 +3,11 @@
 namespace ntentan\utils\validator\validations;
 use ntentan\utils\validator\Validation;
 
+/**
+ * Ensures that a field contains only numbers.
+ *
+ * @package ntentan\utils\validator\validations
+ */
 class NumericValidation extends Validation
 {
     public function run($field, $data)

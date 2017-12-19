@@ -3,6 +3,11 @@
 namespace ntentan\utils\validator\validations;
 use ntentan\utils\validator\Validation;
 
+/**
+ * Validates a field with a regular expression.
+ *
+ * @package ntentan\utils\validator\validations
+ */
 class RegexpValidation extends Validation
 {
     public function run($field, $data)

@@ -31,6 +31,10 @@ namespace ntentan\utils;
  */
 class Text
 {
+    /**
+     * Regexes for plurals
+     * @var array
+     */
     private static $pluralRules = [
         ['/child/', 'ren'],
         ['/^ox$/', 'en'],
@@ -60,6 +64,10 @@ class Text
         ['/.*/', 's']
     ];
 
+    /**
+     * Regexes for singulars
+     * @var array
+     */
     private static $singularRules = [
         ['/^axe(?<remove>s)$/', ''],
         ['/(.*)(?<remove>a)$/', 'um'],
@@ -170,7 +178,7 @@ class Text
      *
      * @param string $text
      * @param array $rules
-     * @return string
+     * @return string|null
      */
     private static function runInflection($text, $rules)
     {
