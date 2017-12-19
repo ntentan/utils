@@ -15,8 +15,7 @@ class RegexpValidation extends Validation
         $value = $this->getFieldValue($field, $data);
         return $this->evaluateResult(
             $field,
-            preg_match_all(is_string($field['options']) ? 
-                $field['options'] : $field['options'][0], $value), 
+            preg_match_all(is_string($field['options']) ? $field['options'] : $field['options'][0], $value) > 0,
             "The format of your input is invalid"
         );       
     }
