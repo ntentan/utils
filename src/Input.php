@@ -68,7 +68,7 @@ class Input
      * @param string $key The key of the item in the query to retrieve.
      * @return mixed
      */
-    private static function decode(string $method, string $key)
+    private static function decode(string $method, string $key = null)
     {
         if(!isset(self::$arrays[$method])) {
             $query = $method == self::GET 
@@ -93,7 +93,7 @@ class Input
      * @param string $key The data key
      * @return string|array The value.
      */
-    private static function getVariable(string $input, string $key)
+    private static function getVariable(string $input, string $key = null)
     {
         if ($key === null) {
             if (!isset(self::$arrays[$input])) {
