@@ -74,7 +74,7 @@ class Input
             $query = $method == self::GET 
                 ? filter_input(INPUT_SERVER, 'QUERY_STRING') 
                 : file_get_contents('php://input');
-            $query = preg_replace_callback('/(?:^|(?<=&))[^=[]+/', 
+            $query = preg_replace_callback('/(^|(?<=&))[^=[&]+/',
                 function($match) {
                     return bin2hex($match[0]);
                 }, urldecode($query));
