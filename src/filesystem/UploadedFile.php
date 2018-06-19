@@ -6,7 +6,7 @@ use ntentan\utils\exceptions\FilesystemException;
 use ntentan\utils\Filesystem;
 
 /**
- * Represents file that was uploaded through PHPs internal HTTP mechanisms.
+ * Represents a file that was uploaded through PHPs internal HTTP mechanisms.
  *
  * @package ntentan\utils\filesystem
  */
@@ -49,7 +49,9 @@ class UploadedFile extends File
      */
     public function __construct(array $file = null)
     {
-        if (!is_uploaded_file($file['tmp_name']) || $file === null) {
+        if($file === null) {
+            throw new FilesystemException("Failed to complete file upload");
+        } else if (!is_uploaded_file($file['tmp_name'])) {
             throw new FilesystemException("File {$file['tmp_name']} is not an uploaded file.");
         }
         parent::__construct($file['tmp_name']);
