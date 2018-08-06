@@ -68,13 +68,13 @@ class Input
      * @param string $key The key of the item in the query to retrieve.
      * @return mixed
      */
-    private static function decode(string $method, string $key)
+    private static function decode(string $method, string $key = null)
     {
         if(!isset(self::$arrays[$method])) {
             $query = $method == self::GET 
                 ? filter_input(INPUT_SERVER, 'QUERY_STRING') 
                 : file_get_contents('php://input');
-            $query = preg_replace_callback('/(?:^|(?<=&))[^=[]+/', 
+            $query = preg_replace_callback('/(^|(?<=&))[^=[&]+/',
                 function($match) {
                     return bin2hex($match[0]);
                 }, urldecode($query));
@@ -93,7 +93,7 @@ class Input
      * @param string $key The data key
      * @return string|array The value.
      */
-    private static function getVariable(string $input, string $key)
+    private static function getVariable(string $input, string $key = null)
     {
         if ($key === null) {
             if (!isset(self::$arrays[$input])) {
