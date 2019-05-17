@@ -115,10 +115,25 @@ class Directory implements FileInterface
      * @throws \ntentan\utils\exceptions\FileAlreadyExistsException
      * @throws \ntentan\utils\exceptions\FileNotWriteableException
      */
-    public function create($permissions = 0755)
+    public function create($recursive=false, $permissions = 0755)
     {
         Filesystem::checkNotExists($this->path);
-        Filesystem::checkWritable(dirname($this->path));
+        if($recursive) {
+            $segments = explode(DIRECTORY_SEPARATOR, $this->path);
+            $accumulator = "";
+            $parent = "";
+            foreach($segments as $segment) {
+                $accumulator .= $segment . DIRECTORY_SEPARATOR;
+                if(is_dir($accumulator)) {
+                    $parent = $accumulator;
+                } else {
+                    break;
+                }
+            }
+        } else {
+            $parent = dirname($this->path);
+        }
+        Filesystem::checkWritable($parent);
         mkdir($this->path, $permissions, true);
     }
 
@@ -156,7 +171,7 @@ class Directory implements FileInterface
      * @throws \ntentan\utils\exceptions\FileNotReadableException
      * @return array<FileInterface>
      */
-    public function getFiles() : array
+    public function getFiles() : FileCollection
     {
         Filesystem::checkExists($this->path);
         Filesystem::checkReadable($this->path);
@@ -165,10 +180,10 @@ class Directory implements FileInterface
         $files = scandir($this->path);
         foreach ($files as $file) {
             if($file != '.' && $file != '..') {
-                $contents[] = Filesystem::get("$this->path/$file");
+                $contents[] = "$this->path/$file";
             }
         }
-        return $contents;
+        return new FileCollection($contents);
     }
 
     public function __toString()

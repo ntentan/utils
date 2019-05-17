@@ -25,6 +25,9 @@
  */
 
 namespace ntentan\utils;
+use ntentan\utils\exceptions\FileNotFoundException;
+use ntentan\utils\filesystem\Directory;
+use ntentan\utils\filesystem\File;
 use ntentan\utils\filesystem\FileInterface;
 
 /**
@@ -43,7 +46,7 @@ class Filesystem
     public static function checkWritable(string $path) : void
     {
         if (!is_writable($path)) {
-            throw new exceptions\FileNotWriteableException("File $path is not writeable");
+            throw new exceptions\FileNotWriteableException("Location $path is not writeable");
         }
     }
 
@@ -57,7 +60,7 @@ class Filesystem
     public static function checkReadable(string $path) : void
     {
         if (!is_readable($path)) {
-            throw new exceptions\FileNotReadableException("File $path is not readable");
+            throw new exceptions\FileNotReadableException("Location $path is not readable");
         }
     }
 
@@ -70,7 +73,7 @@ class Filesystem
     public static function checkExists(string $path) : void
     {
         if (!file_exists($path)) {
-            throw new exceptions\FileNotFoundException("File '$path' does not exist");
+            throw new exceptions\FileNotFoundException("Location '$path' does not exist");
         }
     }
 
@@ -83,7 +86,7 @@ class Filesystem
     public static function checkNotExists(string $path) : void
     {
         if(file_exists($path)) {
-            throw new exceptions\FileAlreadyExistsException("File '$path' already exists");
+            throw new exceptions\FileAlreadyExistsException("Location '$path' already exists");
         }
     }
 
@@ -123,7 +126,24 @@ class Filesystem
     {
         if (is_dir($path)) {
             return new filesystem\Directory($path);
+        } else if(is_file($path)) {
+            return new filesystem\File($path);
         }
+        throw new FileNotFoundException("Could not get location '{$path}'");
+    }
+
+    public static function file($path)
+    {
         return new filesystem\File($path);
+    }
+
+    public static function directory($path)
+    {
+        return new filesystem\Directory($path);
+    }
+
+    public static function glob($glob)
+    {
+        return new filesystem\FileCollection(glob($glob));
     }
 }
