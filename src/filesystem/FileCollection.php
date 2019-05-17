@@ -4,7 +4,10 @@
 namespace ntentan\utils\filesystem;
 
 
+use ntentan\utils\exceptions\FileNotFoundException;
+use ntentan\utils\exceptions\FilesystemException;
 use ntentan\utils\Filesystem;
+use test\base;
 
 class FileCollection implements \Iterator, \ArrayAccess, FileInterface
 {
@@ -83,7 +86,14 @@ class FileCollection implements \Iterator, \ArrayAccess, FileInterface
     public function moveTo(string $destination): void
     {
         foreach($this as $file) {
-            $file->moveTo($destination);
+            $file->moveTo($destination . DIRECTORY_SEPARATOR . basename($file));
+        }
+    }
+
+    public function copyTo(string $destination): void
+    {
+        foreach($this as $file) {
+            $file->copyTo($destination . DIRECTORY_SEPARATOR . basename($file));
         }
     }
 
@@ -95,10 +105,18 @@ class FileCollection implements \Iterator, \ArrayAccess, FileInterface
             }, 0);
     }
 
-    public function copyTo(string $destination): void
+    public function delete(): void
     {
         foreach($this as $file) {
-            $this->copyTo($destination);
+            $file->delete();
         }
+    }
+
+    public function getPath(): string
+    {
+        return array_reduce($this->paths,
+            function($carry, $path) {
+                $carry .= escapeshellarg($path) . " ";
+            }, "");
     }
 }

@@ -46,15 +46,13 @@ class Directory implements FileInterface
     {
         try {
             Filesystem::checkExists($destination);
+            $destination = $destination . DIRECTORY_SEPARATOR . basename($this);
         } catch (FileNotFoundException $e) {
-            $destinationDir = new self($destination);
-            $destinationDir->create();
+            Filesystem::directory($destination)->create(true);
         }
 
-        $files = $this->getFiles();
-        foreach ($files as $file) {
-            $destinationPath = "$destination/" . basename($file);
-            $file->$operation($destinationPath);
+        foreach ($this->getFiles() as $file) {
+            $file->$operation($destination . DIRECTORY_SEPARATOR . basename($file));
         }
     }
 
@@ -83,12 +81,7 @@ class Directory implements FileInterface
      */
     public function getSize() : int
     {
-        $files = $this->getFiles();
-        $size = 0;
-        foreach($files as $file) {
-            $size += $file->getSize();
-        }
-        return $size;
+        return $this->getFiles()->getSize();
     }
 
     /**
@@ -146,10 +139,7 @@ class Directory implements FileInterface
      */
     public function delete() : void
     {
-        $files = $this->getFiles();
-        foreach($files as $file) {
-            $file->delete();
-        }
+        $this->getFiles()->delete();
         rmdir($this->path);
     }
 
