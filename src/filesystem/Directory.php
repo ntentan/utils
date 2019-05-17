@@ -112,7 +112,9 @@ class Directory implements FileInterface
     {
         Filesystem::checkNotExists($this->path);
         if($recursive) {
-            $segments = explode(DIRECTORY_SEPARATOR, $this->path);
+            $parsedPath = parse_url($this->path);
+            $segments = explode(DIRECTORY_SEPARATOR, $parsedPath['path']);
+            array_unshift($segments, $parsedPath['scheme'] . ':' . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . $parsedPath['host']);
             $accumulator = "";
             $parent = "";
             foreach($segments as $segment) {

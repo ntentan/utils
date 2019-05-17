@@ -4,12 +4,10 @@
 namespace ntentan\utils\filesystem;
 
 
-use ntentan\utils\exceptions\FileNotFoundException;
-use ntentan\utils\exceptions\FilesystemException;
 use ntentan\utils\Filesystem;
 use test\base;
 
-class FileCollection implements \Iterator, \ArrayAccess, FileInterface
+class FileCollection implements \Iterator, \ArrayAccess, FileInterface, \Countable
 {
     private $paths;
     private $iteratorIndex;
@@ -99,9 +97,9 @@ class FileCollection implements \Iterator, \ArrayAccess, FileInterface
 
     public function getSize(): int
     {
-        return array_reduce($this,
+        return array_reduce(iterator_to_array($this),
             function($carry, $item){
-                $carry += $item->getSize();
+                return $carry + $item->getSize();
             }, 0);
     }
 
@@ -118,5 +116,10 @@ class FileCollection implements \Iterator, \ArrayAccess, FileInterface
             function($carry, $path) {
                 $carry .= escapeshellarg($path) . " ";
             }, "");
+    }
+
+    public function count()
+    {
+        return count($this->paths);
     }
 }
