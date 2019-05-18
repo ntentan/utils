@@ -5,20 +5,51 @@ namespace ntentan\utils\filesystem;
 
 
 use ntentan\utils\Filesystem;
-use test\base;
 
+/**
+ * Holds a collection of files.
+ * This may be returned from directory contents or glob operations. A collection can contain regular files and 
+ * directories and, its contents do not need to be from the same root directory.
+ *
+ * @package ntentan\utils\filesystem
+ */
 class FileCollection implements \Iterator, \ArrayAccess, FileInterface, \Countable
 {
+    /**
+     * An array holding all paths in this collection
+     * @var array
+     */
     private $paths;
+
+    /**
+     * Current index of the iterator in the list of paths.
+     * @var int
+     */
     private $iteratorIndex;
+
+    /**
+     * A lightweight cache that holds instances of file objects created.
+     * @var array<FileInterface>
+     */
     private $instances;
 
+    /**
+     * FileCollection constructor.
+     * @param $paths
+     */
     public function __construct($paths)
     {
         $this->paths = $paths;
         $this->iteratorIndex = 0;
     }
 
+    /**
+     * Get an instance of a file object for a path in the collection.
+     * This is used whenever an item must be returned from the collection.
+     *
+     * @param $index
+     * @return mixed
+     */
     private function getInstance($index)
     {
         if(!isset($this->instances[$index])) {
@@ -58,7 +89,7 @@ class FileCollection implements \Iterator, \ArrayAccess, FileInterface, \Countab
 
     public function offsetSet($index, $path)
     {
-        if(is_null()) {
+        if(is_null($index)) {
             $this->paths[] = $path;
         } else {
             $this->paths[$index] = $path;

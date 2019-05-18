@@ -20,7 +20,7 @@ You can install this package through `ntentan\utils` on composer.
 Text Manipulation
 -----------------
 Text manipulation routines in the utils package provides inflector (for 
-pluralizing or singularizing text) and camel case conversion routines. These 
+pluralizing or singularizing text), and camel case conversion routines. These 
 routines are mainly consumed by components that generate magic strings for 
 class and method names. All routines are implemented as static functions in the 
 in the `ntentan\utils\Text`.
@@ -57,6 +57,36 @@ print Text::camelize('home-alone', '-'); // should output HomeAlone
 print Text::deCamelize('HomeAloneAgain', '-'); // should output home-alone-again
 
 ````
+
+Filesystem
+==========
+The utils package provides file manipulation utilities that wrap around PHP's built in 
+filesystem functions to provide an object oriented interface. Through this package, 
+you can perform the following:
+
+   - Create and delete directories with the option of recursively deleting all the directories content too.
+   - Copy and move files and directories, also with the option of performing these recursively.
+   - Read to and write from files.
+   
+While providing these features, the filesystem utilities rely on exceptions to inform
+about filesystem errors whenever they take place. The routines for the filesystem utilites
+can largely be accessed through a static facade, `ntentan\utils\Filesystem`, which provides
+an interface through which most of the features of the filesystem package can be accessed.
+
+Workint with directories
+------------------------
+To create a directory ...
+
+````php
+use ntentan\utils\Filesystem;
+Filesystem::directory("/path/to/some/dir")->create();
+````  
+
+To create the entire hierarchy if it doesn't exist ...
+````php
+use ntentan\utils\Filesystem;
+Filesystem::directory("/path/to/some/dir")->create(true);
+```` 
 
 License
 =======
