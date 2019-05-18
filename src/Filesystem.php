@@ -121,6 +121,7 @@ class Filesystem
      *
      * @param string $path
      * @return FileInterface
+     * @throws FileNotFoundException
      */
     public static function get($path)
     {

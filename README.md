@@ -73,7 +73,7 @@ about filesystem errors whenever they take place. The routines for the filesyste
 can largely be accessed through a static facade, `ntentan\utils\Filesystem`, which provides
 an interface through which most of the features of the filesystem package can be accessed.
 
-Workint with directories
+Working with directories
 ------------------------
 To create a directory ...
 
@@ -87,6 +87,50 @@ To create the entire hierarchy if it doesn't exist ...
 use ntentan\utils\Filesystem;
 Filesystem::directory("/path/to/some/dir")->create(true);
 ```` 
+
+In the same vein, deleting directories can be done by ...
+````php
+use ntentan\utils\Filesystem;
+Filesystem::directory("/path/to/some/dir")->delete();
+````  
+Note that this also deletes all the contents of the directory including subdirectories,
+which are recursively emptied.
+
+Moving and copying files and directories
+----------------------------------------
+Continuing in a consistent fashion, copying directories work through ...
+
+````php
+use ntentan\utils\Filesystem;
+Filesystem::directory("/path/to/some/dir")->moveTo("/path/to/new/dir");
+````  
+and with copying ...
+
+````php
+use ntentan\utils\Filesystem;
+Filesystem::directory("/path/to/some/dir")->copyTo("/path/to/new/dir");
+````  
+
+If you care to use files instead, you can replace the call to `Filesystem::directory` with
+a call to `Filesystem::file` and perform your operations as follows ...
+
+````php
+use ntentan\utils\Filesystem;
+Filesystem::file("/path/to/some/file")->moveTo("/path/to/new/file");
+````  
+
+Checking file statuses and Dealing with errors
+----------------------------------------------
+Errors that occur during filesystem operations are reported through exceptions. Exceptions
+are descriptively named such that a `ntentan\utils\exceptions\FileNotFoundException` is thrown
+when a file is not found, a `ntentan\utils\exceptions\FileNotReadableException` is thrown
+when trying to read a file that has no read permisions, and so on.
+
+Permissions and statuses of files can be explicitly checked too, through methods in the
+static `Filesystem` class. These aptly named methods such as `Filesystem::checkWriteable` and
+`Filesystem::checkExists`, perform the correspondingly named checks and throw the appropriate
+exceptions when these checks fail.
+
 
 License
 =======
