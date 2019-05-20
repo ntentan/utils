@@ -46,7 +46,7 @@ class Filesystem
     public static function checkWritable(string $path) : void
     {
         if (!is_writable($path)) {
-            throw new exceptions\FileNotWriteableException("Location $path is not writeable");
+            throw new exceptions\FileNotWriteableException("Location [$path] is not writeable");
         }
     }
 

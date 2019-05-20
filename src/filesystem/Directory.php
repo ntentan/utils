@@ -114,7 +114,9 @@ class Directory implements FileInterface
         if($recursive) {
             $parsedPath = parse_url($this->path);
             $segments = explode(DIRECTORY_SEPARATOR, $parsedPath['path']);
-            array_unshift($segments, $parsedPath['scheme'] . ':' . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . $parsedPath['host']);
+            $scheme = $parsedPath['scheme'] ?? '';
+            $host = $parsedPath['host'] ?? '';
+            array_unshift($segments, $scheme . ':' . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . $host);
             $accumulator = "";
             $parent = "";
             foreach($segments as $segment) {
@@ -128,7 +130,7 @@ class Directory implements FileInterface
         } else {
             $parent = dirname($this->path);
         }
-        Filesystem::checkWritable($parent);
+        Filesystem::checkWritable($parent == "" ? "." : $parent);
         mkdir($this->path, $permissions, true);
     }
 
