@@ -2,7 +2,10 @@
 
 namespace ntentan\utils\filesystem;
 
+use ntentan\utils\exceptions\FileAlreadyExistsException;
 use ntentan\utils\exceptions\FileNotFoundException;
+use ntentan\utils\exceptions\FileNotReadableException;
+use ntentan\utils\exceptions\FileNotWriteableException;
 use ntentan\utils\Filesystem;
 use ntentan\utils\exceptions\FilesystemException;
 
@@ -38,16 +41,15 @@ class Directory implements FileInterface
      * @param string $destination
      * @throws FileNotFoundException
      * @throws FilesystemException
-     * @throws \ntentan\utils\exceptions\FileAlreadyExistsException
-     * @throws \ntentan\utils\exceptions\FileNotReadableException
-     * @throws \ntentan\utils\exceptions\FileNotWriteableException
+     * @throws FileAlreadyExistsException
+     * @throws FileNotReadableException
+     * @throws FileNotWriteableException
      */
     private function directoryOperation(string $operation, string $destination):void
     {
         try {
-            $destination = $destination . DIRECTORY_SEPARATOR;
-            $destination = $destination . (basename($destination) != basename($this) ? basename($this) : "");
             Filesystem::checkExists($destination);
+            $destination = $destination . DIRECTORY_SEPARATOR . basename($this);
         } catch (FileNotFoundException $e) {
             Filesystem::directory($destination)->create(true);
         }
@@ -63,9 +65,9 @@ class Directory implements FileInterface
      * @param string $destination
      * @throws FileNotFoundException
      * @throws FilesystemException
-     * @throws \ntentan\utils\exceptions\FileAlreadyExistsException
-     * @throws \ntentan\utils\exceptions\FileNotReadableException
-     * @throws \ntentan\utils\exceptions\FileNotWriteableException
+     * @throws FileAlreadyExistsException
+     * @throws FileNotReadableException
+     * @throws FileNotWriteableException
      */
     public function copyTo(string $destination): void
     {
@@ -78,7 +80,7 @@ class Directory implements FileInterface
      * @return integer
      * @throws FileNotFoundException
      * @throws FilesystemException
-     * @throws \ntentan\utils\exceptions\FileNotReadableException
+     * @throws FileNotReadableException
      */
     public function getSize() : int
     {
@@ -91,9 +93,9 @@ class Directory implements FileInterface
      * @param string $destination
      * @throws FileNotFoundException
      * @throws FilesystemException
-     * @throws \ntentan\utils\exceptions\FileAlreadyExistsException
-     * @throws \ntentan\utils\exceptions\FileNotReadableException
-     * @throws \ntentan\utils\exceptions\FileNotWriteableException
+     * @throws FileAlreadyExistsException
+     * @throws FileNotReadableException
+     * @throws FileNotWriteableException
      */
     public function moveTo(string $destination) : void
     {
@@ -106,8 +108,8 @@ class Directory implements FileInterface
      * Create the directory pointed to by path.
      *
      * @param int $permissions
-     * @throws \ntentan\utils\exceptions\FileAlreadyExistsException
-     * @throws \ntentan\utils\exceptions\FileNotWriteableException
+     * @throws FileAlreadyExistsException
+     * @throws FileNotWriteableException
      */
     public function create($recursive=false, $permissions = 0755)
     {
@@ -140,7 +142,7 @@ class Directory implements FileInterface
      *
      * @throws FileNotFoundException
      * @throws FilesystemException
-     * @throws \ntentan\utils\exceptions\FileNotReadableException
+     * @throws FileNotReadableException
      */
     public function delete() : void
     {
@@ -162,8 +164,8 @@ class Directory implements FileInterface
      * Get the files in the directory.
      *
      * @throws FilesystemException
-     * @throws \ntentan\utils\exceptions\FileNotFoundException
-     * @throws \ntentan\utils\exceptions\FileNotReadableException
+     * @throws FileNotFoundException
+     * @throws FileNotReadableException
      * @return array<FileInterface>
      */
     public function getFiles() : FileCollection
