@@ -181,7 +181,7 @@ class Directory implements FileInterface
         foreach ($files as $file) {
             if($file == '.' || $file == '..') continue;
             $path = "$this->path/$file";
-            if(is_dir($path)) {
+            if(is_dir($path) && $recursive) {
                 $contents = array_merge($contents, Filesystem::directory($path)->getFiles(true, true));
             }
             $contents[] = $path;
