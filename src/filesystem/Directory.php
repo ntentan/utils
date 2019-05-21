@@ -45,8 +45,9 @@ class Directory implements FileInterface
     private function directoryOperation(string $operation, string $destination):void
     {
         try {
+            $destination = $destination . DIRECTORY_SEPARATOR;
+            $destination = $destination . (basename($destination) != basename($this) ? basename($this) : "");
             Filesystem::checkExists($destination);
-            $destination = $destination . DIRECTORY_SEPARATOR . basename($this);
         } catch (FileNotFoundException $e) {
             Filesystem::directory($destination)->create(true);
         }
