@@ -2,7 +2,10 @@
 
 namespace ntentan\utils\filesystem;
 
+use ntentan\utils\exceptions\FileAlreadyExistsException;
 use ntentan\utils\exceptions\FileNotFoundException;
+use ntentan\utils\exceptions\FileNotReadableException;
+use ntentan\utils\exceptions\FileNotWriteableException;
 use ntentan\utils\Filesystem;
 use ntentan\utils\exceptions\FilesystemException;
 
@@ -38,23 +41,24 @@ class Directory implements FileInterface
      * @param string $destination
      * @throws FileNotFoundException
      * @throws FilesystemException
-     * @throws \ntentan\utils\exceptions\FileAlreadyExistsException
-     * @throws \ntentan\utils\exceptions\FileNotReadableException
-     * @throws \ntentan\utils\exceptions\FileNotWriteableException
+     * @throws FileAlreadyExistsException
+     * @throws FileNotReadableException
+     * @throws FileNotWriteableException
      */
     private function directoryOperation(string $operation, string $destination):void
     {
-        try {
-            Filesystem::checkExists($destination);
-        } catch (FileNotFoundException $e) {
-            $destinationDir = new self($destination);
-            $destinationDir->create();
-        }
+        foreach ($this->getFiles(true) as $file) {
+            $fileTarget = $destination . DIRECTORY_SEPARATOR . substr($file, strlen($this->path));
+            if(is_dir($file)) {
+                continue;
+            }
+            try{
+                Filesystem::checkExists(dirname($fileTarget));
+            } catch (FileNotFoundException $exception) {
+                Filesystem::directory(dirname($fileTarget))->create(true);
+            }
 
-        $files = $this->getFiles();
-        foreach ($files as $file) {
-            $destinationPath = "$destination/" . basename($file);
-            $file->$operation($destinationPath);
+            $file->$operation($fileTarget);
         }
     }
 
@@ -64,9 +68,9 @@ class Directory implements FileInterface
      * @param string $destination
      * @throws FileNotFoundException
      * @throws FilesystemException
-     * @throws \ntentan\utils\exceptions\FileAlreadyExistsException
-     * @throws \ntentan\utils\exceptions\FileNotReadableException
-     * @throws \ntentan\utils\exceptions\FileNotWriteableException
+     * @throws FileAlreadyExistsException
+     * @throws FileNotReadableException
+     * @throws FileNotWriteableException
      */
     public function copyTo(string $destination): void
     {
@@ -79,16 +83,11 @@ class Directory implements FileInterface
      * @return integer
      * @throws FileNotFoundException
      * @throws FilesystemException
-     * @throws \ntentan\utils\exceptions\FileNotReadableException
+     * @throws FileNotReadableException
      */
     public function getSize() : int
     {
-        $files = $this->getFiles();
-        $size = 0;
-        foreach($files as $file) {
-            $size += $file->getSize();
-        }
-        return $size;
+        return $this->getFiles()->getSize();
     }
 
     /**
@@ -97,9 +96,9 @@ class Directory implements FileInterface
      * @param string $destination
      * @throws FileNotFoundException
      * @throws FilesystemException
-     * @throws \ntentan\utils\exceptions\FileAlreadyExistsException
-     * @throws \ntentan\utils\exceptions\FileNotReadableException
-     * @throws \ntentan\utils\exceptions\FileNotWriteableException
+     * @throws FileAlreadyExistsException
+     * @throws FileNotReadableException
+     * @throws FileNotWriteableException
      */
     public function moveTo(string $destination) : void
     {
@@ -112,13 +111,32 @@ class Directory implements FileInterface
      * Create the directory pointed to by path.
      *
      * @param int $permissions
-     * @throws \ntentan\utils\exceptions\FileAlreadyExistsException
-     * @throws \ntentan\utils\exceptions\FileNotWriteableException
+     * @throws FileAlreadyExistsException
+     * @throws FileNotWriteableException
      */
-    public function create($permissions = 0755)
+    public function create($recursive=false, $permissions = 0755)
     {
         Filesystem::checkNotExists($this->path);
-        Filesystem::checkWritable(dirname($this->path));
+        if($recursive) {
+            $parsedPath = parse_url($this->path);
+            $segments = explode(DIRECTORY_SEPARATOR, $parsedPath['path']);
+            $scheme = $parsedPath['scheme'] ?? '';
+            $host = $parsedPath['host'] ?? '';
+            array_unshift($segments, $scheme . ':' . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . $host);
+            $accumulator = "";
+            $parent = "";
+            foreach($segments as $segment) {
+                $accumulator .= $segment . DIRECTORY_SEPARATOR;
+                if(is_dir($accumulator)) {
+                    $parent = $accumulator;
+                } else {
+                    break;
+                }
+            }
+        } else {
+            $parent = dirname($this->path);
+        }
+        Filesystem::checkWritable($parent == "" ? "." : $parent);
         mkdir($this->path, $permissions, true);
     }
 
@@ -127,14 +145,11 @@ class Directory implements FileInterface
      *
      * @throws FileNotFoundException
      * @throws FilesystemException
-     * @throws \ntentan\utils\exceptions\FileNotReadableException
+     * @throws FileNotReadableException
      */
     public function delete() : void
     {
-        $files = $this->getFiles();
-        foreach($files as $file) {
-            $file->delete();
-        }
+        $this->getFiles()->delete();
         rmdir($this->path);
     }
 
@@ -152,11 +167,11 @@ class Directory implements FileInterface
      * Get the files in the directory.
      *
      * @throws FilesystemException
-     * @throws \ntentan\utils\exceptions\FileNotFoundException
-     * @throws \ntentan\utils\exceptions\FileNotReadableException
-     * @return array<FileInterface>
+     * @throws FileNotFoundException
+     * @throws FileNotReadableException
+     * @return FileCollection | array<string>
      */
-    public function getFiles() : array
+    public function getFiles($recursive=false, $returnStrings=false)
     {
         Filesystem::checkExists($this->path);
         Filesystem::checkReadable($this->path);
@@ -164,11 +179,14 @@ class Directory implements FileInterface
 
         $files = scandir($this->path);
         foreach ($files as $file) {
-            if($file != '.' && $file != '..') {
-                $contents[] = Filesystem::get("$this->path/$file");
+            if($file == '.' || $file == '..') continue;
+            $path = "$this->path/$file";
+            if(is_dir($path) && $recursive) {
+                $contents = array_merge($contents, Filesystem::directory($path)->getFiles(true, true));
             }
+            $contents[] = $path;
         }
-        return $contents;
+        return $returnStrings ? $contents : new FileCollection($contents);
     }
 
     public function __toString()

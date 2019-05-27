@@ -20,7 +20,7 @@ You can install this package through `ntentan\utils` on composer.
 Text Manipulation
 -----------------
 Text manipulation routines in the utils package provides inflector (for 
-pluralizing or singularizing text) and camel case conversion routines. These 
+pluralizing or singularizing text), and camel case conversion routines. These 
 routines are mainly consumed by components that generate magic strings for 
 class and method names. All routines are implemented as static functions in the 
 in the `ntentan\utils\Text`.
@@ -57,6 +57,80 @@ print Text::camelize('home-alone', '-'); // should output HomeAlone
 print Text::deCamelize('HomeAloneAgain', '-'); // should output home-alone-again
 
 ````
+
+Filesystem
+==========
+The utils package provides file manipulation utilities that wrap around PHP's built in 
+filesystem functions to provide an object oriented interface. Through this package, 
+you can perform the following:
+
+   - Create and delete directories with the option of recursively deleting all the directories content too.
+   - Copy and move files and directories, also with the option of performing these recursively.
+   - Read to and write from files.
+   
+While providing these features, the filesystem utilities rely on exceptions to inform
+about filesystem errors whenever they take place. The routines for the filesystem utilites
+can largely be accessed through a static facade, `ntentan\utils\Filesystem`, which provides
+an interface through which most of the features of the filesystem package can be accessed.
+
+Working with directories
+------------------------
+To create a directory ...
+
+````php
+use ntentan\utils\Filesystem;
+Filesystem::directory("/path/to/some/dir")->create();
+````  
+
+To create the entire hierarchy if it doesn't exist ...
+````php
+use ntentan\utils\Filesystem;
+Filesystem::directory("/path/to/some/dir")->create(true);
+```` 
+
+In the same vein, deleting directories can be done by ...
+````php
+use ntentan\utils\Filesystem;
+Filesystem::directory("/path/to/some/dir")->delete();
+````  
+Note that this also deletes all the contents of the directory including subdirectories,
+which are recursively emptied.
+
+Moving and copying files and directories
+----------------------------------------
+Continuing in a consistent fashion, copying directories work through ...
+
+````php
+use ntentan\utils\Filesystem;
+Filesystem::directory("/path/to/some/dir")->moveTo("/path/to/new/dir");
+````  
+and with copying ...
+
+````php
+use ntentan\utils\Filesystem;
+Filesystem::directory("/path/to/some/dir")->copyTo("/path/to/new/dir");
+````  
+
+If you care to use files instead, you can replace the call to `Filesystem::directory` with
+a call to `Filesystem::file` and perform your operations as follows ...
+
+````php
+use ntentan\utils\Filesystem;
+Filesystem::file("/path/to/some/file")->moveTo("/path/to/new/file");
+````  
+
+Checking file statuses and Dealing with errors
+----------------------------------------------
+Errors that occur during filesystem operations are reported through exceptions. Exceptions
+are descriptively named such that a `ntentan\utils\exceptions\FileNotFoundException` is thrown
+when a file is not found, a `ntentan\utils\exceptions\FileNotReadableException` is thrown
+when trying to read a file that has no read permisions, and so on.
+
+Permissions and statuses of files can be explicitly checked too, through methods in the
+static `Filesystem` class. These aptly named methods such as `Filesystem::checkWriteable` and
+`Filesystem::checkExists`, perform the correspondingly named checks and throw the appropriate
+exceptions when these checks fail.
+
 
 License
 =======
