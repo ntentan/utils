@@ -47,15 +47,18 @@ class Directory implements FileInterface
      */
     private function directoryOperation(string $operation, string $destination):void
     {
-        try {
-            Filesystem::checkExists($destination);
-            $destination = $destination . DIRECTORY_SEPARATOR . basename($this);
-        } catch (FileNotFoundException $e) {
-            Filesystem::directory($destination)->create(true);
-        }
+        foreach ($this->getFiles(true) as $file) {
+            $fileTarget = $destination . DIRECTORY_SEPARATOR . substr($file, strlen($this->path));
+            if(is_dir($file)) {
+                continue;
+            }
+            try{
+                Filesystem::checkExists(dirname($fileTarget));
+            } catch (FileNotFoundException $exception) {
+                Filesystem::directory(dirname($fileTarget))->create(true);
+            }
 
-        foreach ($this->getFiles() as $file) {
-            $file->$operation($destination . DIRECTORY_SEPARATOR . basename($file));
+            $file->$operation($fileTarget);
         }
     }
 
@@ -166,9 +169,9 @@ class Directory implements FileInterface
      * @throws FilesystemException
      * @throws FileNotFoundException
      * @throws FileNotReadableException
-     * @return array<FileInterface>
+     * @return FileCollection | array<string>
      */
-    public function getFiles() : FileCollection
+    public function getFiles($recursive=false, $returnStrings=false)
     {
         Filesystem::checkExists($this->path);
         Filesystem::checkReadable($this->path);
@@ -176,11 +179,14 @@ class Directory implements FileInterface
 
         $files = scandir($this->path);
         foreach ($files as $file) {
-            if($file != '.' && $file != '..') {
-                $contents[] = "$this->path/$file";
+            if($file == '.' || $file == '..') continue;
+            $path = "$this->path/$file";
+            if(is_dir($path) && $recursive) {
+                $contents = array_merge($contents, Filesystem::directory($path)->getFiles(true, true));
             }
+            $contents[] = $path;
         }
-        return new FileCollection($contents);
+        return $returnStrings ? $contents : new FileCollection($contents);
     }
 
     public function __toString()
