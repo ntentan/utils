@@ -136,7 +136,7 @@ class Directory implements FileInterface
         } else {
             $parent = dirname($this->path);
         }
-        Filesystem::checkWritable($parent == "" ? "." : $parent);
+        Filesystem::checkWritable($parent == "" ? getcwd() : $parent);
         mkdir($this->path, $permissions, true);
     }
 
