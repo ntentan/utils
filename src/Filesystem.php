@@ -67,7 +67,7 @@ class Filesystem
     /**
      * Checks if a file exists and throws an exception if not.
      *
-     * @param $path
+     * @param string $path
      * @throws exceptions\FileNotFoundException
      */
     public static function checkExists(string $path) : void
