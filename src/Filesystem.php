@@ -25,6 +25,7 @@
  */
 
 namespace ntentan\utils;
+
 use ntentan\utils\exceptions\FileNotFoundException;
 use ntentan\utils\filesystem\Directory;
 use ntentan\utils\filesystem\File;
@@ -32,7 +33,7 @@ use ntentan\utils\filesystem\FileInterface;
 
 /**
  * A collection of filesystem utilities.
- * 
+ *
  */
 class Filesystem
 {
@@ -43,7 +44,7 @@ class Filesystem
      * @param string $path The path to the file to be checked.
      * @throws exceptions\FileNotWriteableException
      */
-    public static function checkWritable(string $path) : void
+    public static function checkWritable(string $path): void
     {
         if (!is_writable($path)) {
             throw new exceptions\FileNotWriteableException("Location [$path] is not writeable");
@@ -57,7 +58,7 @@ class Filesystem
      * @param string $path The path to the file to be checked.
      * @throws exceptions\FileNotReadableException
      */
-    public static function checkReadable(string $path) : void
+    public static function checkReadable(string $path): void
     {
         if (!is_readable($path)) {
             throw new exceptions\FileNotReadableException("Location $path is not readable");
@@ -70,7 +71,7 @@ class Filesystem
      * @param string $path
      * @throws exceptions\FileNotFoundException
      */
-    public static function checkExists(string $path) : void
+    public static function checkExists(string $path): void
     {
         if (!file_exists($path)) {
             throw new exceptions\FileNotFoundException("Location '$path' does not exist");
@@ -83,9 +84,9 @@ class Filesystem
      * @param string $path
      * @throws exceptions\FileAlreadyExistsException
      */
-    public static function checkNotExists(string $path) : void
+    public static function checkNotExists(string $path): void
     {
-        if(file_exists($path)) {
+        if (file_exists($path)) {
             throw new exceptions\FileAlreadyExistsException("Location '$path' already exists");
         }
     }
@@ -127,7 +128,7 @@ class Filesystem
     {
         if (is_dir($path)) {
             return new filesystem\Directory($path);
-        } else if(is_file($path)) {
+        } else if (is_file($path)) {
             return new filesystem\File($path);
         }
         throw new FileNotFoundException("Could not get location '{$path}'");
@@ -146,5 +147,16 @@ class Filesystem
     public static function glob($glob)
     {
         return new filesystem\FileCollection(glob($glob));
+    }
+
+    public static function getAbsolutePath($path, $relativeTo = null)
+    {
+        $relativeTo = $relativeTo ?? getcwd();
+        if (preg_match('/^(\\\\|\/)?\.|\.\.\\\\\//', $path) == 1 || (preg_match('/^[a-zA-Z]:/', $path) == 0 && PHP_OS == "Windows")) {
+            $path = getcwd() . DIRECTORY_SEPARATOR . $path;
+        } else if (isset($path[0]) && $path[0] !== '\\' && $path[0] !== '/') {
+            $path = getcwd() . DIRECTORY_SEPARATOR . $path;
+        }
+        return $path;
     }
 }
