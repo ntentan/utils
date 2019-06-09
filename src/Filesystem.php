@@ -98,7 +98,7 @@ class Filesystem
      * @throws exceptions\FileNotFoundException
      * @throws exceptions\FileNotWriteableException
      */
-    public static function checkWriteSafety($path)
+    public static function checkWriteSafety($path) : void
     {
         Filesystem::checkExists($path);
         Filesystem::checkWritable($path);
@@ -111,7 +111,7 @@ class Filesystem
      * @throws exceptions\FileNotFoundException
      * @throws exceptions\FileNotReadableException
      */
-    public static function checkReadSafety($path)
+    public static function checkReadSafety($path) : void
     {
         Filesystem::checkExists($path);
         Filesystem::checkReadable($path);
@@ -124,7 +124,7 @@ class Filesystem
      * @return FileInterface
      * @throws FileNotFoundException
      */
-    public static function get($path)
+    public static function get($path) : FileInterface
     {
         if (is_dir($path)) {
             return new filesystem\Directory($path);
@@ -134,28 +134,55 @@ class Filesystem
         throw new FileNotFoundException("Could not get location '{$path}'");
     }
 
-    public static function file($path)
+    /**
+     * Return an instance of the File object for the given path.
+     *
+     * @param $path
+     * @return File
+     */
+    public static function file($path) : File
     {
         return new filesystem\File($path);
     }
 
-    public static function directory($path)
+    /**
+     * Return an instance of the Directory object for the given path.
+     *
+     * @param $path
+     * @return Directory
+     */
+    public static function directory($path) : Directory
     {
         return new filesystem\Directory($path);
     }
 
-    public static function glob($glob)
+    /**
+     * Returns a file collection for all whose name match with the provided pattern.
+     * The format for the pattern is similar to those used by most shells as wildcards for selecting files.
+     *
+     * @param $pattern
+     * @return filesystem\FileCollection
+     */
+    public static function glob($pattern)
     {
-        return new filesystem\FileCollection(glob($glob));
+        return new filesystem\FileCollection(glob($pattern));
     }
 
+    /**
+     * Takes any path (relative or absolute) and returns its absolute form relative to a given path. When a relative
+     * path is not provided, the current working directory is used.
+     *
+     * @param $path
+     * @param null $relativeTo
+     * @return string
+     */
     public static function getAbsolutePath($path, $relativeTo = null)
     {
         $relativeTo = $relativeTo ?? getcwd();
         if (preg_match('/^(\\\\|\/)?\.|\.\.\\\\\//', $path) == 1 || (preg_match('/^[a-zA-Z]:/', $path) == 0 && PHP_OS == "Windows")) {
-            $path = getcwd() . DIRECTORY_SEPARATOR . $path;
+            $path = $relativeTo . DIRECTORY_SEPARATOR . $path;
         } else if (isset($path[0]) && $path[0] !== '\\' && $path[0] !== '/') {
-            $path = getcwd() . DIRECTORY_SEPARATOR . $path;
+            $path = $relativeTo . DIRECTORY_SEPARATOR . $path;
         }
         return $path;
     }
