@@ -117,26 +117,19 @@ class Directory implements FileInterface
     public function create($recursive=false, $permissions = 0755)
     {
         Filesystem::checkNotExists($this->path);
+        $parent = $this->path;
         if($recursive) {
-            $parsedPath = parse_url($this->path);
-            $segments = explode(DIRECTORY_SEPARATOR, $parsedPath['path']);
-            $scheme = $parsedPath['scheme'] ?? '';
-            $host = $parsedPath['host'] ?? '';
-            array_unshift($segments, $scheme . ':' . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . $host);
-            $accumulator = "";
+            $segments = explode(DIRECTORY_SEPARATOR, $this->path);
             $parent = "";
             foreach($segments as $segment) {
-                $accumulator .= $segment . DIRECTORY_SEPARATOR;
-                if(is_dir($accumulator)) {
-                    $parent = $accumulator;
-                } else {
+                $parent .= $segment . DIRECTORY_SEPARATOR;
+                if(!is_dir($parent)) {
                     break;
                 }
             }
-        } else {
-            $parent = dirname($this->path);
         }
-        Filesystem::checkWritable($parent == "" ? getcwd() : $parent);
+        $parent = dirname($parent);
+        Filesystem::checkWritable($parent == "" ? '.' : $parent);
         mkdir($this->path, $permissions, true);
     }
 
