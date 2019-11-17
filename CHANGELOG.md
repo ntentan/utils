@@ -1,6 +1,9 @@
 CHANGELOG
 ==========
 
+## v0.9.1 - 2019-11-17
+Updated unit tests, and their associated dependencies.
+
 ## v0.9.0 - 2019-06-24
 ### Added
 - A method to resolve a relative path regardless of whether the file exists or not.
