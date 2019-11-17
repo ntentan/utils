@@ -1,6 +1,15 @@
 CHANGELOG
 ==========
 
+## v0.9.1 - 2019-11-17
+### Added
+- Updates to unit testing framework, and its associated dependencies.
+
+### Fixed
+- Inflection rules for plurals ending in `ion`.
+- Unit tests to match with new unit testing framework.
+
+
 ## v0.9.0 - 2019-06-24
 ### Added
 - A method to resolve a relative path regardless of whether the file exists or not.

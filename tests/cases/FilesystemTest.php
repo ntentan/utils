@@ -2,6 +2,10 @@
 
 namespace ntentan\utils\tests\cases;
 
+use ntentan\utils\exceptions\FileAlreadyExistsException;
+use ntentan\utils\exceptions\FileNotFoundException;
+use ntentan\utils\exceptions\FileNotReadableException;
+use ntentan\utils\exceptions\FileNotWriteableException;
 use ntentan\utils\filesystem\Directory;
 use ntentan\utils\filesystem\File;
 use org\bovigo\vfs\vfsStream;
@@ -16,7 +20,7 @@ class FilesystemTest extends TestCase
 
     private $file;
     
-    public function setUp()
+    public function setUp() : void
     {
         vfsStream::setup('fs');
         $this->file = vfsStream::newFile('file');
@@ -24,70 +28,54 @@ class FilesystemTest extends TestCase
         vfsStreamWrapper::getRoot()->addChild(vfsStream::newDirectory('dir'));
     }
 
-    /**
-     * @expectedException \ntentan\utils\exceptions\FileNotFoundException
-     */
     public function testExistsException()
     {
+        $this->expectException(FileNotFoundException::class);
         Filesystem::checkExists(vfsStream::url('fs/notexists'));
     }
     
-    /**
-     * @expectedException \ntentan\utils\exceptions\FileNotWriteableException
-     */    
     public function testWritableException()
     {
+        $this->expectException(FileNotWriteableException::class);
         $this->file->chmod(0000);
         Filesystem::checkWritable(vfsStream::url('fs/file'));
     }
 
-    /**
-     * @expectedException \ntentan\utils\exceptions\FileNotReadableException
-     */
     public function testReadableException()
     {
+        $this->expectException(FileNotReadableException::class);
         $this->file->chmod(0000);
         Filesystem::checkReadable(vfsStream::url('fs/file'));
     }
 
-    /**
-     * @expectedException \ntentan\utils\exceptions\FileAlreadyExistsException
-     */
     public function testNotExistsException()
     {
+        $this->expectException(FileAlreadyExistsException::class);
         Filesystem::checkNotExists(vfsStream::url('fs/file'));
     }
 
-    /**
-     * @expectedException \ntentan\utils\exceptions\FileNotFoundException
-     */
     public function testNonExistReadSafetyException()
     {
+        $this->expectException(FileNotFoundException::class);
         Filesystem::checkReadSafety(vfsStream::url('fs/notfile'));
     }
 
-    /**
-     * @expectedException \ntentan\utils\exceptions\FileNotReadableException
-     */
     public function testNonReadableReadSafetyException()
     {
+        $this->expectException(FileNotReadableException::class);
         $this->file->chmod(0000);
         Filesystem::checkReadSafety(vfsStream::url('fs/file'));
     }
 
-    /**
-     * @expectedException \ntentan\utils\exceptions\FileNotFoundException
-     */
     public function testNonExistWriteSafetyException()
     {
+        $this->expectException(FileNotFoundException::class);
         Filesystem::checkWriteSafety(vfsStream::url('fs/notfile'));
     }
 
-    /**
-     * @expectedException \ntentan\utils\exceptions\FileNotWriteableException
-     */
     public function testNonReadableWriteSafetyException()
     {
+        $this->expectException(FileNotWriteableException::class);
         $this->file->chmod(0000);
         Filesystem::checkWriteSafety(vfsStream::url('fs/file'));
     }

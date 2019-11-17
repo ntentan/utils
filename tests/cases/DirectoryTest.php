@@ -8,7 +8,7 @@ use org\bovigo\vfs\vfsStream;
 
 class DirectoryTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         $structure = [
             'report' => ['index.html' => '<html></html>'],

@@ -50,7 +50,7 @@ class Text
         ['/(.*)(?<remove>h)$/', 'hes'],
         ['/(formul|alumn|nebul)(?<remove>a)$/', 'ae'],
         ['/(.*)(?<remove>x)$/', 'xes'],
-        ['/(.+)(?<remove>ion)$/', 'ia'],
+        ['/(.+)(?<remove>rion)$/', 'ria'],
         ['/(.*)(?<remove>roof)$/', 'roofs'],
         ['/(.*)[^f](?<remove>f|fe)$/', 'ves'],
         ['/(.*)(m|l)(?<remove>ouse)$/', 'ice'],
