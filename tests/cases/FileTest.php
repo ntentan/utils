@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class FileTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         $structure = [
             'report' => ['index.html' => '<html></html>'],

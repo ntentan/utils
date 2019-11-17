@@ -2,6 +2,7 @@
 
 namespace ntentan\utils\tests\cases;
 
+use ntentan\utils\exceptions\FilesystemException;
 use ntentan\utils\filesystem\UploadedFile;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
@@ -16,7 +17,7 @@ class UploadFileTest extends TestCase
 {
     use PHPMock;
 
-    public function setUp()
+    public function setUp() : void
     {
         $isUploadedFile = $this->getFunctionMock('\ntentan\utils\filesystem\\', "is_uploaded_file");
         $isUploadedFile->expects($this->any())->will(
@@ -39,11 +40,9 @@ class UploadFileTest extends TestCase
         ];
     }
 
-    /**
-     * @expectedException \ntentan\utils\exceptions\FilesystemException
-     */
     public function testWrongFile()
     {
+        $this->expectException(FilesystemException::class);
         $file = $this->getFileArray();
         $file['tmp_name'] = '/tmp/x54321';
         new UploadedFile($file);
@@ -78,11 +77,9 @@ class UploadFileTest extends TestCase
 
     }
 
-    /**
-     * @expectedException \ntentan\utils\exceptions\FilesystemException
-     */
     public function testMoveToFail()
     {
+        $this->expectException(FilesystemException::class);
         $uploadedFile = new UploadedFile($this->getFileArray());
         // Will fail since move_uploaded_file is not mocked
         $uploadedFile->moveTo(vfsStream::url('fs/uploads/'));
