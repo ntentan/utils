@@ -10,9 +10,10 @@ use ntentan\utils\Filesystem;
 use ntentan\utils\exceptions\FilesystemException;
 
 /**
- * A directory on the filesystem.
+ * Represents a directory from the filesystem.
  *
  * @package ntentan\utils\filesystem
+ * 
  */
 class Directory implements FileInterface
 {
@@ -131,6 +132,18 @@ class Directory implements FileInterface
         $parent = dirname($parent);
         Filesystem::checkWritable($parent == "" ? '.' : $parent);
         mkdir($this->path, $permissions, true);
+
+        return $this;
+    }
+
+    public function createIfNotExists($recursive=false, $permissions = 0755)
+    {
+        try {
+            $this->create($recursive, $permissions);
+        } catch (FileAlreadyExistsException $exception) {
+            // Do nothing
+        }
+        return $this;
     }
 
     /**
