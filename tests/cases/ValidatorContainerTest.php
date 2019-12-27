@@ -2,6 +2,7 @@
 
 namespace ntentan\utils\tests\cases;
 
+use ntentan\utils\exceptions\ValidatorException;
 use ntentan\utils\Validator;
 use PHPUnit\Framework\TestCase;
 
@@ -10,7 +11,7 @@ class ValidatorContainerTest extends TestCase
 
     private $validator;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->validator = new Validator();
     }
@@ -135,11 +136,9 @@ class ValidatorContainerTest extends TestCase
         );
     }
 
-    /**
-     * @expectedException \ntentan\utils\exceptions\ValidatorException
-     */
     public function testValidatorException()
     {
+        $this->expectException(ValidatorException::class);
         $this->validator->setRules(
             ['fake_validator' => ['name']]
         );
@@ -171,5 +170,4 @@ class ValidatorContainerTest extends TestCase
             $customValidation->getInvalidFields()
         );
     }
-
 }

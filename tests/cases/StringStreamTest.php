@@ -26,6 +26,7 @@
 
 namespace ntentan\utils\tests\cases;
 
+use ntentan\utils\exceptions\StringStreamException;
 use PHPUnit\Framework\TestCase;
 use ntentan\utils\StringStream;
 
@@ -33,12 +34,12 @@ class StringStreamTest extends TestCase
 {
     const TEST_CONTENT = "This would be modified at some point";
 
-    public function setup()
+    public function setup() : void
     {
         StringStream::register();
     }
     
-    public function tearDown()
+    public function tearDown() : void
     {
         StringStream::unregister();
     }
@@ -64,11 +65,9 @@ class StringStreamTest extends TestCase
         $this->assertEquals("Hello World", $output);
     }
 
-    /**
-     * @expectedException \ntentan\utils\exceptions\StringStreamException
-     */
     public function testOpenException()
     {
+        $this->expectException(StringStreamException::class);
         fopen('string://test', 'z');
     }
 
