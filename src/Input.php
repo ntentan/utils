@@ -77,9 +77,9 @@ class Input
             $query = preg_replace_callback('/(^|(?<=&))[^=[&]+/',
                 function($match) {
                     return bin2hex($match[0]);
-                }, urldecode($query));
+                }, $query);
             parse_str($query, $data);
-            self::$arrays[$method] = array_combine(array_map('hex2bin', array_keys($data)), $data);        
+            self::$arrays[$method] = array_combine(array_map('hex2bin', array_keys($data)), $data);
         }
         return $key ? (self::$arrays[$method][$key] ?? null) : (self::$arrays[$method] ?? null);
     }
