@@ -15,8 +15,11 @@ use ntentan\utils\exceptions\FilesystemException;
  * @package ntentan\utils\filesystem
  * 
  */
-class Directory implements FileInterface
+class Directory extends FileCollection //implements FileInterface
 {
+    const OVERWRITE_MERGE = 4;
+    const OVERWRITE_REPLACE = 8;
+    const OVERWRITE_SKIP = 16;
 
     /**
      * Full path to the directory.
@@ -34,18 +37,19 @@ class Directory implements FileInterface
     {
         $this->path = $path;
     }
-    
+
     /**
      * Recursively copies directory and its contents to destination.
      *
      * @param string $destination
-     * @throws FileNotFoundException
-     * @throws FilesystemException
+     * @param int $overwite
      * @throws FileAlreadyExistsException
+     * @throws FileNotFoundException
      * @throws FileNotReadableException
      * @throws FileNotWriteableException
+     * @throws FilesystemException
      */
-    public function copyTo(string $destination, string $overwite = self::OVERWRITE_ALL): void
+    public function copyTo(string $destination, int $overwite = self::OVERWRITE_MERGE): void
     {
         Filesystem::directory($destination)->create(true);
         $this->getFiles()->copyTo($destination, $overwite);
@@ -68,16 +72,17 @@ class Directory implements FileInterface
      * Recursively move a directory and its contents to another location.
      *
      * @param string $destination
-     * @throws FileNotFoundException
-     * @throws FilesystemException
+     * @param int $overwrite
      * @throws FileAlreadyExistsException
+     * @throws FileNotFoundException
      * @throws FileNotReadableException
      * @throws FileNotWriteableException
+     * @throws FilesystemException
      */
-    public function moveTo(string $destination, string $overwite = self::OVERWRITE_ALL) : void
+    public function moveTo(string $destination, int $overwrite = self::OVERWRITE_MERGE) : void
     {
         Filesystem::directory($destination)->create(true);
-        $this->getFiles()->moveTo($destination, $overwite);
+        $this->getFiles()->moveTo($destination, $overwrite);
         $this->delete();
         $this->path = $destination;
     }

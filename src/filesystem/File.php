@@ -11,29 +11,47 @@ use ntentan\utils\Filesystem;
  */
 class File implements FileInterface
 {
+    const OVERWRITE_ALL = 0;
+    const OVERWRITE_NONE = 1;
+    const OVERWRITE_OLDER = 2;
+
     /**
+     * Path to file
      * @var string
      */
     protected $path;
 
+    /**
+     * File constructor.
+     *
+     * @param string $path Path to file. Does
+     */
     public function __construct($path)
     {
         $this->path = $path;
     }
 
     /**
-     * @param string $destination
+     * Move file to a new location.
+     *
+     * @param string $destination New destination of the file.
+     * @param int $overwrite Set some overwrite flags on the operation.
      * @throws \ntentan\utils\exceptions\FileNotFoundException
      * @throws \ntentan\utils\exceptions\FileNotWriteableException
      */
-    public function moveTo(string $destination, string $overwite = self::OVERWRITE_ALL) : void
+    public function moveTo(string $destination, int $overwrite = self::OVERWRITE_ALL) : void
     {
+        if(file_exists($destination) && ($overwrite & self::OVERWRITE_NONE || ($overwrite & self::OVERWRITE_OLDER && filemtime($destination) < filemtime($this->path)))) {
+            return;
+        }
         $this->copyTo($destination);
         $this->delete();
         $this->path = $destination;
     }
 
     /**
+     * Get the size of the file.
+     *
      * @return int
      * @throws \ntentan\utils\exceptions\FileNotReadableException
      */
@@ -44,11 +62,14 @@ class File implements FileInterface
     }
 
     /**
+     * Copy a file to a new destination.
+     *
      * @param string $destination
+     * @param string $overwite
      * @throws \ntentan\utils\exceptions\FileNotFoundException
      * @throws \ntentan\utils\exceptions\FileNotWriteableException
      */
-    public function copyTo(string $destination, string $overwite = self::OVERWRITE_ALL) : void
+    public function copyTo(string $destination, int $overwite = self::OVERWRITE_ALL) : void
     {
         $destination = is_dir($destination) ? ("$destination/" . basename($this->path)) : $destination;
         Filesystem::checkWriteSafety(dirname($destination));

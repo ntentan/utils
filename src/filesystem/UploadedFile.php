@@ -80,7 +80,7 @@ class UploadedFile extends File
      * @throws FilesystemException
      * @throws \ntentan\utils\exceptions\FileNotWriteableException
      */
-    public function moveTo(string $destination, string $overwrite = self::OVERWRITE_ALL): void
+    public function moveTo(string $destination, int $overwrite = self::OVERWRITE_ALL): void
     {
         $destination = is_dir($destination) ? ("$destination/{$this->clientName}") : $destination;
         Filesystem::checkWritable(dirname($destination));

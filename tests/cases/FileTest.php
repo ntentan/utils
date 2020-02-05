@@ -18,7 +18,8 @@ class FileTest extends TestCase
                 'assets' => [
                     'script.js' => 'alert("Damn")',
                     'style.css' => 'body{margin:0}'
-                ]
+                ],
+                'README.md' => 'Sources for my cool app'
             ],
             'composer.json' => '{}',
             'README.md' => 'My Cool App'
@@ -33,6 +34,24 @@ class FileTest extends TestCase
         $file->moveTo(vfsStream::url('fs/src'));
         $this->assertFileExists(vfsStream::url('fs/src/composer.json'));
         $this->assertFileNotExists(vfsStream::url('fs/composer.json'));
+    }
+
+    public function testMoveToOverwrite()
+    {
+        $file = new File(vfsStream::url('fs/README.md'));
+        $file->moveTo(vfsStream::url('fs/src'), File::OVERWRITE_NONE);
+        $this->assertFileExists(vfsStream::url('fs/src/README.md'));
+        $this->assertFileExists(vfsStream::url('fs/README.md'));
+    }
+
+    public function testMoveToOvewriteOlder()
+    {
+        $file = new File(vfsStream::url('fs/README.md'));
+        touch(vfsStream::url('fs/README.md'), time() + 1000);
+        clearstatcache();
+        $file->moveTo(vfsStream::url('fs/src'), File::OVERWRITE_OLDER);
+        $this->assertFileExists(vfsStream::url('fs/src/README.md'));
+        $this->assertFileNotExists(vfsStream::url('fs/README.md'));
     }
 
     public function testGetSize()
