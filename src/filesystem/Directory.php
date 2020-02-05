@@ -34,35 +34,7 @@ class Directory implements FileInterface
     {
         $this->path = $path;
     }
-
-    /**
-     * Used to perform copies and moves.
-     *
-     * @param string $operation
-     * @param string $destination
-     * @throws FileNotFoundException
-     * @throws FilesystemException
-     * @throws FileAlreadyExistsException
-     * @throws FileNotReadableException
-     * @throws FileNotWriteableException
-     */
-    private function directoryOperation(string $operation, string $destination, string $overwrite):void
-    {
-        foreach ($this->getFiles(true) as $file) {
-            $fileTarget = $destination . DIRECTORY_SEPARATOR . substr($file, strlen($this->path));
-            if(is_dir($file)) {
-                continue;
-            }
-            try{
-                Filesystem::checkExists(dirname($fileTarget));
-            } catch (FileNotFoundException $exception) {
-                Filesystem::directory(dirname($fileTarget))->create(true);
-            }
-
-            $file->$operation($fileTarget, $overwrite);
-        }
-    }
-
+    
     /**
      * Recursively copies directory and its contents to destination.
      *
@@ -75,7 +47,8 @@ class Directory implements FileInterface
      */
     public function copyTo(string $destination, string $overwite = self::OVERWRITE_ALL): void
     {
-        $this->directoryOperation('copyTo', $destination, $overwite);
+        Filesystem::directory($destination)->create(true);
+        $this->getFiles()->copyTo($destination, $overwite);
     }
 
     /**
@@ -103,7 +76,8 @@ class Directory implements FileInterface
      */
     public function moveTo(string $destination, string $overwite = self::OVERWRITE_ALL) : void
     {
-        $this->directoryOperation('moveTo', $destination, $overwite);
+        Filesystem::directory($destination)->create(true);
+        $this->getFiles()->moveTo($destination, $overwite);
         $this->delete();
         $this->path = $destination;
     }
