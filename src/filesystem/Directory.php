@@ -103,7 +103,7 @@ class Directory implements FileInterface
      */
     public function moveTo(string $destination, string $overwite = self::OVERWRITE_ALL) : void
     {
-        $this->directoryOperation('moveTo', $destination);
+        $this->directoryOperation('moveTo', $destination, $overwite);
         $this->delete();
         $this->path = $destination;
     }
@@ -112,6 +112,7 @@ class Directory implements FileInterface
      * Create the directory pointed to by path.
      *
      * @param int $permissions
+     * @return Directory
      * @throws FileAlreadyExistsException
      * @throws FileNotWriteableException
      */

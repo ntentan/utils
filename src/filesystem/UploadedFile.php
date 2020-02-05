@@ -76,10 +76,11 @@ class UploadedFile extends File
      * Ensures that files were actually uploaded through PHP before moving them.
      *
      * @param string $destination
+     * @param string $overwrite
      * @throws FilesystemException
      * @throws \ntentan\utils\exceptions\FileNotWriteableException
      */
-    public function moveTo(string $destination): void
+    public function moveTo(string $destination, string $overwrite = self::OVERWRITE_ALL): void
     {
         $destination = is_dir($destination) ? ("$destination/{$this->clientName}") : $destination;
         Filesystem::checkWritable(dirname($destination));

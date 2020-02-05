@@ -4,6 +4,7 @@ CHANGELOG
 ## Unreleased
 ### Added
 - New methods to the `Directory` class for creating directories that don't exist.
+- Overwite parameters to copy and move operations. You can now either overwrite, skip or optionally overwrite older files.
 
 ## v0.9.1 - 2019-11-17
 ### Added
