@@ -46,7 +46,7 @@ class Directory implements FileInterface
      * @throws FileNotReadableException
      * @throws FileNotWriteableException
      */
-    private function directoryOperation(string $operation, string $destination):void
+    private function directoryOperation(string $operation, string $destination, string $overwrite):void
     {
         foreach ($this->getFiles(true) as $file) {
             $fileTarget = $destination . DIRECTORY_SEPARATOR . substr($file, strlen($this->path));
@@ -59,7 +59,7 @@ class Directory implements FileInterface
                 Filesystem::directory(dirname($fileTarget))->create(true);
             }
 
-            $file->$operation($fileTarget);
+            $file->$operation($fileTarget, $overwrite);
         }
     }
 
@@ -73,9 +73,9 @@ class Directory implements FileInterface
      * @throws FileNotReadableException
      * @throws FileNotWriteableException
      */
-    public function copyTo(string $destination): void
+    public function copyTo(string $destination, string $overwite = self::OVERWRITE_ALL): void
     {
-        $this->directoryOperation('copyTo', $destination);
+        $this->directoryOperation('copyTo', $destination, $overwite);
     }
 
     /**
@@ -101,7 +101,7 @@ class Directory implements FileInterface
      * @throws FileNotReadableException
      * @throws FileNotWriteableException
      */
-    public function moveTo(string $destination) : void
+    public function moveTo(string $destination, string $overwite = self::OVERWRITE_ALL) : void
     {
         $this->directoryOperation('moveTo', $destination);
         $this->delete();

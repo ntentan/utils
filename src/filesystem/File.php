@@ -11,7 +11,6 @@ use ntentan\utils\Filesystem;
  */
 class File implements FileInterface
 {
-
     /**
      * @var string
      */
@@ -27,7 +26,7 @@ class File implements FileInterface
      * @throws \ntentan\utils\exceptions\FileNotFoundException
      * @throws \ntentan\utils\exceptions\FileNotWriteableException
      */
-    public function moveTo(string $destination) : void
+    public function moveTo(string $destination, string $overwite = self::OVERWRITE_ALL) : void
     {
         $this->copyTo($destination);
         $this->delete();
@@ -49,7 +48,7 @@ class File implements FileInterface
      * @throws \ntentan\utils\exceptions\FileNotFoundException
      * @throws \ntentan\utils\exceptions\FileNotWriteableException
      */
-    public function copyTo(string $destination) : void
+    public function copyTo(string $destination, string $overwite = self::OVERWRITE_ALL) : void
     {
         $destination = is_dir($destination) ? ("$destination/" . basename($this->path)) : $destination;
         Filesystem::checkWriteSafety(dirname($destination));

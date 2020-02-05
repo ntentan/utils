@@ -8,13 +8,17 @@ namespace ntentan\utils\filesystem;
  */
 interface FileInterface
 {
+    const OVERWRITE_ALL = 'yes';
+    const OVERWRITE_NONE = 'no';
+    const OVERWRITE_OLDER = 'older';
+
     /**
      * Move the file to a new location.
      *
      * @param string $destination New destination of file.
      * @return void
      */
-    public function moveTo(string $destination) : void;
+    public function moveTo(string $destination, string $overwite = self::OVERWRITE_ALL) : void;
 
     /**
      * Return the size of the file at location in bytes.
@@ -29,7 +33,7 @@ interface FileInterface
      * @param string $destination Location of the copy to be made.
      * @return void
      */
-    public function copyTo(string $destination) : void;
+    public function copyTo(string $destination, string $overwite = self::OVERWRITE_ALL) : void;
 
     /**
      * Delete the file resource.
