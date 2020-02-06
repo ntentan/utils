@@ -115,14 +115,14 @@ class FileCollection implements \Iterator, \ArrayAccess, FileInterface, \Countab
     public function moveTo(string $destination, int $ovewrite = 0): void
     {
         foreach($this as $file) {
-            $file->moveTo($destination . DIRECTORY_SEPARATOR . basename($file));
+            $file->moveTo($destination . DIRECTORY_SEPARATOR . basename($file), $ovewrite);
         }
     }
 
     public function copyTo(string $destination, int $ovewrite = 0): void
     {
         foreach($this as $file) {
-            $file->copyTo($destination . DIRECTORY_SEPARATOR . basename($file));
+            $file->copyTo($destination . DIRECTORY_SEPARATOR . basename($file), $ovewrite);
         }
     }
 
