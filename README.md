@@ -14,18 +14,18 @@ A collection of utility classes shared across the different ntentan packages.
  - A collection of file system utilities
 
 Installation
-------------
+============
 You can install this package through `ntentan\utils` on composer.
 
 Text Manipulation
------------------
+=================
 Text manipulation routines in the utils package provides inflector (for 
 pluralizing or singularizing text), and camel case conversion routines. These 
 routines are mainly consumed by components that generate magic strings for 
 class and method names. All routines are implemented as static functions in the 
 in the `ntentan\utils\Text`.
 
-### Inflector routines
+## Inflector routines
 The following snipet shows how the inflector routines in the `Text` class work.
 
 ````php
@@ -35,7 +35,7 @@ print Text::singularize('names'); // Should output name
 print Text::pluralize('pot'); // Should output pots
 ````
 
-### Camel case manipulation
+## Camel case manipulation
 The following snipet shows how the camel case manipulation routines in the `Text`
 class work.
 
@@ -130,6 +130,11 @@ Permissions and statuses of files can be explicitly checked too, through methods
 static `Filesystem` class. These aptly named methods such as `Filesystem::checkWriteable` and
 `Filesystem::checkExists`, perform the correspondingly named checks and throw the appropriate
 exceptions when these checks fail.
+
+
+Validation
+==========
+You can validate the contents of arrays using the validation routines in the utils package. 
 
 
 License

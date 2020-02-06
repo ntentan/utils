@@ -2,6 +2,9 @@
 
 namespace ntentan\utils\filesystem;
 
+use ntentan\utils\exceptions\FileNotFoundException;
+use ntentan\utils\exceptions\FileNotReadableException;
+use ntentan\utils\exceptions\FileNotWriteableException;
 use ntentan\utils\Filesystem;
 
 /**
@@ -41,8 +44,8 @@ class File implements FileInterface
      *
      * @param string $destination New destination of the file.
      * @param int $overwrite Set some overwrite flags on the operation.
-     * @throws \ntentan\utils\exceptions\FileNotFoundException
-     * @throws \ntentan\utils\exceptions\FileNotWriteableException
+     * @throws FileNotFoundException
+     * @throws FileNotWriteableException
      */
     public function moveTo(string $destination, int $overwrite = self::OVERWRITE_ALL) : void
     {
@@ -58,7 +61,7 @@ class File implements FileInterface
      * Get the size of the file.
      *
      * @return int
-     * @throws \ntentan\utils\exceptions\FileNotReadableException
+     * @throws FileNotReadableException
      */
     public function getSize() : int
     {
@@ -71,8 +74,8 @@ class File implements FileInterface
      *
      * @param string $destination
      * @param string $overwrite
-     * @throws \ntentan\utils\exceptions\FileNotFoundException
-     * @throws \ntentan\utils\exceptions\FileNotWriteableException
+     * @throws FileNotFoundException
+     * @throws FileNotWriteableException
      */
     public function copyTo(string $destination, int $overwrite = self::OVERWRITE_ALL) : void
     {
@@ -86,7 +89,7 @@ class File implements FileInterface
 
     /**
      * @return string
-     * @throws \ntentan\utils\exceptions\FileNotReadableException
+     * @throws FileNotReadableException
      */
     public function getContents()
     {
@@ -96,7 +99,7 @@ class File implements FileInterface
 
     /**
      * @param $contents
-     * @throws \ntentan\utils\exceptions\FileNotWriteableException
+     * @throws FileNotWriteableException
      */
     public function putContents($contents)
     {
