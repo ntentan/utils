@@ -15,7 +15,7 @@ use ntentan\utils\exceptions\FilesystemException;
  * @package ntentan\utils\filesystem
  * 
  */
-class Directory extends FileCollection //implements FileInterface
+class Directory implements FileInterface
 {
     const OVERWRITE_MERGE = 4;
     const OVERWRITE_REPLACE = 8;
@@ -161,18 +161,18 @@ class Directory extends FileCollection //implements FileInterface
     {
         Filesystem::checkExists($this->path);
         Filesystem::checkReadable($this->path);
-        $contents = [];
+        $paths = [];
 
         $files = scandir($this->path);
         foreach ($files as $file) {
             if($file == '.' || $file == '..') continue;
             $path = "$this->path/$file";
             if(is_dir($path) && $recursive) {
-                $contents = array_merge($contents, Filesystem::directory($path)->getFiles(true, true));
+                $paths = array_merge($paths, Filesystem::directory($path)->getFiles(true, true));
             }
-            $contents[] = $path;
+            $paths[] = $path;
         }
-        return $returnStrings ? $contents : new FileCollection($contents);
+        return $returnStrings ? $paths : new FileCollection($paths);
     }
 
     public function __toString()

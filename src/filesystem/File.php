@@ -30,6 +30,11 @@ class File implements FileInterface
     {
         $this->path = $path;
     }
+    
+    private function skipOperation($destination, $overwrite)
+    {
+        return file_exists($destination) && ($overwrite & self::OVERWRITE_NONE || ($overwrite & self::OVERWRITE_OLDER && filemtime($destination) >= filemtime($this->path)));
+    }
 
     /**
      * Move file to a new location.
@@ -41,7 +46,7 @@ class File implements FileInterface
      */
     public function moveTo(string $destination, int $overwrite = self::OVERWRITE_ALL) : void
     {
-        if(file_exists($destination) && ($overwrite & self::OVERWRITE_NONE || ($overwrite & self::OVERWRITE_OLDER && filemtime($destination) >= filemtime($this->path)))) {
+        if($this->skipOperation($destination, $overwrite)) {
             return;
         }
         $this->copyTo($destination);
@@ -65,12 +70,15 @@ class File implements FileInterface
      * Copy a file to a new destination.
      *
      * @param string $destination
-     * @param string $overwite
+     * @param string $overwrite
      * @throws \ntentan\utils\exceptions\FileNotFoundException
      * @throws \ntentan\utils\exceptions\FileNotWriteableException
      */
-    public function copyTo(string $destination, int $overwite = self::OVERWRITE_ALL) : void
+    public function copyTo(string $destination, int $overwrite = self::OVERWRITE_ALL) : void
     {
+        if($this->skipOperation($destination, $overwrite)) {
+            return;
+        }
         $destination = is_dir($destination) ? ("$destination/" . basename($this->path)) : $destination;
         Filesystem::checkWriteSafety(dirname($destination));
         copy($this->path, $destination);

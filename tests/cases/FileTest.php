@@ -41,7 +41,9 @@ class FileTest extends TestCase
         $file = new File(vfsStream::url('fs/README.md'));
         $file->moveTo(vfsStream::url('fs/src'), File::OVERWRITE_NONE);
         $this->assertFileExists(vfsStream::url('fs/src/README.md'));
+        $this->assertEquals('My Cool App', file_get_contents(vfsStream::url('fs/README.md')));
         $this->assertFileExists(vfsStream::url('fs/README.md'));
+        $this->assertEquals('Sources for my cool app', file_get_contents(vfsStream::url('fs/src/README.md')));
     }
 
     public function testMoveToOvewriteOlder()
@@ -68,7 +70,30 @@ class FileTest extends TestCase
         $this->assertFileExists(vfsStream::url('fs/composer.json'));
 
     }
+    
+    public function testCopyToOverwrite()
+    {
+        $file = new File(vfsStream::url('fs/README.md'));
+        $file->copyTo(vfsStream::url('fs/src'), File::OVERWRITE_NONE);
+        $this->assertFileExists(vfsStream::url('fs/src/README.md'));
+        $this->assertEquals('My Cool App', file_get_contents(vfsStream::url('fs/README.md')));
+        $this->assertFileExists(vfsStream::url('fs/README.md'));
+        $this->assertEquals('Sources for my cool app', file_get_contents(vfsStream::url('fs/src/README.md')));
+    }
 
+    public function testCopyToOvewriteOlder()
+    {
+        $file = new File(vfsStream::url('fs/README.md'));
+        touch(vfsStream::url('fs/README.md'), time() + 1000);
+        clearstatcache();
+        $file->copyTo(vfsStream::url('fs/src'), File::OVERWRITE_OLDER);
+        $this->assertFileExists(vfsStream::url('fs/src/README.md'));
+        $this->assertEquals('My Cool App', file_get_contents(vfsStream::url('fs/README.md')));
+        $this->assertFileExists(vfsStream::url('fs/README.md'));
+        $this->assertEquals('My Cool App', file_get_contents(vfsStream::url('fs/src/README.md')));    
+        
+    }
+    
     public function testGetContents()
     {
         $file = new File(vfsStream::url('fs/report/index.html'));
