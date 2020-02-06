@@ -41,7 +41,7 @@ class File implements FileInterface
      */
     public function moveTo(string $destination, int $overwrite = self::OVERWRITE_ALL) : void
     {
-        if(file_exists($destination) && ($overwrite & self::OVERWRITE_NONE || ($overwrite & self::OVERWRITE_OLDER && filemtime($destination) < filemtime($this->path)))) {
+        if(file_exists($destination) && ($overwrite & self::OVERWRITE_NONE || ($overwrite & self::OVERWRITE_OLDER && filemtime($destination) >= filemtime($this->path)))) {
             return;
         }
         $this->copyTo($destination);
