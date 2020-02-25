@@ -88,7 +88,7 @@ use ntentan\utils\Filesystem;
 Filesystem::directory("/path/to/some/dir")->create(true);
 ```` 
 
-In the same vein, deleting directories can be done by ...
+Similarly, deleting directories can be done by ...
 ````php
 use ntentan\utils\Filesystem;
 Filesystem::directory("/path/to/some/dir")->delete();
@@ -134,12 +134,53 @@ exceptions when these checks fail.
 
 Validation
 ==========
-You can validate the contents of arrays using the validation routines in the utils package. 
+You can validate the contents of arrays using the validation routines in the utils package. All validation is done
+through the Validator class. For example, to check if some required fields are set in an array you can use:
 
+````php
+use ntentan\utils\Validator;
+
+$validator = new Validator();
+$validator->setRules(['required' => 'name', 'email']);
+`````
+
+This validator is now setup to check if the `name` and `email` fields of any arrays passed are set. Whenever we have
+some data to check, we can call the `validate` method.
+
+````php
+$data = ['name' => 'Kofi', 'email' => 'kofi@example.com'];
+$success = $validator->validate($data);
+````
+
+The validate method returns a boolean, which represents the validy of the array as far as the validation rules are 
+concerned. In the case of our example above, `$success` will be `true`. In a case where success happens to be false, 
+such as when a value is not provided for the `name` key in our example, `$success` will be `false`. To retrieve the
+validation errors in that case, a call to the `getInvalidFields()` method of the validation object can be made. 
+
+````php
+$data = ['email' => 'kofi@example.com'];
+if(!$validator->validate($data)) {
+    print_r($validator->getInvalidFields());
+}
+````
+
+The `getInvalidFields` method always returns the invalid fields found in the data as an associative array of the 
+field names to a list of their errors. In the case above, the executed would provide the following output.
+
+````
+Array
+(
+    [name] => Array
+        (
+            [0] => The name field is required
+        )
+
+)
+````
 
 License
 =======
-Copyright (c) 2008-2015 James Ekow Abaka Ainooson
+Copyright (c) 2008-2020 James Ekow Abaka Ainooson
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
