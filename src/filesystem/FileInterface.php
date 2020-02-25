@@ -12,9 +12,10 @@ interface FileInterface
      * Move the file to a new location.
      *
      * @param string $destination New destination of file.
+     * @param int $overwrite
      * @return void
      */
-    public function moveTo(string $destination) : void;
+    public function moveTo(string $destination, int $overwrite = 0) : void;
 
     /**
      * Return the size of the file at location in bytes.
@@ -27,9 +28,10 @@ interface FileInterface
      * Make a copy of the file resource.
      *
      * @param string $destination Location of the copy to be made.
+     * @param int $overwrite
      * @return void
      */
-    public function copyTo(string $destination) : void;
+    public function copyTo(string $destination, int $overwrite = 0) : void;
 
     /**
      * Delete the file resource.

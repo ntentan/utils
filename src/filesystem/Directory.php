@@ -10,12 +10,15 @@ use ntentan\utils\Filesystem;
 use ntentan\utils\exceptions\FilesystemException;
 
 /**
- * A directory on the filesystem.
+ * Represents a directory from the filesystem.
  *
  * @package ntentan\utils\filesystem
+ * 
  */
 class Directory implements FileInterface
 {
+    const OVERWRITE_MERGE = 4;
+    const OVERWRITE_SKIP = 8;
 
     /**
      * Full path to the directory.
@@ -35,46 +38,21 @@ class Directory implements FileInterface
     }
 
     /**
-     * Used to perform copies and moves.
-     *
-     * @param string $operation
-     * @param string $destination
-     * @throws FileNotFoundException
-     * @throws FilesystemException
-     * @throws FileAlreadyExistsException
-     * @throws FileNotReadableException
-     * @throws FileNotWriteableException
-     */
-    private function directoryOperation(string $operation, string $destination):void
-    {
-        foreach ($this->getFiles(true) as $file) {
-            $fileTarget = $destination . DIRECTORY_SEPARATOR . substr($file, strlen($this->path));
-            if(is_dir($file)) {
-                continue;
-            }
-            try{
-                Filesystem::checkExists(dirname($fileTarget));
-            } catch (FileNotFoundException $exception) {
-                Filesystem::directory(dirname($fileTarget))->create(true);
-            }
-
-            $file->$operation($fileTarget);
-        }
-    }
-
-    /**
      * Recursively copies directory and its contents to destination.
      *
      * @param string $destination
+     * @param int $overwrite
      * @throws FileNotFoundException
-     * @throws FilesystemException
-     * @throws FileAlreadyExistsException
      * @throws FileNotReadableException
-     * @throws FileNotWriteableException
+     * @throws FilesystemException
      */
-    public function copyTo(string $destination): void
+    public function copyTo(string $destination, int $overwrite = self::OVERWRITE_MERGE): void
     {
-        $this->directoryOperation('copyTo', $destination);
+        if(file_exists($destination) && ($overwrite & self::OVERWRITE_SKIP)) {
+            return;
+        }
+        Filesystem::directory($destination)->createIfNotExists(true);
+        $this->getFiles()->copyTo($destination, $overwrite);
     }
 
     /**
@@ -94,15 +72,18 @@ class Directory implements FileInterface
      * Recursively move a directory and its contents to another location.
      *
      * @param string $destination
+     * @param int $overwrite
      * @throws FileNotFoundException
-     * @throws FilesystemException
-     * @throws FileAlreadyExistsException
      * @throws FileNotReadableException
-     * @throws FileNotWriteableException
+     * @throws FilesystemException
      */
-    public function moveTo(string $destination) : void
+    public function moveTo(string $destination, int $overwrite = self::OVERWRITE_MERGE) : void
     {
-        $this->directoryOperation('moveTo', $destination);
+        if(file_exists($destination) && ($overwrite & self::OVERWRITE_SKIP)) {
+            return;
+        }
+        Filesystem::directory($destination)->createIfNotExists(true);
+        $this->getFiles()->moveTo($destination, $overwrite);
         $this->delete();
         $this->path = $destination;
     }
@@ -111,6 +92,7 @@ class Directory implements FileInterface
      * Create the directory pointed to by path.
      *
      * @param int $permissions
+     * @return Directory
      * @throws FileAlreadyExistsException
      * @throws FileNotWriteableException
      */
@@ -131,6 +113,18 @@ class Directory implements FileInterface
         $parent = dirname($parent);
         Filesystem::checkWritable($parent == "" ? '.' : $parent);
         mkdir($this->path, $permissions, true);
+
+        return $this;
+    }
+
+    public function createIfNotExists($recursive=false, $permissions = 0755)
+    {
+        try {
+            $this->create($recursive, $permissions);
+        } catch (FileAlreadyExistsException $exception) {
+            // Do nothing
+        }
+        return $this;
     }
 
     /**
@@ -168,18 +162,18 @@ class Directory implements FileInterface
     {
         Filesystem::checkExists($this->path);
         Filesystem::checkReadable($this->path);
-        $contents = [];
+        $paths = [];
 
         $files = scandir($this->path);
         foreach ($files as $file) {
             if($file == '.' || $file == '..') continue;
             $path = "$this->path/$file";
             if(is_dir($path) && $recursive) {
-                $contents = array_merge($contents, Filesystem::directory($path)->getFiles(true, true));
+                $paths = array_merge($paths, Filesystem::directory($path)->getFiles(true, true));
             }
-            $contents[] = $path;
+            $paths[] = $path;
         }
-        return $returnStrings ? $contents : new FileCollection($contents);
+        return $returnStrings ? $paths : new FileCollection($paths);
     }
 
     public function __toString()

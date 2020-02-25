@@ -82,7 +82,7 @@ class Validator
      * 
      * @param string $name
      * @return validator\Validation
-     * @throws exceptions\ValidatorException
+     * @throws exceptions\ValidatorNotFoundException
      */
     private function getValidation(string $name): validator\Validation
     {
@@ -90,7 +90,7 @@ class Validator
             if (isset($this->validationRegister[$name])) {
                 $class = $this->validationRegister[$name];
             } else {
-                throw new exceptions\ValidatorException("Validator [$name] not found");
+                throw new exceptions\ValidatorNotFoundException("Validator [$name] not found");
             }
 
             $params = isset($this->validationData[$name]) ? $this->validationData[$name] : null;
@@ -171,7 +171,7 @@ class Validator
      *
      * @param array $data The data to be validated
      * @return bool
-     * @throws exceptions\ValidatorException
+     * @throws exceptions\ValidatorNotFoundException
      */
     public function validate(array $data) : bool
     {

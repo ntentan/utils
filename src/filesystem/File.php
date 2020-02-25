@@ -2,6 +2,9 @@
 
 namespace ntentan\utils\filesystem;
 
+use ntentan\utils\exceptions\FileNotFoundException;
+use ntentan\utils\exceptions\FileNotReadableException;
+use ntentan\utils\exceptions\FileNotWriteableException;
 use ntentan\utils\Filesystem;
 
 /**
@@ -11,32 +14,54 @@ use ntentan\utils\Filesystem;
  */
 class File implements FileInterface
 {
+    const OVERWRITE_ALL = 0;
+    const OVERWRITE_NONE = 1;
+    const OVERWRITE_OLDER = 2;
 
     /**
+     * Path to file
      * @var string
      */
     protected $path;
 
+    /**
+     * File constructor.
+     *
+     * @param string $path Path to file. Does
+     */
     public function __construct($path)
     {
         $this->path = $path;
     }
+    
+    private function skipOperation($destination, $overwrite)
+    {
+        return file_exists($destination) && ($overwrite & self::OVERWRITE_NONE || ($overwrite & self::OVERWRITE_OLDER && filemtime($destination) >= filemtime($this->path)));
+    }
 
     /**
-     * @param string $destination
-     * @throws \ntentan\utils\exceptions\FileNotFoundException
-     * @throws \ntentan\utils\exceptions\FileNotWriteableException
+     * Move file to a new location.
+     *
+     * @param string $destination New destination of the file.
+     * @param int $overwrite Set some overwrite flags on the operation.
+     * @throws FileNotFoundException
+     * @throws FileNotWriteableException
      */
-    public function moveTo(string $destination) : void
+    public function moveTo(string $destination, int $overwrite = self::OVERWRITE_ALL) : void
     {
+        if($this->skipOperation($destination, $overwrite)) {
+            return;
+        }
         $this->copyTo($destination);
         $this->delete();
         $this->path = $destination;
     }
 
     /**
+     * Get the size of the file.
+     *
      * @return int
-     * @throws \ntentan\utils\exceptions\FileNotReadableException
+     * @throws FileNotReadableException
      */
     public function getSize() : int
     {
@@ -45,12 +70,18 @@ class File implements FileInterface
     }
 
     /**
+     * Copy a file to a new destination.
+     *
      * @param string $destination
-     * @throws \ntentan\utils\exceptions\FileNotFoundException
-     * @throws \ntentan\utils\exceptions\FileNotWriteableException
+     * @param string $overwrite
+     * @throws FileNotFoundException
+     * @throws FileNotWriteableException
      */
-    public function copyTo(string $destination) : void
+    public function copyTo(string $destination, int $overwrite = self::OVERWRITE_ALL) : void
     {
+        if($this->skipOperation($destination, $overwrite)) {
+            return;
+        }
         $destination = is_dir($destination) ? ("$destination/" . basename($this->path)) : $destination;
         Filesystem::checkWriteSafety(dirname($destination));
         copy($this->path, $destination);
@@ -58,7 +89,7 @@ class File implements FileInterface
 
     /**
      * @return string
-     * @throws \ntentan\utils\exceptions\FileNotReadableException
+     * @throws FileNotReadableException
      */
     public function getContents()
     {
@@ -68,7 +99,7 @@ class File implements FileInterface
 
     /**
      * @param $contents
-     * @throws \ntentan\utils\exceptions\FileNotWriteableException
+     * @throws FileNotWriteableException
      */
     public function putContents($contents)
     {

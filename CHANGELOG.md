@@ -1,6 +1,14 @@
 CHANGELOG
 ==========
 
+## v0.10.0
+### Added
+- New methods to the `Directory` class for creating directories that don't exist.
+- Overwite parameters to copy and move operations. You can now either overwrite duplicates, skip duplicates, or optionally overwrite older files when duplicates exist.
+
+### Fixed
+- Double encoding of url parameters in the `Input` class.
+
 ## v0.9.1 - 2019-11-17
 ### Added
 - Updates to unit testing framework, and its associated dependencies.
