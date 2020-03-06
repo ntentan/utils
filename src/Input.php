@@ -60,8 +60,9 @@ class Input
     
     /**
      * Decodes and returns the value of a given item in an HTTP query.
+     *
      * Although PHP decodes query strings automatically, it converts periods to underscores. This method makes it 
-     * possible to decode query strings that contain underscores.
+     * possible to decode query strings that contain periods.
      * Based on code from http://stackoverflow.com/a/14432765
      * 
      * @param string $method The HTTP method of the query (GET, POST ...)
@@ -119,7 +120,7 @@ class Input
      */
     public static function get(string $key = null)
     {
-        return self::decode(self::GET, $key);
+        return $key ? filter_input(INPUT_GET, $key) : (filter_input_array(INPUT_GET) ?? []); //self::decode(self::GET, $key);
     }
 
     /**
@@ -130,7 +131,7 @@ class Input
      */
     public static function post(string $key = null)
     {
-        return self::decode(self::POST, $key);
+        return $key ? filter_input(INPUT_POST, $key) : (filter_input_array(INPUT_POST) ?? []); //return self::decode(self::POST, $key);
     }
 
     /**
