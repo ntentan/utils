@@ -2,7 +2,7 @@
 
 namespace ntentan\utils\exceptions;
 
-class ValidatorException extends \Exception
+class ValidatorNotFoundException extends \Exception
 {
     
 }

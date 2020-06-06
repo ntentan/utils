@@ -2,7 +2,7 @@
 
 namespace ntentan\utils\tests\cases;
 
-use ntentan\utils\exceptions\ValidatorException;
+use ntentan\utils\exceptions\ValidatorNotFoundException;
 use ntentan\utils\Validator;
 use PHPUnit\Framework\TestCase;
 
@@ -138,7 +138,7 @@ class ValidatorTest extends TestCase
 
     public function testValidatorException()
     {
-        $this->expectException(ValidatorException::class);
+        $this->expectException(ValidatorNotFoundException::class);
         $this->validator->setRules(
             ['fake_validator' => ['name']]
         );

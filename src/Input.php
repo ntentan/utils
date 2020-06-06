@@ -51,6 +51,12 @@ class Input
      */
     const REQUEST = INPUT_REQUEST;
 
+    const REQUEST_DECODER_INTERNAL = "Input::decodeInternal";
+
+    const REQUEST_DECODER_PHP = "Input::decodePhp";
+
+    private static $decoder = self::REQUEST_DECODER_PHP;
+
     /**
      * Cache or arrays which hold decoded query strings.
      *
@@ -58,31 +64,32 @@ class Input
      */
     private static $arrays = [];
     
-    /**
-     * Decodes and returns the value of a given item in an HTTP query.
-     * Although PHP decodes query strings automatically, it converts periods to underscores. This method makes it 
-     * possible to decode query strings that contain underscores.
-     * Based on code from http://stackoverflow.com/a/14432765
-     * 
-     * @param string $method The HTTP method of the query (GET, POST ...)
-     * @param string $key The key of the item in the query to retrieve.
-     * @return mixed
-     */
-    private static function decode(string $method, string $key = null)
-    {
-        if(!isset(self::$arrays[$method])) {
-            $query = $method == self::GET 
-                ? filter_input(INPUT_SERVER, 'QUERY_STRING') 
-                : file_get_contents('php://input');
-            $query = preg_replace_callback('/(^|(?<=&))[^=[&]+/',
-                function($match) {
-                    return bin2hex($match[0]);
-                }, $query);
-            parse_str($query, $data);
-            self::$arrays[$method] = array_combine(array_map('hex2bin', array_keys($data)), $data);
-        }
-        return $key ? (self::$arrays[$method][$key] ?? null) : (self::$arrays[$method] ?? null);
-    }
+//    /**
+//     * Decodes and returns the value of a given item in an HTTP query.
+//     *
+//     * Although PHP decodes query strings automatically, it converts periods to underscores. This method makes it
+//     * possible to decode query strings that contain periods.
+//     * Based on code from http://stackoverflow.com/a/14432765
+//     *
+//     * @param string $method The HTTP method of the query (GET, POST ...)
+//     * @param string $key The key of the item in the query to retrieve.
+//     * @return mixed
+//     */
+//    private static function decode(string $method, string $key = null)
+//    {
+//        if(!isset(self::$arrays[$method])) {
+//            $query = $method == self::GET
+//                ? filter_input(INPUT_SERVER, 'QUERY_STRING')
+//                : file_get_contents('php://input');
+//            $query = preg_replace_callback('/(^|(?<=&))[^=[&]+/',
+//                function($match) {
+//                    return bin2hex($match[0]);
+//                }, $query);
+//            parse_str($query, $data);
+//            self::$arrays[$method] = array_combine(array_map('hex2bin', array_keys($data)), $data);
+//        }
+//        return $key ? (self::$arrays[$method][$key] ?? null) : (self::$arrays[$method] ?? null);
+//    }
     
     /**
      * Does the actual work of calling either the filter_input of 
@@ -119,7 +126,7 @@ class Input
      */
     public static function get(string $key = null)
     {
-        return self::decode(self::GET, $key);
+        return self::getVariable(INPUT_GET, $key);
     }
 
     /**
@@ -130,7 +137,7 @@ class Input
      */
     public static function post(string $key = null)
     {
-        return self::decode(self::POST, $key);
+        return self::getVariable(INPUT_POST, $key);
     }
 
     /**
