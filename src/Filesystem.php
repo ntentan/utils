@@ -42,12 +42,13 @@ class Filesystem
      * In cases where the file cannot be written to an exception is thrown.
      *
      * @param string $path The path to the file to be checked.
+     * @param string|null $message
      * @throws exceptions\FileNotWriteableException
      */
-    public static function checkWritable(string $path): void
+    public static function checkWritable(string $path, string $message = null): void
     {
         if (!is_writable($path)) {
-            throw new exceptions\FileNotWriteableException("Location [$path] is not writeable");
+            throw new exceptions\FileNotWriteableException($message ?? "Location [$path] is not writeable");
         }
     }
 
@@ -56,12 +57,13 @@ class Filesystem
      * In cases where the file cannot be read, an exception is thrown.
      *
      * @param string $path The path to the file to be checked.
+     * @param string|null $message
      * @throws exceptions\FileNotReadableException
      */
-    public static function checkReadable(string $path): void
+    public static function checkReadable(string $path, string $message = null): void
     {
         if (!is_readable($path)) {
-            throw new exceptions\FileNotReadableException("Location $path is not readable");
+            throw new exceptions\FileNotReadableException($message ?? "Location $path is not readable");
         }
     }
 
@@ -69,12 +71,13 @@ class Filesystem
      * Checks if a file exists and throws an exception if not.
      *
      * @param string $path
-     * @throws exceptions\FileNotFoundException
+     * @param string|null $message
+     * @throws FileNotFoundException
      */
-    public static function checkExists(string $path): void
+    public static function checkExists(string $path, string $message = null): void
     {
         if (!file_exists($path)) {
-            throw new exceptions\FileNotFoundException("Location '$path' does not exist");
+            throw new exceptions\FileNotFoundException($message ?? "Location '$path' does not exist");
         }
     }
 
@@ -82,39 +85,42 @@ class Filesystem
      * Checks if a file exists and throws an exception if it does.
      *
      * @param string $path
+     * @param string|null $message
      * @throws exceptions\FileAlreadyExistsException
      */
-    public static function checkNotExists(string $path): void
+    public static function checkNotExists(string $path, string $message = null): void
     {
         if (file_exists($path)) {
-            throw new exceptions\FileAlreadyExistsException("Location '$path' already exists");
+            throw new exceptions\FileAlreadyExistsException($message ?? "Location '$path' already exists");
         }
     }
 
     /**
      * Checks if a file exists and is writeable and throws a relevant exception if either condition is not met.
      *
-     * @param $path
-     * @throws exceptions\FileNotFoundException
+     * @param string $path
+     * @param string|null $message
+     * @throws FileNotFoundException
      * @throws exceptions\FileNotWriteableException
      */
-    public static function checkWriteSafety($path) : void
+    public static function checkWriteSafety(string $path, string $message = null) : void
     {
-        Filesystem::checkExists($path);
-        Filesystem::checkWritable($path);
+        Filesystem::checkExists($path, $message);
+        Filesystem::checkWritable($path, $message);
     }
 
     /**
      * Checks if a file exists and is readable and throws a relevant excetion if either condition is not met.
      *
-     * @param $path
-     * @throws exceptions\FileNotFoundException
+     * @param string $path
+     * @param string $message
+     * @throws FileNotFoundException
      * @throws exceptions\FileNotReadableException
      */
-    public static function checkReadSafety($path) : void
+    public static function checkReadSafety(string $path, string $message) : void
     {
-        Filesystem::checkExists($path);
-        Filesystem::checkReadable($path);
+        Filesystem::checkExists($path, $message);
+        Filesystem::checkReadable($path, $message);
     }
 
     /**
