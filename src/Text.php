@@ -60,7 +60,7 @@ class Text
         ['/(.*)(?<remove>goose)$/', 'geese'],
         ['/(.*)(?<remove>person)$/', 'people'],
         ['/(.*)(?<remove>quiz)$/', 'quizzes'],
-        ['/.*(s|o|z)$/', 'es'],
+        ['/.*(s|[bcdfghjklmnpqrstvwxyz]o|z)$/', 'es'],
         ['/.*/', 's']
     ];
 
