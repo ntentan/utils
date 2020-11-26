@@ -2,8 +2,8 @@ language: php
 sudo: false
 dist: trusty
 php:
- - "7.2"
  - "7.3"
+ - "7.4"
 env: COVERAGE=yes     
 
 before_script:
