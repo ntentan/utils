@@ -1,7 +1,17 @@
 CHANGELOG
 ==========
+## v0.11.0 - 2020-11-25
+### Added
+- A mechanism was added to allow the use custom decoders for requests.
+- Custom messages can now be supplied for exceptions that are thrown within the file system libraries.
 
-## v0.10.0
+### Fixed
+- A bug in the plurals library that causes every word ending in 'o' to be mapped out to a plural ending in 'es' was fixed.
+
+### Removed
+- The custom request decoder was removed to improve performance in cases where huge requests are sent in.
+
+## v0.10.0 - 2020-02-25
 ### Added
 - New methods to the `Directory` class for creating directories that don't exist.
 - Overwite parameters to copy and move operations. You can now either overwrite duplicates, skip duplicates, or optionally overwrite older files when duplicates exist.
