@@ -153,12 +153,14 @@ class Directory implements FileInterface
     /**
      * Get the files in the directory.
      *
+     * @param
+     *
      * @throws FilesystemException
      * @throws FileNotFoundException
      * @throws FileNotReadableException
      * @return FileCollection | array<string>
      */
-    public function getFiles($recursive=false, $returnStrings=false)
+    public function getFiles(bool $recursive=false, $returnStrings=false)
     {
         Filesystem::checkExists($this->path);
         Filesystem::checkReadable($this->path);

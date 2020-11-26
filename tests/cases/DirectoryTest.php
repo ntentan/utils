@@ -42,7 +42,7 @@ class DirectoryTest extends TestCase
             $actual[]=(string)$content;
         }
         foreach($expected as $file) {
-            $this->assertContains($file, $contents);
+            $this->assertContains($file, $actual);
         }
     }
 

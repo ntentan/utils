@@ -117,7 +117,7 @@ class Filesystem
      * @throws FileNotFoundException
      * @throws exceptions\FileNotReadableException
      */
-    public static function checkReadSafety(string $path, string $message) : void
+    public static function checkReadSafety(string $path, string $message=null) : void
     {
         Filesystem::checkExists($path, $message);
         Filesystem::checkReadable($path, $message);
