@@ -15,6 +15,6 @@ jobs:
       - name: Running php unit tests
         run: vendor/bin/phpunit  --coverage-clover coverage.clover -c tests/phpunit.xml
       - name: Downloading Ocular Tool
-        run: wget https://scrutinizer-ci.com/ocular.phar 
+        run: composer global require scrutinizer-ci/ocular
       - name: Uploading Code Metrics
-        run: php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+        run: php ~/.composer/vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover
