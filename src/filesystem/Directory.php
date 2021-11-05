@@ -111,6 +111,10 @@ class Directory implements FileInterface
             }
         }
         $parent = dirname($parent);
+        // Loop deeper to make sure the parent directory exists.
+        while(!is_dir($parent)) {
+            $parent = dirname($parent);
+        }
         Filesystem::checkWritable($parent == "" ? '.' : $parent);
         mkdir($this->path, $permissions, true);
 
