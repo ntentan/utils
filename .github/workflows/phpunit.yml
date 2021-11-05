@@ -1,0 +1,18 @@
+name: GitHub Actions Demo
+on: [push]
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - name: Install PHP 7.4
+        uses: shivammathur/setup-php@v2
+        with:
+          tools: composer
+      - name: Running composer
+        run: composer install
+      - name: Running php unit tests
+        run: vendor/bin/phpunit  --coverage-clover coverage.clover -c tests/phpunit.xml
+      - name: Uploading code coverage to scrutinizer
+        run: wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --access-token="93e209791d440d1069195255daaa32ce84f96e88ced6d40490b1352dca34f96c" --format=php-clover coverage.clover

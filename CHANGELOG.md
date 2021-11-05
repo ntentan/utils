@@ -1,5 +1,10 @@
 CHANGELOG
 ==========
+## v0.11.1 - 2020-11-05
+### Fixed
+- A bug in the `Filesystem` class that throws out a php warning whenever files are checked for existence.
+- Recursively checking the parent of a directory when creating a directory from a full path.
+
 ## v0.11.0 - 2020-11-25
 ### Added
 - A mechanism was added to allow the use custom decoders for requests.
