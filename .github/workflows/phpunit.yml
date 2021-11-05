@@ -1,4 +1,4 @@
-name: GitHub Actions Demo
+name: PHPUnit Tests
 on: [push]
 jobs:
   Explore-GitHub-Actions:
@@ -14,7 +14,7 @@ jobs:
         run: composer install
       - name: Running php unit tests
         run: vendor/bin/phpunit  --coverage-clover coverage.clover -c tests/phpunit.xml
-      - name: Uploading code coverage to scrutinizer
-        run: 
-          - wget https://scrutinizer-ci.com/ocular.phar 
-          - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+      - name: Downloading Ocular Tool
+        run: wget https://scrutinizer-ci.com/ocular.phar 
+      - name: Uploading Code Metrics
+        run: php ocular.phar code-coverage:upload --format=php-clover coverage.clover
