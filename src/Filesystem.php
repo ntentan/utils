@@ -90,7 +90,11 @@ class Filesystem
      */
     public static function checkNotExists(string $path, string $message = null): void
     {
-        if (file_exists($path)) {
+        try {
+            if (file_exists($path)) {
+                throw new exceptions\FileAlreadyExistsException($message ?? "Location '$path' already exists");
+            }    
+        } catch (\Throwable $e) {
             throw new exceptions\FileAlreadyExistsException($message ?? "Location '$path' already exists");
         }
     }
