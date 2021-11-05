@@ -15,6 +15,6 @@ jobs:
       - name: Running php unit tests
         run: vendor/bin/phpunit  --coverage-clover coverage.clover -c tests/phpunit.xml
       - name: Downloading Ocular Tool
-        run: composer global require scrutinizer-ci/ocular
+        run: composer global require scrutinizer/ocular dev-master
       - name: Uploading Code Metrics
         run: php ~/.composer/vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover
