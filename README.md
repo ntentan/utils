@@ -1,8 +1,8 @@
 ntentan/utils
 =============
-[![Build Status](https://travis-ci.com/ntentan/utils.svg)](https://travis-ci.com/ntentan/utils)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/ntentan/utils/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/ntentan/utils/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/ntentan/utils/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/ntentan/utils/?branch=master)
+![Build Status](https://github.com/ntentan/utils/actions/workflows/phpunit/badge.svg)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/ntentan/utils/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/ntentan/utils/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/ntentan/utils/badges/coverage.png?b=main)](https://scrutinizer-ci.com/g/ntentan/utils/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/ntentan/utils/version.svg)](https://packagist.org/packages/ntentan/utils)
 [![Total Downloads](https://poser.pugx.org/ntentan/utils/downloads.svg)](https://packagist.org/packages/ntentan/utils)
 
