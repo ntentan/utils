@@ -1,6 +1,6 @@
 ntentan/utils
 =============
-![Build Status](https://github.com/ntentan/utils/actions/workflows/phpunit/badge.svg)
+[![Tests](https://github.com/ntentan/utils/actions/workflows/tests.yml/badge.svg)](https://github.com/ntentan/utils/actions/workflows/tests.yml)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/ntentan/utils/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/ntentan/utils/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/ntentan/utils/badges/coverage.png?b=main)](https://scrutinizer-ci.com/g/ntentan/utils/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/ntentan/utils/version.svg)](https://packagist.org/packages/ntentan/utils)
