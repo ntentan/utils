@@ -1,5 +1,13 @@
 CHANGELOG
 ==========
+## v0.11.2 - 2021-01-08
+### Fixed
+- Removed the faulty `INPUT_REQUEST` constant.
+
+### Removed
+- Removed unused input decoder code for accepting dots in header names.
+
+
 ## v0.11.1 - 2020-11-05
 ### Fixed
 - A bug in the `Filesystem` class that throws out a php warning whenever files are checked for existence.
