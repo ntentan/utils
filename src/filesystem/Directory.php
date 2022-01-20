@@ -185,6 +185,13 @@ class Directory implements FileInterface
         return $returnStrings ? $paths : new FileCollection($paths);
     }
 
+    public function deleteIfExists(): void
+    {
+        if (file_exists($this->path)) {
+            $this->delete();
+        }
+    }    
+
     public function __toString()
     {
         return $this->path;

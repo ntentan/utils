@@ -116,6 +116,13 @@ class File implements FileInterface
         unlink($this->path);
     }
 
+    public function deleteIfExists(): void
+    {
+        if (file_exists($this->path)) {
+            $this->delete();
+        }
+    }
+
     public function getPath() : string
     {
         return $this->path;

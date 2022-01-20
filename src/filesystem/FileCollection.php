@@ -153,4 +153,9 @@ class FileCollection implements \Iterator, \ArrayAccess, FileInterface, \Countab
     {
         return count($this->paths);
     }
+
+    public function deleteIfExists(): void
+    {
+        $this->delete();
+    }
 }

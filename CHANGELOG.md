@@ -1,5 +1,9 @@
 CHANGELOG
 ==========
+## Unreleased
+### Added
+- A method to allow deleting files only when 
+
 ## v0.11.2 - 2021-01-08
 ### Fixed
 - Removed the faulty `INPUT_REQUEST` constant.

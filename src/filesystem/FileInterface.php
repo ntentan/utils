@@ -46,4 +46,9 @@ interface FileInterface
      * @return string
      */
     public function getPath(): string;
+
+    /**
+     * Delete a file if it exists.
+     */
+    public function deleteIfExists(): void;
 }
