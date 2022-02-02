@@ -112,6 +112,7 @@ class Directory implements FileInterface
         }
         $parent = dirname($parent);
         // Loop deeper to make sure the parent directory exists.
+        // @todo Confirm that this section is necessary. Doesn't this seem to be a repeat of the above?
         if($recursive) {
             while(!is_dir($parent)) {
                 $parent = dirname($parent);
