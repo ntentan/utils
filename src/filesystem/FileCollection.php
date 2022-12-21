@@ -62,32 +62,32 @@ class FileCollection implements \Iterator, \ArrayAccess, FileInterface, \Countab
         return $this->instances[$index];
     }
 
-    public function rewind()
+    public function rewind(): void
     {
         $this->iteratorIndex = 0;
     }
 
-    public function current()
+    public function current(): mixed
     {
         return $this->getInstance($this->iteratorIndex);
     }
 
-    public function key()
+    public function key(): mixed
     {
         return $this->iteratorIndex;
     }
 
-    public function next()
+    public function next(): void
     {
         $this->iteratorIndex++;
     }
 
-    public function valid()
+    public function valid(): bool
     {
         return isset($this->paths[$this->iteratorIndex]);
     }
 
-    public function offsetSet($index, $path)
+    public function offsetSet($index, $path): void
     {
         if(is_null($index)) {
             $this->paths[] = $path;
@@ -97,17 +97,17 @@ class FileCollection implements \Iterator, \ArrayAccess, FileInterface, \Countab
         }
     }
 
-    public function offsetExists($index)
+    public function offsetExists($index): bool
     {
         return isset($this->paths[$index]);
     }
 
-    public function offsetGet($index)
+    public function offsetGet($index): mixed
     {
         return isset($this->paths[$index]) ? $this->paths[$index] : null;
     }
 
-    public function offsetUnset($index)
+    public function offsetUnset($index): void
     {
         unset($this->paths[$index]);
     }
@@ -149,7 +149,7 @@ class FileCollection implements \Iterator, \ArrayAccess, FileInterface, \Countab
             }, "");
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->paths);
     }

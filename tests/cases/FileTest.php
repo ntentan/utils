@@ -33,7 +33,7 @@ class FileTest extends TestCase
         $file = new File(vfsStream::url('fs/composer.json'));
         $file->moveTo(vfsStream::url('fs/src'));
         $this->assertFileExists(vfsStream::url('fs/src/composer.json'));
-        $this->assertFileNotExists(vfsStream::url('fs/composer.json'));
+        $this->assertFileDoesNotExist(vfsStream::url('fs/composer.json'));
     }
 
     public function testMoveToOverwrite()
@@ -53,7 +53,7 @@ class FileTest extends TestCase
         clearstatcache();
         $file->moveTo(vfsStream::url('fs/src'), File::OVERWRITE_OLDER);
         $this->assertFileExists(vfsStream::url('fs/src/README.md'));
-        $this->assertFileNotExists(vfsStream::url('fs/README.md'));
+        $this->assertFileDoesNotExist(vfsStream::url('fs/README.md'));
     }
 
     public function testGetSize()
@@ -117,7 +117,7 @@ class FileTest extends TestCase
         $file = new File(vfsStream::url('fs/report/index.html'));
         $this->assertFileExists(vfsStream::url('fs/report/index.html'));
         $file->delete();
-        $this->assertFileNotExists(vfsStream::url('fs/report/index.html'));
+        $this->assertFileDoesNotExist(vfsStream::url('fs/report/index.html'));
     }
 
     public function testGetPath()

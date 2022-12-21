@@ -62,7 +62,7 @@ class DirectoryTest extends TestCase
         foreach($this->getMovedAndCopiedFiles() as $file) {
             $this->assertFileExists($file);
         }
-        $this->assertFileNotExists(vfsStream::url('fs/src'));
+        $this->assertFileDoesNotExist(vfsStream::url('fs/src'));
         $this->assertEquals(vfsStream::url('fs/scr2'), $dir->getPath());
     }
 
@@ -70,7 +70,7 @@ class DirectoryTest extends TestCase
     {
         $dir = new Directory(vfsStream::url('fs/src'));
         $dir->delete();
-        $this->assertFileNotExists(vfsStream::url('fs/src'));
+        $this->assertFileDoesNotExist(vfsStream::url('fs/src'));
         $this->assertFileExists(vfsStream::url('fs'));
         $this->assertFileExists(vfsStream::url('fs/composer.json'));
     }

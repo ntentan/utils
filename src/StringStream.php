@@ -46,6 +46,8 @@ class StringStream
     private $position;
     private $path;
     private static $registered = false;
+    
+    public $context;
 
     private function setFlags($read, $write, $position)
     {
