@@ -1,8 +1,11 @@
 CHANGELOG
 ==========
-## Unreleased
+## v0.12.0 - 2022-12-21
 ### Added
-- A method to allow deleting files only when 
+- A method to allow deleting files only when they exist.
+
+### Fixed
+- Updated deprecated methods for PHP iterators and array access in the Filesystem component.
 
 ## v0.11.2 - 2021-01-08
 ### Fixed
