@@ -34,7 +34,7 @@ namespace ntentan\utils;
  *
  * @author James Ainooson
  */
-class Input 
+class Input
 {
     /**
      * Constant for POST request.
@@ -60,7 +60,7 @@ class Input
      * @var array
      */
     private static $arrays = [];
-    
+
     /**
      * Does the actual work of calling either the filter_input of 
      * filter_input_array. Calls the filter_input when a data key is provided
@@ -70,7 +70,7 @@ class Input
      * @param string $key The data key
      * @return string|array The value.
      */
-    private static function getVariable(string $input, string $key = null) : string | array
+    private static function getVariable(int $input, string $key = null): string | array
     {
         if ($key === null) {
             if (!isset(self::$arrays[$input])) {
@@ -87,7 +87,7 @@ class Input
 
         return $return;
     }
-    
+
     /**
      * Retrieves GET request variables.
      * 
@@ -116,10 +116,13 @@ class Input
      * @param string $key
      * @return string|array
      */
-    public static function server(string $key = null): string | array
-    {
-        return self::getVariable(INPUT_SERVER, $key);
-    }
+    // public static function server(string $key = null): string | array
+    // {
+    //     //return self::getVariable(INPUT_SERVER, $key);
+    //     if ($key === null) {
+
+    //     }
+    // }
 
     /**
      * Retrieves cookie variables.
@@ -139,7 +142,7 @@ class Input
      * @param string $key
      * @return bool
      */
-    public static function exists(string $input, string $key) : bool
+    public static function exists(string $input, string $key): bool
     {
         return isset(self::getVariable($input, null)[$key]);
     }
@@ -177,5 +180,4 @@ class Input
         }
         return $files;
     }
-
 }
