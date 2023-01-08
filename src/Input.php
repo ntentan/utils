@@ -70,15 +70,15 @@ class Input
      * @param string $key The data key
      * @return string|array The value.
      */
-    private static function getVariable(string $input, string $key = null)
+    private static function getVariable(string $input, string $key = null) : string | array
     {
         if ($key === null) {
             if (!isset(self::$arrays[$input])) {
-                self::$arrays[$input] = filter_input_array($input);
+                self::$arrays[$input] = filter_input_array($input) ?? [];
             }
             $return = self::$arrays[$input];
         } else {
-            $return = filter_input($input, $key);
+            $return = filter_input($input, $key) ?? "";
         }
 
         if ($return === null && $key === null) {
@@ -116,7 +116,7 @@ class Input
      * @param string $key
      * @return string|array
      */
-    public static function server(string $key = null)
+    public static function server(string $key = null): string | array
     {
         return self::getVariable(INPUT_SERVER, $key);
     }
