@@ -109,21 +109,7 @@ class Input
     {
         return self::getVariable(INPUT_POST, $key);
     }
-
-    /**
-     * Retrieves server variables.
-     * 
-     * @param string $key
-     * @return string|array
-     */
-    // public static function server(string $key = null): string | array
-    // {
-    //     //return self::getVariable(INPUT_SERVER, $key);
-    //     if ($key === null) {
-
-    //     }
-    // }
-
+    
     /**
      * Retrieves cookie variables.
      * 
