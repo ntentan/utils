@@ -1,5 +1,12 @@
 CHANGELOG
 ==========
+## v0.13.0 - 2024-12-13
+### Added
+- Type hints in some required places
+
+### Removed
+- The Input::server method since it was practically unnecessary.
+
 ## v0.12.0 - 2022-12-21
 ### Added
 - A method to allow deleting files only when they exist.
