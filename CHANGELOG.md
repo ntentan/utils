@@ -1,5 +1,10 @@
 CHANGELOG
 ==========
+## v0.13.1 - 2026-01-01
+### Fixed
+- Fixed a warning in the `Input` and `Filesystem` classes when running on PHP 8.3 and above.
+
+
 ## v0.13.0 - 2024-12-13
 ### Added
 - Type hints in some required places
