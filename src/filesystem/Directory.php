@@ -32,7 +32,7 @@ class Directory implements FileInterface
      *
      * @param string $path Optional path pointed to by new instance. Path does not have to exist.
      */
-    public function __construct(string $path = null)
+    public function __construct(?string $path = null)
     {
         $this->path = $path;
     }

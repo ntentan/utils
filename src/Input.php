@@ -62,15 +62,14 @@ class Input
     private static $arrays = [];
 
     /**
-     * Does the actual work of calling either the filter_input of 
-     * filter_input_array. Calls the filter_input when a data key is provided
-     * and callse the filte_input_array when a data key is absent.
+     * Does the actual work of calling either the filter_input of filter_input_array. Calls the filter_input when a data
+     * key is provided and calls the filter_input_array when a data key is absent.
      * 
      * @param string $input Input type
      * @param string $key The data key
      * @return string|array The value.
      */
-    private static function getVariable(int $input, string $key = null): string | array | null
+    private static function getVariable(int $input, ?string $key = null): string | array | null
     {
         if ($key === null) {
             if (!isset(self::$arrays[$input])) {
@@ -94,7 +93,7 @@ class Input
      * @param string $key
      * @return string|array
      */
-    public static function get(string $key = null)
+    public static function get(?string $key = null)
     {
         return self::getVariable(INPUT_GET, $key);
     }
@@ -105,7 +104,7 @@ class Input
      * @param string $key
      * @return string|array
      */
-    public static function post(string $key = null)
+    public static function post(?string $key = null)
     {
         return self::getVariable(INPUT_POST, $key);
     }
@@ -116,7 +115,7 @@ class Input
      * @param string $key
      * @return string|array
      */
-    public static function cookie(string $key = null)
+    public static function cookie(?string $key = null)
     {
         return self::getVariable(INPUT_COOKIE, $key);
     }
@@ -139,7 +138,7 @@ class Input
      * @param string $key
      * @return array|filesystem\UploadedFile|null
      */
-    public static function files(string $key = null)
+    public static function files(?string $key = null)
     {
         if (!isset($_FILES[$key])) {
             return null;

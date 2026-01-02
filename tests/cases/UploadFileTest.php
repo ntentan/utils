@@ -20,13 +20,10 @@ class UploadFileTest extends TestCase
     public function setUp() : void
     {
         $isUploadedFile = $this->getFunctionMock('\ntentan\utils\filesystem\\', "is_uploaded_file");
-        $isUploadedFile->expects($this->any())->will(
-            $this->returnValueMap([
-                ['/tmp/x12345', true],
-                ['/tmp/x54321', false]
-            ])
-        );
-
+        $isUploadedFile->expects($this->any())->willReturnMap([
+            ['/tmp/x12345', true],
+            ['/tmp/x54321', false]
+        ]);
     }
 
     public function getFileArray()

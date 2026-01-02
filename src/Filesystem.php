@@ -45,7 +45,7 @@ class Filesystem
      * @param string|null $message
      * @throws exceptions\FileNotWriteableException
      */
-    public static function checkWritable(string $path, string $message = null): void
+    public static function checkWritable(string $path, ?string $message = null): void
     {
         if (!is_writable($path)) {
             throw new exceptions\FileNotWriteableException($message ?? "Location [$path] is not writeable");
@@ -60,7 +60,7 @@ class Filesystem
      * @param string|null $message
      * @throws exceptions\FileNotReadableException
      */
-    public static function checkReadable(string $path, string $message = null): void
+    public static function checkReadable(string $path, ?string $message = null): void
     {
         if (!is_readable($path)) {
             throw new exceptions\FileNotReadableException($message ?? "Location $path is not readable");
@@ -74,7 +74,7 @@ class Filesystem
      * @param string|null $message
      * @throws FileNotFoundException
      */
-    public static function checkExists(string $path, string $message = null): void
+    public static function checkExists(string $path, ?string $message = null): void
     {
         if (!file_exists($path)) {
             throw new exceptions\FileNotFoundException($message ?? "Location '$path' does not exist");
@@ -88,7 +88,7 @@ class Filesystem
      * @param string|null $message
      * @throws exceptions\FileAlreadyExistsException
      */
-    public static function checkNotExists(string $path, string $message = null): void
+    public static function checkNotExists(string $path, ?string $message = null): void
     {
         try {
             if (file_exists($path)) {
@@ -107,7 +107,7 @@ class Filesystem
      * @throws FileNotFoundException
      * @throws exceptions\FileNotWriteableException
      */
-    public static function checkWriteSafety(string $path, string $message = null) : void
+    public static function checkWriteSafety(string $path, ?string $message = null) : void
     {
         Filesystem::checkExists($path, $message);
         Filesystem::checkWritable($path, $message);

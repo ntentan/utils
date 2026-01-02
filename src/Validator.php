@@ -106,7 +106,7 @@ class Validator
      * @param string $class The name of the validation class to load.
      * @param mixed $data Any extra validation data that would be necessary for the validation.
      */
-    protected function registerValidation(string $name, string $class, $data = null)
+    protected function registerValidation(string $name, string $class, mixed $data = null)
     {
         $this->validationRegister[$name] = $class;
         $this->validationData[$name] = $data;
